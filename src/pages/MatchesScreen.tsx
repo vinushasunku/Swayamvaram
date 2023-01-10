@@ -82,7 +82,7 @@ style={{width: 400, height: 400}} /> */}
               style={{height: '100%', width: '100%'}}>
                 
               </LinearGradient>
-              <Text style={{color:'white'}}>{item.firstName}</Text>
+              <Text style={{color:'white'}}>{item.firstName + item.lastName}</Text>
           </ImageBackground>
          
         </View>
