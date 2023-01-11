@@ -106,6 +106,13 @@ const LightStyle=StyleSheet.create({
         borderRadius:10,
         height:40
     },  
+    loginTestbox:{
+        alignItems: 'center',
+        borderWidth: 1,
+        borderRadius: 10,
+        borderColor: 'grey',
+        marginBottom: 10,
+    },
      dropdown: {
         margin: 16,
         //height: 50,
@@ -209,9 +216,21 @@ const LightStyle=StyleSheet.create({
         borderWidth: 1,
         alignItems: 'center',
         paddingVertical: 10,
+    },
+    sectionContainer:{
+        flex:1,
+        alignItems:'center',
+        justifyContent:'center',
+        backgroundColor:Colors.White
     }
 });
 const DarkStyle=StyleSheet.create({
+    sectionContainer:{
+        flex:1,
+        alignItems:'center',
+        justifyContent:'center',
+        backgroundColor:Colors.White
+    },
     submitButton:{
         width:'100%',
         paddingTop:10,
@@ -307,6 +326,13 @@ const DarkStyle=StyleSheet.create({
         width: '90%',
         borderRadius:10,
         height:40
+    },
+    loginTestbox:{
+        alignItems: 'center',
+        borderWidth: 1,
+        borderRadius: 10,
+        borderColor: 'grey',
+        marginBottom: 10,
     },
     dropdown: {
         margin: 16,
