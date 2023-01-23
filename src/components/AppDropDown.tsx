@@ -8,16 +8,17 @@ type ButtonProps={
     gender:any;
     value:any;
     //disabled:boolean;
-    onSelection:any
+    onSelection:any;
+    label:any
     //buttonLink:boolean;
 }
 
-export const AppDropDown=({gender,value,onSelection}:ButtonProps)=>{
+export const AppDropDown=({gender,value,onSelection,label}:ButtonProps)=>{
  const styles=GetStyle();
  return(
     <View style={{ flexDirection: 'row', alignItems: 'center',width:'95%' }}>
     <Text style={{ ...styles.mediumHeaderText,paddingBottom:10,width:'20%', textTransform:'uppercase'}}>
-     Gender
+    {label}
     </Text>
     <Dropdown
             style={[styles.dropdown]}

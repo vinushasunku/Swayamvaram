@@ -41,7 +41,7 @@ const Registration = ({navigation}: WizardProps) => {
   const religionData: any = useAppSelector(getReligion);
   const registrationData: any = useAppSelector(getRegistrationData);
   const countryCodeList: any = useAppSelector(getCountryCode);
-  const [enableNext, setEnableNext] = React.useState<boolean>(false);
+  const [enableNext, setEnableNext] = React.useState<boolean>(true);
   const gender = [
     {label: 'FEMALE', value: '1'},
     {label: 'MALE', value: '2'},
@@ -52,7 +52,6 @@ const Registration = ({navigation}: WizardProps) => {
     setEnableNext(true)
 }
   useEffect(() => {
-
     navigation.setOptions({
       headerTitle: '',
       headerBackVisible: true,
@@ -171,10 +170,10 @@ const Registration = ({navigation}: WizardProps) => {
     console.log('nextenable',enableNext)
   }
   return (
-    <SafeAreaView>
-      <View style={{flex: 1, marginLeft:10, marginRight:10}}>   
-        <ProgressSteps {...progressStepsStyle}>
-          <ProgressStep
+    <View style={[styles.sectionContainer]}>
+         <View>
+         <ProgressSteps  {...progressStepsStyle}>
+               <ProgressStep
             label="Info"
              onNext={onNextStep}
             //onPrevious={this.onPrevStep}
@@ -188,11 +187,7 @@ const Registration = ({navigation}: WizardProps) => {
               
           </ProgressStep>
           <ProgressStep
-            label="Caste"
-            //onNext={this.onNextStep}
-            //onPrevious={this.onPrevStep}
-            //scrollViewProps={defaultScrollViewProps}
-            //nextBtnTextStyle={buttonTextStyle}
+            label="Religion"
             previousBtnTextStyle={buttonTextStyle}
             nextBtnTextStyle={enableNext === true ?styles.nextpreviousText: styles.hideNext}
           >
@@ -200,181 +195,83 @@ const Registration = ({navigation}: WizardProps) => {
             <CasteInformation navigation={navigation} updateEnableNext={updateEnableNext} />
             </ScrollView>
           </ProgressStep>
-          <ProgressStep
-            label="Location"
-            //onNext={this.onNextStep}
-            //onPrevious={this.onPrevStep}
-            //scrollViewProps={defaultScrollViewProps}
-            //nextBtnTextStyle={buttonTextStyle}
-            //previousBtnTextStyle={buttonTextStyle}
-          >
+        <ProgressStep label="Completion">
             <View style={{ alignItems: 'center' }}>
-              <Text>This is the content within step 3!</Text>
+                <Text>This is the content within step 3!</Text>
             </View>
-          </ProgressStep>
-          <ProgressStep
-            label="Fourth"
-            //onNext={this.onNextStep}
-            //onPrevious={this.onPrevStep}
-           // scrollViewProps={defaultScrollViewProps}
-           // nextBtnTextStyle={buttonTextStyle}
-            //previousBtnTextStyle={buttonTextStyle}
-          >
+        </ProgressStep>
+        <ProgressStep label="Verification">
             <View style={{ alignItems: 'center' }}>
-              <Text>This is the content within step 4!</Text>
+                <Text>This is the content within step 4!</Text>
             </View>
-          </ProgressStep>
-          <ProgressStep
-            label="Fifth"
-            //onPrevious={this.onPrevStep}
-            //onSubmit={this.onSubmitSteps}
-            //scrollViewProps={defaultScrollViewProps}
-            //nextBtnTextStyle={buttonTextStyle}
-            //previousBtnTextStyle={buttonTextStyle}
-          >
-            <View style={{ alignItems: 'center' }}>
-              <Text>This is the content within step 5!</Text>
-            </View>
-          </ProgressStep>
-        </ProgressSteps>
-      
-        
-     
-        {/* <ScrollView style={{marginLeft: 15, marginTop: 10}}>
-          {
-          registrationData.map((item: any, index: any) => {
-            if (item.textIcon === true) {
-              if (item.databind == 'countryCode') {
-                return (
-                  <TextInputWithIcon
-                    key={index}
-                    lable={item.title}
-                    onPress={setCountryCodeModel}
-                    onChangeField={onChangeField}
-                    dataBind={item.databind}
-                    value={selectedCountryCode}
-                    icon={item.icon}
-                  />
-                );
-              } else if (item.databind == 'dob') {
-                return (
-                  <TextInputWithIcon
-                    key={index}
-                    lable={item.title}
-                    onPress={setCalenderModel}
-                    onChangeField={onChangeField}
-                    dataBind={item.databind}
-                    value={selecteddob}
-                    icon={item.icon}
-                  />
-                );
-              } else if (item.databind === 'gender') {
-                return (
-                  <AppDropDown
-                    key={index}
-                    gender={gender}
-                    value={selectedgender}
-                    onSelection={setGenderdata}
-                  />
-                );
-              } else if (item.databind === 'religion') {
-                return (
-                  <TextInputWithIcon
-                    key={index}
-                    lable={item.title}
-                    onPress={setReligiousModel}
-                    onChangeField={onChangeField}
-                    dataBind={item.databind}
-                    value={selectedReligious}
-                    icon={item.icon}
-                  />
-                );
-              } else if (item.action === 'mobilenumber') {
-                return (
-                  //<Text>{'Test'}</Text>
-                  <View                      key={index} style={{marginTop: 10}}>
-                    <Text
-                      style={{
-                        ...styles.mediumHeaderText,
-                        paddingBottom: 10,
-                        textTransform: 'uppercase',
-                      }}>
-                      {'Mobile Number'}
-                    </Text>
-                    <View style={[styles.textInputIconContainer,{height:50}]}>
-                      <IntlPhoneInput
-                        key={index}
-                        phoneInputStyle={styles.mediumText}
-                        onChangeText={onChangeField('mobilenumber')}
-                        dialCodeTextStyle={{color: 'black'}}
-                        defaultCountry="IN"
-                        
-                        //placeholder="Enter Mobile Number"
-                      />
-                    </View>
-                  </View>
-                );
-              }
-            } else {
-              return (
-                <AppTextInput
-                  key={index}
-                  onChangeText={onChangeField}
-                  onFocus={true}
-                  lable={item.title}
-                  databind={item.databind}
-                />
-              );
-            }
-          })}
-        </ScrollView> */}
-        {/* <View
-          style={{
-            borderRadius: 1,
-            height: '10%',
-            borderTopWidth: 1,
-            width: '100%',
-            flexDirection:'row'
-          }}>
-          <TouchableOpacity
-            activeOpacity={0.9}
-            onPress={handleSubmit(onSubmit)}
-            style={[styles.submitButton]}>
-            <Text style={[styles.mediumHeaderText, styles.buttonText]}>
-              {'Sign up'}
-            </Text>
-          </TouchableOpacity>
-        </View> */}
-      </View>
-
-      {/* <AppModalList
-        modaldatalist={religionData}
-        showReligious={showReligious}
-        cancelModel={cancelModel}
-        option={option}
-        onpress={SelectedItem}
-        title={'Religion'}
-      />
-
-      <AppModalList
-        modaldatalist={countryCodeList}
-        showReligious={showCountryCode}
-        cancelModel={cancelCountryCodeModel}
-        option={option}
-        onpress={SelectedCountryCodeItem}
-        title={'Country Code'}
-      />
-      <DatePicker
-        modal
-        open={showCalender}
-        date={date}
-        mode="date"
-        onDateChange={date => onDateChange(date)}
-        onConfirm={handleConfirm}
-        onCancel={hideDatePicker}
-      /> */}
-    
-    </SafeAreaView>
+        </ProgressStep>
+    </ProgressSteps>
+    </View>
+    </View>
+    // <SafeAreaView>
+    //   <View style={{flex: 1, marginLeft:10, marginRight:10}}>   
+    //     <ProgressSteps {...progressStepsStyle}>
+    //       <ProgressStep
+    //         label="Info"
+    //          onNext={onNextStep}
+    //         //onPrevious={this.onPrevStep}
+    //         //scrollViewProps={defaultScrollViewProps}
+    //          nextBtnTextStyle={enableNext === true ?styles.nextpreviousText: styles.hideNext}
+    //         //previousBtnTextStyle={buttonTextStyle}
+    //       >
+    //         <ScrollView style={{marginLeft: 15, marginTop: 10}}>
+    //           <Text style={{color:'black'}}>{'Testmain'}</Text>
+    //         <PersonalInfo navigation={navigation} updateEnableNext={updateEnableNext}/>
+    //         </ScrollView>
+              
+    //       </ProgressStep>
+    //       <ProgressStep
+    //         label="Caste"
+    //         //onNext={this.onNextStep}
+    //         //onPrevious={this.onPrevStep}
+    //         //scrollViewProps={defaultScrollViewProps}
+    //         //nextBtnTextStyle={buttonTextStyle}
+    //         previousBtnTextStyle={buttonTextStyle}
+    //         nextBtnTextStyle={enableNext === true ?styles.nextpreviousText: styles.hideNext}
+    //       >
+    //         <ScrollView style={{marginLeft: 15, marginTop: 10}}>
+    //         <CasteInformation navigation={navigation} updateEnableNext={updateEnableNext} />
+    //         </ScrollView>
+    //       </ProgressStep>
+    //       <ProgressStep
+    //         label="Location"
+    //         //onNext={this.onNextStep}
+    //         //onPrevious={this.onPrevStep}
+    //         //scrollViewProps={defaultScrollViewProps}
+    //         //nextBtnTextStyle={buttonTextStyle}
+    //         //previousBtnTextStyle={buttonTextStyle}
+    //       >
+    //         <View style={{ alignItems: 'center' }}>
+    //           <Text>This is the content within step 3!</Text>
+    //         </View>
+    //       </ProgressStep>
+    //       <ProgressStep
+    //         label="Fourth"
+    //         //onNext={this.onNextStep}
+    //         //onPrevious={this.onPrevStep}
+    //        // scrollViewProps={defaultScrollViewProps}
+    //        // nextBtnTextStyle={buttonTextStyle}
+    //         //previousBtnTextStyle={buttonTextStyle}
+    //       >
+    //         <View style={{ alignItems: 'center' }}>
+    //           <Text>This is the content within step 4!</Text>
+    //         </View>
+    //       </ProgressStep>
+    //       <ProgressStep
+    //         label="Fifth"
+    //       >
+    //         <View style={{ alignItems: 'center' }}>
+    //           <Text>This is the content within step 5!</Text>
+    //         </View>
+    //       </ProgressStep>
+    //     </ProgressSteps>    
+    //   </View>
+    // </SafeAreaView>
   );
 };
 

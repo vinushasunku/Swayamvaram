@@ -28,12 +28,13 @@ export default () => {
     //  <MainNav />
     <Provider  store={store}>
          <PersistGate loading={null} persistor={persistor}>
-         {/* <SafeAreaView style={[styles.topSafeArea]} />
-            <SafeAreaView style={styles.bottomSafeArea}> */}
+         {/* <MainNav  />  */}
+         <SafeAreaView style={[styles.topSafeArea]} />
+            <SafeAreaView style={styles.bottomSafeArea}>
                 <StatusBar barStyle="dark-content"  backgroundColor={isLightMode?Colors.White:Colors.Black}  />
 
                 <MainNav  /> 
-            {/* </SafeAreaView>               */}
+            </SafeAreaView>              
          </PersistGate>
     </Provider>
   )

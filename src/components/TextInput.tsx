@@ -33,9 +33,7 @@ export const AppTextInput = ({
       <TextInput
         placeholderTextColor="#2F4F4F"
          style={[styles.mediumText]}
-        //SonFocus={true}
         editable={true}
-        //value={value}
         onChangeText={onChangeText(databind)}
       />
       </View>

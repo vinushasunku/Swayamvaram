@@ -1,12 +1,13 @@
 import React from 'react';
 import {TouchableOpacity,Text,View, Modal} from 'react-native'
+import { ReligionDataDto } from '../services/CasteService';
 import { dropdowndata } from '../services/RegistrationService';
 import {GetStyle} from '../styles/style-sheet'
 import AppButton from './AppButton';
 
 
 type WizardProps={
-    modaldatalist:[dropdowndata],
+    modaldatalist:[ReligionDataDto],
     showReligious:boolean,
     cancelModel:any;
     option:any;
@@ -16,6 +17,7 @@ type WizardProps={
  }
  export const AppModalList=({modaldatalist,showReligious,cancelModel,option,onpress,title}:WizardProps)=>{
         const styles=GetStyle();
+        console.log('religionlist',modaldatalist)
         return(
             <Modal
             animationType='slide'
@@ -42,12 +44,12 @@ type WizardProps={
                         </View>
                         <View>
                             {
-                                modaldatalist.map((item:dropdowndata,index)=>(
+                                modaldatalist.map((item:ReligionDataDto,index)=>(
                                     <View key={index} style={{ justifyContent: 'center',marginBottom: 10, marginTop: 10,backgroundColor:(option !='' && option== item.id) ?'grey':'white', borderBottomColor:'grey',borderBottomWidth:1}}>
                         
                                             <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center',paddingLeft:10,marginBottom: 10,}}  onPress={()=>{onpress(item.id)}}>
                                                 <View>
-                                                    <Text style={{ ...styles.mediumText }}>{item.title}</Text>
+                                                    <Text style={{ ...styles.mediumText }}>{item.name}</Text>
                                                 </View>
                                             </TouchableOpacity>
                                 </View> 

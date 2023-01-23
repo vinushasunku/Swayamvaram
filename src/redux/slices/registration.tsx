@@ -1,15 +1,22 @@
 import {InitialState} from '@react-navigation/native'
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { Registration } from '../../services/RegistrationService'
+import { RegistrationDto } from '../../services/RegistrationService'
 
 export const initialState={
     registrationData:createRegistration(),
     
 }
-export function createRegistration(): Registration{
+export function createRegistration(): RegistrationDto{
     return{
-        firstName:'',
-        religion:''
+      emailAddress:'',
+      countryCode:0,
+      mobileNumber:0,
+      firstName:'',
+      lastName:'',
+      gender:'',
+      creator:'',
+      password:''
+
     };
 
 }
@@ -57,14 +64,30 @@ export const registrationSlice = createSlice({
     return [
       {
         id:1,
-        title:'Name',
-        databind:'name',
+        title:'Email',
+        databind:'emailAddress',
         textIcon:false,
         icon:'',
         action:''
       },
       {
         id:2,
+        title:'First Name',
+        databind:'firstName',
+        textIcon:false,
+        icon:'',
+        action:''
+      },
+      {
+        id:3,
+        title:'Last Name',
+        databind:'lastName',
+        textIcon:false,
+        icon:'',
+        action:''
+      },
+      {
+        id:4,
         title:'Gender',
         databind:'gender',
         textIcon:true,
@@ -72,52 +95,37 @@ export const registrationSlice = createSlice({
         action:'radiobutton'
       },
       {
-        id:3,
-        title:'Date of Birth',
-        databind:'dob',
-        textIcon:true,
-        icon:'calendar-outline',
-        action:'calender'
-      },
-      {
-        id:4,
-        title:'Religion',
-        databind:'religion',
-        textIcon:true,
-        icon:'chevron-forward-outline',
-        action:'setReligiousModel'
-      },
-      {
         id:5,
-        title:'Mother Tongue',
-        databind:'MotherTongue',
-        textIcon:true,
-        icon:'chevron-forward-outline',
-        action:'motherTongue'
-      },
-      {
-        id:6,
-        title:'Country Code',
-        databind:'countryCode',
-        textIcon:true,
-        icon:'chevron-forward-outline',
-        action:'setCountryCodeModel'
-      },
-      {
-        id:7,
         title:'Mobile Number',
         databind:'mobileNumber',
         textIcon:true,
-        action:'mobilenumber'
+        icon:'',
+        action:'radiobutton'
       },
       {
-        id:8,
+        id:6,
+        title:'Creator',
+        databind:'creator',
+        textIcon:true,
+        icon:'',
+        action:'radiobutton'
+      },
+      {
+        id:7,
         title:'Password',
         databind:'password',
-        textIcon:true,
+        textIcon:false,
         icon:'eye-outline',
-        action:'password'
-      }
+        action:''
+      },
+      {
+        id:5,
+        title:'countryCode',
+        databind:'countryCode',
+        textIcon:true,
+        icon:'',
+        action:'radiobutton'
+      },
     ]
   }
   export default registrationSlice.reducer

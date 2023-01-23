@@ -27,20 +27,20 @@ const RegistrationStack = createNativeStackNavigator();
 const HomeStack = createNativeStackNavigator();
 const MainStack = createNativeStackNavigator();
 const isLightMode= Appearance.getColorScheme() ==='light'?true:false;
-function RegistrationStackNav() {
-  return (
-    <RegistrationStack.Navigator>
-      <RegistrationStack.Screen
-        name="Registration"
-        component={Registration}
-        options={({route}) => ({
-          headerTitle: 'Registration',
-          headerBackVisible: false,
-        })}
-      />
-    </RegistrationStack.Navigator>
-  );
-}
+// function RegistrationStackNav() {
+//   return (
+//     <RegistrationStack.Navigator>
+//       <RegistrationStack.Screen
+//         name="Registration"
+//         component={Registration}
+//         options={({route}) => ({
+//           headerTitle: 'Registration',
+//           headerBackVisible: false,
+//         })}
+//       />
+//     </RegistrationStack.Navigator>
+//   );
+// }
 function HomeStackNav() {
   return (
     <HomeStack.Navigator >
@@ -82,14 +82,6 @@ function MainTab() {
           title: 'Home',
           tabBarIcon:({color}) => <Icon name="home" color={color} size={30}/>,
           unmountOnBlur:true
-        //   tabBarIcon: ({focused}) =>
-        //     focused ? (
-        //       <TouchableOpacity style={styles.circleStyle}>
-        //         <Icon name="home" size={24} color={Colors.Grey} />
-        //       </TouchableOpacity>
-        //     ) : (
-        //       <Icon name="home" size={24} color={'#2F4F4F'} />
-        //     ),
         }}
       />
 
@@ -101,14 +93,6 @@ function MainTab() {
           title: 'Matches',
           tabBarIcon:({color}) => <Icon name="people-outline" color={color} size={30}/>,
           unmountOnBlur:true
-        //   tabBarIcon: ({focused}) =>
-        //     focused ? (
-        //       <TouchableOpacity style={styles.circleStyle}>
-        //         <Icon name="home" size={24} color={Colors.Grey} />
-        //       </TouchableOpacity>
-        //     ) : (
-        //       <Icon name="home" size={24} color={'#2F4F4F'} />
-        //     ),
         }}
       />
     </Tab.Navigator>

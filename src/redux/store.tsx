@@ -5,10 +5,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import thunk from 'redux-thunk'
 import loginReducer from './slices/login';
 import appDataReducer from '../redux/slices/appData'
+import casteReducer from './slices/caste'
 
 const reducers=combineReducers({
     loginId: loginReducer,
-    appData:appDataReducer
+    appData:appDataReducer,
+    religion:casteReducer
 })
 const persistConfig={
     key:'root',

@@ -6,15 +6,20 @@ import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import login, {setLoginId, setPaginationId} from '../redux/slices/login';
 import IntlPhoneInput from 'react-native-intl-phone-input';
 import Registration from './Registration';
+import LoginService from '../services/LoginService';
+import { setModalData } from '../redux/slices/appData';
+import { createSecureService } from '../services/APIServices';
 const style: any = GetStyle();
 const LoginPage = ({navigation}: any) => {
   const dispatch = useAppDispatch();
   const [inLoginPage, setInLoginPage] = React.useState(false);
   const [passwordinput, setPassword] = React.useState('');
-  const [mobileinput, setMobile] = React.useState('');
-  //const currentpagination=useAppSelector(state => state.loginId.pagination);
+  const [mobileinput, setMobile] = React.useState(0);
+  const [countryCode, setCountryCode] = React.useState(0);
+
   const styles = GetStyle();
   useEffect(() => {
+    createSecureService();
     setInLoginPage(false);
     console.log(inLoginPage);
     navigation.setOptions({
@@ -27,9 +32,24 @@ const LoginPage = ({navigation}: any) => {
       ),
     });
   }, [navigation]);
+  const onChangeText = ({dialCode, unmaskedPhoneNumber, phoneNumber, isVerified}) => {
+    console.log(dialCode, unmaskedPhoneNumber, phoneNumber, isVerified);
+    setCountryCode(dialCode.replace("+", ""));
+    setMobile(unmaskedPhoneNumber);
+  };
   function signupButton() {
-    //navigation.navigate('Signup')
-    dispatch(setLoginId('12345678'));
+    const logindto={
+            countryCode:Number(countryCode),
+            mobileNumber: Number(mobileinput),
+            password :passwordinput  
+    }
+    console.log(logindto)
+    LoginService.getLoginDetail(logindto).then((response:any)=>{
+        if(response){
+            console.log(response.data.id);
+        }
+    }).catch((error:any)=>{
+        console.log('error:',error)})
   }
   function setpagination() {
     navigation.navigate('Registration');
@@ -49,7 +69,7 @@ const LoginPage = ({navigation}: any) => {
               color: 'black',
               fontSize: 16.0,
             }}
-            onChangeText={(mobileNumber ) =>setMobile(mobileNumber) }
+            onChangeText={onChangeText}
             dialCodeTextStyle={{color: 'black'}}
             defaultCountry="IN"
             placeholder="Enter Mobile Number"
@@ -76,18 +96,5 @@ const LoginPage = ({navigation}: any) => {
   );
 };
 
-LoginPage.navigationOption = {
-  // return {
-  //     header: () => null
-  // }
-  title: 'Login',
-  headerTitleAlign: 'center',
-  headerTintColor: 'black',
-  headerStyle: {
-    elevation: 0,
-    shadowOpacity: 0,
-    borderBottomWidth: 0,
-    backgroundColor: 'white',
-  },
-};
+
 export default LoginPage;

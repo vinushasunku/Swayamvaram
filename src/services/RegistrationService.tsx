@@ -1,6 +1,14 @@
-export interface Registration{
+import { securePost } from "./APIServices";
+
+export interface RegistrationDto{
+    emailAddress:string,
+    countryCode:number,
+    mobileNumber:number,
     firstName:string,
-    religion:string
+    lastName:string,
+    gender:string,
+    creator:string,
+    password:string
 }
 
 export interface  dropdowndata{
@@ -11,3 +19,14 @@ export interface  dropdowndata{
 export interface  listdata{
     response:[dropdowndata]
 }
+
+class RegistrationService {
+    
+    getRegistrationDetail = (personalDto: RegistrationDto) =>
+      
+          securePost('/matrimony/account/create', personalDto, 'Unable to Create Account Please try again later.');
+      
+     
+  }
+  
+  export default new RegistrationService();
