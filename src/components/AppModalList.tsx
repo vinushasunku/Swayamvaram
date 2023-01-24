@@ -17,7 +17,6 @@ type WizardProps={
  }
  export const AppModalList=({modaldatalist,showReligious,cancelModel,option,onpress,title}:WizardProps)=>{
         const styles=GetStyle();
-        console.log('religionlist',modaldatalist)
         return(
             <Modal
             animationType='slide'
@@ -47,7 +46,7 @@ type WizardProps={
                                 modaldatalist.map((item:ReligionDataDto,index)=>(
                                     <View key={index} style={{ justifyContent: 'center',marginBottom: 10, marginTop: 10,backgroundColor:(option !='' && option== item.id) ?'grey':'white', borderBottomColor:'grey',borderBottomWidth:1}}>
                         
-                                            <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center',paddingLeft:10,marginBottom: 10,}}  onPress={()=>{onpress(item.id)}}>
+                                            <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center',paddingLeft:10,marginBottom: 10,}}  onPress={()=>{onpress(item.id, title)}}>
                                                 <View>
                                                     <Text style={{ ...styles.mediumText }}>{item.name}</Text>
                                                 </View>

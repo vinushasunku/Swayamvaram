@@ -47,6 +47,7 @@ const LoginPage = ({navigation}: any) => {
     LoginService.getLoginDetail(logindto).then((response:any)=>{
         if(response){
             console.log(response.data.id);
+            dispatch(setLoginId(response.data.id))
         }
     }).catch((error:any)=>{
         console.log('error:',error)})

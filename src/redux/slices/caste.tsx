@@ -7,7 +7,8 @@ export const initialState={
     religionError:'',
     casteData:createCaste(),
     religionData:createReligionData(),
-    
+    casteList:createCasteList(),
+    subCasteList:createSubCasteList()
 }
 export function createCaste(): CasteInfoDto{
     return{
@@ -15,6 +16,28 @@ export function createCaste(): CasteInfoDto{
         caste:'',
         subcaste:''
     };
+
+}
+export function createCasteList(): [ReligionDataDto]{
+  return[
+    {
+      id:'',
+      name:'',
+      hasNextLevel:'',
+      nextLevelName:''
+  }
+  ]
+
+}
+export function createSubCasteList(): [ReligionDataDto]{
+  return[
+    {
+      id:'',
+      name:'',
+      hasNextLevel:'',
+      nextLevelName:''
+  }
+  ]
 
 }
 export function createReligionData(): [ReligionDataDto]{
@@ -33,7 +56,21 @@ export const fetchReligionlists=createAsyncThunk(
   'matrimony/getReligion',
   async () =>{
     const res= await CasteService.getReligion();
-    console.log('resdata',res?.data.values)
+    return res? res?.data?.values :undefined
+  }
+);
+export const fetchCastelists=createAsyncThunk(
+  '/matrimony/religion/',
+  async (regionName:string) =>{
+    const res= await CasteService.getcaste(regionName);
+    return res? res?.data?.values :undefined
+  }
+);
+export const fetchSubCastelists=createAsyncThunk(
+  '/matrimony/Subreligion/',
+  async (religion:CasteInfoDto) =>{
+    console.log('')
+    const res= await CasteService.getSubcaste(religion.religion,religion.caste);
     return res? res?.data?.values :undefined
   }
 );
@@ -42,9 +79,7 @@ export const casteSlice = createSlice({
     initialState,
     reducers: {
       setCasteData:(state, action: PayloadAction<CasteInfoDto>)=> {
-        state.casteData=action.payload
-        //state.casteData.push(action.payload)
-        
+        state.casteData=action.payload        
       },
       resetQuery:()=>{
         return initialState
@@ -52,10 +87,8 @@ export const casteSlice = createSlice({
     },
     extraReducers: builder => {
       builder.addCase(fetchReligionlists.fulfilled, (state, action) => {
-        console.log('payload',action)
         state.religionStatus='succeeded',
         state.religionError='';
-        console.log('success',action)
         if(action.payload){
           state.religionData=action.payload
         }
@@ -67,27 +100,50 @@ export const casteSlice = createSlice({
       builder.addCase(fetchReligionlists.rejected, (state, action) => {
         state.religionStatus='failed',
         state.religionError='Unable to get list';
-      });
-  
-    },
+      }),
+      builder.addCase(fetchCastelists.fulfilled, (state, action) => {
+        console.log('payload',action)
+        state.religionStatus='succeeded',
+        state.religionError='';
+        console.log('success',action)
+        if(action.payload){
+          state.casteList=action.payload
+        }
+      }),
+      builder.addCase(fetchCastelists.pending, (state, action) => {
+        state.religionStatus='loading',
+        state.religionError='';
+      }),
+      builder.addCase(fetchCastelists.rejected, (state, action) => {
+        state.religionStatus='failed',
+        state.religionError='Unable to get list';
+      }),
+      builder.addCase(fetchSubCastelists.fulfilled, (state, action) => {
+        console.log('payload',action)
+        state.religionStatus='succeeded',
+        state.religionError='';
+        console.log('success',action)
+        if(action.payload){
+          state.subCasteList=action.payload
+        }
+      }),
+      builder.addCase(fetchSubCastelists.pending, (state, action) => {
+        state.religionStatus='loading',
+        state.religionError='';
+      }),
+      builder.addCase(fetchSubCastelists.rejected, (state, action) => {
+        state.religionStatus='failed',
+        state.religionError='Unable to get list';
+      })
+    }
   
   })
   
   export const { setCasteData} = casteSlice.actions
   export  const getCaste=(state:any)=>state.casteData;
   export  const getReligion=(state:any)=>state.religionData;
-  export const getCasteList=(state:any)=>{
-    return[
-        {
-            id:1,
-            title:'Hindu'
-        },
-        {
-            id:2,
-            title:'Christian'
-        },
-    ]
-  }
+  export  const getCasteList=(state:any)=>state.casteList;
+  export  const getSubCasteList=(state:any)=>state.subCasteList;
   export const getCasteData=(state:any)=>{
     return [
       {

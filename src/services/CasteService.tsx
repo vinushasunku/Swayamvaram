@@ -15,6 +15,8 @@ export interface  ReligionDataDto{
 
 class ReligionService{
     getReligion=()=>secureGet('/matrimony/religion')
+    getcaste=(regionName:string)=>secureGet('/matrimony/religion/'+regionName);
+    getSubcaste=(regionName:string,casteName:string)=>secureGet('/matrimony/religion/'+regionName+'/'+casteName);
 }
 
 export default new ReligionService();

@@ -80,9 +80,12 @@ style={{width: 400, height: 400}} /> */}
             <LinearGradient
               colors={['#00000000', '#000000']}
               style={{height: '100%', width: '100%'}}>
-                
+                  {/* <View> */}
+              <Text style={{ position: 'absolute', top: 200, left: 10, color:'white' }}>{item.firstName}</Text>
+              {/* </View> */}
               </LinearGradient>
-              <Text style={{color:'white'}}>{item.firstName}</Text>
+            
+              
           </ImageBackground>
          
         </View>

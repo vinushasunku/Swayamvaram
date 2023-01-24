@@ -102,7 +102,6 @@ function MainTab() {
 export function MainNav() {
   const styles = GetStyle();
   const loginid = useAppSelector(state => state.loginId.loginId);
-  console.log('loginidmannav' + loginid);
   return (
    
     <>
