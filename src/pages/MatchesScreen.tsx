@@ -19,7 +19,7 @@ import {
 } from '../redux/slices/matches';
 import {Avatar, Icon, SearchBar} from 'react-native-elements';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Icons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 const styles: any = GetStyle();
 type WizardProps = {
@@ -65,29 +65,68 @@ const MatchesScreen = ({navigation}: WizardProps) => {
     setLoadingMore(false);
   };
   function matcheProfile() {
-    const imageUrl =
-      'https://images.unsplash.com/photo-1526045612212-70caf35c14df';
     const renderItem = ({item}) => {
       return (
-        <View style={{marginBottom: 10, shadowColor: 'black'}}>
+        <View style={{marginBottom: 10 , borderRadius:10,overflow: 'hidden',}}>
           {/* <Image source={{uri: item.image}}
 style={{width: 400, height: 400}} /> */}
           {/* <Text>{item.firstName}</Text> */}
 
           <ImageBackground
-            style={{width: '100%', height: 280}}
+            style={{width: '100%', height: 280  }}
             source={{uri: item.image}}>
             <LinearGradient
               colors={['#00000000', '#000000']}
-              style={{height: '100%', width: '100%'}}>
-                  {/* <View> */}
-              <Text style={{ position: 'absolute', top: 200, left: 10, color:'white' }}>{item.firstName}</Text>
-              {/* </View> */}
-              </LinearGradient>
-            
-              
+              style={{height: '100%', width: '100%',paddingLeft:10}}>
+              <View style={{height: '65%'}}>
+
+              </View>
+              <Text
+                style={{fontSize:20,
+                  fontWeight:'bold',color:'white', paddingBottom:10}}>
+                {item.firstName}
+              </Text>
+              <View style={{flexDirection: 'row', marginBottom:10, paddingBottom:10}}>
+              <TouchableOpacity style={{marginRight:5}}>
+                <Text style={{paddingRight: 10}}>
+                  <Icons
+                    name='checkmark-circle-outline'
+                    size={50}
+                    color="#FFAA33"
+                  />
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={{marginRight:5}}>
+                <Text style={{paddingRight: 10}}>
+                  <Icons
+                    name='close-circle-outline'
+                    size={50}
+                    color="#c40000"
+                  />
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={{marginRight:5}}>
+                <Text style={{paddingRight: 10}}>
+                  <Icons
+                    name='heart-circle-outline'
+                    size={50}
+                    color="green"
+                  />
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={{marginRight:5}}>
+                <Text style={{paddingRight: 10}}>
+                  <Icons
+                    name='star-outline'
+                    size={50}
+                    color="green"
+                  />
+                </Text>
+              </TouchableOpacity>
+              </View>
+
+            </LinearGradient>
           </ImageBackground>
-         
         </View>
       );
     };
@@ -125,7 +164,7 @@ style={{width: 400, height: 400}} /> */}
 
         <TouchableOpacity style={{marginRight: 20}}>
           <View>
-            <FontAwesome name="filter" size={24} color="#2F4F4F" />
+            <Icons name="filter" size={24} color="#2F4F4F" />
           </View>
           <View>
             <Text style={styles.mediumText}>{'Filter'}</Text>
