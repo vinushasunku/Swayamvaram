@@ -21,7 +21,6 @@ const LoginPage = ({navigation}: any) => {
   useEffect(() => {
     createSecureService();
     setInLoginPage(false);
-    console.log(inLoginPage);
     navigation.setOptions({
       headerRight: () => (
         <TouchableOpacity
@@ -33,7 +32,6 @@ const LoginPage = ({navigation}: any) => {
     });
   }, [navigation]);
   const onChangeText = ({dialCode, unmaskedPhoneNumber, phoneNumber, isVerified}) => {
-    console.log(dialCode, unmaskedPhoneNumber, phoneNumber, isVerified);
     setCountryCode(dialCode.replace("+", ""));
     setMobile(unmaskedPhoneNumber);
   };
@@ -43,10 +41,8 @@ const LoginPage = ({navigation}: any) => {
             mobileNumber: Number(mobileinput),
             password :passwordinput  
     }
-    console.log(logindto)
     LoginService.getLoginDetail(logindto).then((response:any)=>{
         if(response){
-            console.log(response.data.id);
             dispatch(setLoginId(response.data.id))
         }
     }).catch((error:any)=>{

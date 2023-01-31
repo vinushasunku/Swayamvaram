@@ -22,11 +22,8 @@ export interface  listdata{
 
 class RegistrationService {
     
-    getRegistrationDetail = (personalDto: RegistrationDto) =>
-      
-          securePost('/matrimony/account/create', personalDto, 'Unable to Create Account Please try again later.');
-      
-     
+    getRegistrationDetail = (personalDto: RegistrationDto) =>     
+          securePost('/matrimony/account/create', personalDto, 'Unable to Create Account Please try again later.');     
   }
   
   export default new RegistrationService();

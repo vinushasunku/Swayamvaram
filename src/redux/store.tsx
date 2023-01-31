@@ -6,11 +6,15 @@ import thunk from 'redux-thunk'
 import loginReducer from './slices/login';
 import appDataReducer from '../redux/slices/appData'
 import casteReducer from './slices/caste'
+import registrationReducer from './slices/registration'
+import locationReducer from './slices/location'
 
 const reducers=combineReducers({
     loginId: loginReducer,
     appData:appDataReducer,
-    religion:casteReducer
+    religion:casteReducer,
+    registration:registrationReducer,
+    location:locationReducer
 })
 const persistConfig={
     key:'root',

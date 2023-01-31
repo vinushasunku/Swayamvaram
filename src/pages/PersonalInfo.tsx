@@ -20,6 +20,7 @@ import {
   getCountryCode,
   getRegistrationData,
   getReligion,
+  setAccountId,
   setRegistration,
 } from '../redux/slices/registration';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -80,7 +81,6 @@ const PersonalInfo = ({navigation, updateEnableNext}: WizardProps) => {
   }, [navigation]);
   const onChangeField = useCallback(
     (name: any) => (text: any) => {
-      console.log('onchangeField', name, text);
       setValue(name, text);
     },
     [],
@@ -115,11 +115,13 @@ const PersonalInfo = ({navigation, updateEnableNext}: WizardProps) => {
     formData.countryCode=Number(formData.countryCode)
     formData.mobileNumber=Number(formData.mobileNumber)
     validatePersonalInfo(formData);
+    console.log('nonvalidateaccountId')
     if(validmessage){
-      console.log('formdata',formData)
+      console.log('validateaccountId')
       RegistrationService.getRegistrationDetail(formData).then((response:any)=>{
         if(response){
-            console.log('response',response.data);
+           console.log('accountId',response.data)
+            dispatch(setAccountId(response.data))
             updateEnableNext(true);
         }
     }).catch((error:any)=>{
@@ -131,13 +133,10 @@ const PersonalInfo = ({navigation, updateEnableNext}: WizardProps) => {
     setReligiousModel(!showReligious);
   }
   function SelectedItem(id: any) {
-    console.log('selectitem', id);
     religionData.map((item: any) => {
-      console.log(item.id);
       if (item.id == id) {
         setselectedReligious(item.title);
         setValue('religion', item.title);
-        console.log(selectedReligious);
       }
     });
   }
@@ -165,7 +164,6 @@ const PersonalInfo = ({navigation, updateEnableNext}: WizardProps) => {
     phoneNumber,
     isVerified,
   }) => {
-    console.log(dialCode, unmaskedPhoneNumber, phoneNumber, isVerified);
     setValue('countryCode', dialCode.replace('+',''));
     setValue('mobileNumber', unmaskedPhoneNumber);
   };
@@ -173,7 +171,6 @@ const PersonalInfo = ({navigation, updateEnableNext}: WizardProps) => {
     setCountryCodeModel(!showCountryCode);
   }
   function SelectedCountryCodeItem(id: any) {
-    console.log('selectCountryitem', id);
     countryCodeList.map((item: any) => {
       if (item.id === id) {
         setCountryCode(item.title);
@@ -182,11 +179,9 @@ const PersonalInfo = ({navigation, updateEnableNext}: WizardProps) => {
     });
   }
   function setGenderdata(label: any) {
-    console.log('gender', label);
     setValue('gender', label);
   }
   function setCreatordata(label: any) {
-    console.log('creator', label);
     setValue('creator', label);
   }
   return (

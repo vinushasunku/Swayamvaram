@@ -84,7 +84,6 @@ const ERROR_CODES = {
   export async function secureGet(url: string) {
 
     try {
-     console.log('secure', _secureCall, url)
       const ret = await _secureCall?.get(url);
   
       store.dispatch(resetData());
@@ -112,7 +111,6 @@ const ERROR_CODES = {
    
   
   export async function securePut(url: string, body: any) {
-    console.log(url);
     try {
   
       const ret = await _secureCall?.put(url, body);
@@ -136,7 +134,7 @@ const ERROR_CODES = {
   export async function securePost(url: string, body: any, errMsg: string) {
   
     try {
-      
+      console.log(url,body,_secureCall);
       const ret = await _secureCall?.post(url, body);
       //store.dispatch(resetData());
   

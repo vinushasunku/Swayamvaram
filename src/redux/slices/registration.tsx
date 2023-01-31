@@ -4,7 +4,7 @@ import { RegistrationDto } from '../../services/RegistrationService'
 
 export const initialState={
     registrationData:createRegistration(),
-    
+    accountId:''
 }
 export function createRegistration(): RegistrationDto{
     return{
@@ -28,13 +28,17 @@ export const registrationSlice = createSlice({
         state.registrationData.push(action.payload)
         
       },
+      setAccountId(state, action: PayloadAction<any>) {
+        console.log('accountidnumber', action.payload)
+        state.accountId = action.payload
+      },
       resetQuery:()=>{
         return initialState
       }
     }
   })
   
-  export const { setRegistration} = registrationSlice.actions
+  export const { setRegistration,setAccountId} = registrationSlice.actions
   export  const getRegistration=(state:any)=>state.registrationData;
   export const getReligion=(state:any)=>{
     return[

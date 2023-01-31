@@ -14,7 +14,6 @@ type TextinputiconProps = {
 };
 
 export const TextInputWithIcon = ({lable, onPress,onChangeField,dataBind,value,icon}: TextinputiconProps) => {
-    console.log('onpress',icon)
   const styles = GetStyle();
   return (
     <View style={{marginTop:10}}>

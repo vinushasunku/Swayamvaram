@@ -22,6 +22,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 import { ProgressSteps, ProgressStep } from 'react-native-progress-steps';
 import PersonalInfo from './PersonalInfo';
 import CasteInformation from './CasteInformation';
+import LocationInformation from './LocationInformation';
 const styles: any = GetStyle();
 type WizardProps = {
   navigation: any;
@@ -48,7 +49,6 @@ const Registration = ({navigation}: WizardProps) => {
     {label: 'OTHER', value: '3'},
   ];
   const updateEnableNext = (enable: boolean):void => {
-    console.log('enable',enable)
     setEnableNext(true)
 }
   useEffect(() => {
@@ -81,7 +81,6 @@ const Registration = ({navigation}: WizardProps) => {
   }, [navigation]);
   const onChangeField = useCallback(
     (name: any) => (text: any) => {
-      console.log('onchangeField', name, text);
       setValue(name, text);
     },
     [],
@@ -89,7 +88,6 @@ const Registration = ({navigation}: WizardProps) => {
   const onSubmit = useCallback((formData: any) => {
     console.log('formdatasubmit', formData);
     setFormdata(formData);
-    console.log('testselecte', selectedFormdata);
     //validation for form
   }, []);
   function setpagination() {
@@ -99,9 +97,7 @@ const Registration = ({navigation}: WizardProps) => {
     setReligiousModel(!showReligious);
   }
   function SelectedItem(id: any) {
-    console.log('selectitem', id);
     religionData.map((item: any) => {
-      console.log(item.id);
       if (item.id == id) {
         setselectedReligious(item.title);
         setValue('religion', item.title);
@@ -154,7 +150,7 @@ const Registration = ({navigation}: WizardProps) => {
   const buttonTextStyle = {
     color: '#686868',
     fontWeight: 'bold',
-    display:'none'
+    //display:'none'
   };
   const progressStepsStyle = {
     activeStepIconBorderColor: '#316BBE',
@@ -179,7 +175,7 @@ const Registration = ({navigation}: WizardProps) => {
             //onPrevious={this.onPrevStep}
             //scrollViewProps={defaultScrollViewProps}
              nextBtnTextStyle={enableNext === true ?styles.nextpreviousText: styles.hideNext}
-            //previousBtnTextStyle={buttonTextStyle}
+            previousBtnTextStyle={buttonTextStyle}
           >
             <ScrollView style={{marginLeft: 15, marginTop: 10}}>
             <PersonalInfo navigation={navigation} updateEnableNext={updateEnableNext}/>
@@ -195,10 +191,13 @@ const Registration = ({navigation}: WizardProps) => {
             <CasteInformation navigation={navigation} updateEnableNext={updateEnableNext} />
             </ScrollView>
           </ProgressStep>
-        <ProgressStep label="Completion">
-            <View style={{ alignItems: 'center' }}>
-                <Text>This is the content within step 3!</Text>
-            </View>
+        <ProgressStep label="Location"
+        previousBtnTextStyle={buttonTextStyle}
+        nextBtnTextStyle={enableNext === true ?styles.nextpreviousText: styles.hideNext}
+        >
+            <ScrollView style={{marginLeft: 15, marginTop: 10}}>
+            <LocationInformation navigation={navigation} updateEnableNext={updateEnableNext} />
+            </ScrollView>
         </ProgressStep>
         <ProgressStep label="Verification">
             <View style={{ alignItems: 'center' }}>

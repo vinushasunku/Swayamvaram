@@ -3,9 +3,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  TextInput,
-  Modal,
-  FlatList,
 } from 'react-native';
 import {GetStyle} from '../styles/style-sheet';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
@@ -13,7 +10,7 @@ import {getCasteData, getCasteList,fetchReligionlists, setCasteData, fetchCastel
 import TextInputWithIcon from '../components/TextInputWithIcon';
 import {useForm} from 'react-hook-form';
 import AppModalList from '../components/AppModalList';
-import ReligionService from '../services/CasteService'
+import CasteService, { CasteInfoDto } from '../services/CasteService';
 const styles: any = GetStyle();
 type WizardProps = {
   navigation: any;
@@ -25,12 +22,10 @@ const CasteInformation = ({navigation,updateEnableNext}: WizardProps) => {
   //const casteList: any = useAppSelector(getCasteList);
   const [showCaste, setCasteModel] = React.useState(false);
   const [showReligion, setReligionModel] = React.useState(false);
-  const {register, handleSubmit, setValue} = useForm();
-  const [selectedCaste, setCaste] = React.useState(null);
-  const [option, setOption] = React.useState('');
-  const MaritalList: any = useAppSelector(getCasteList);
   const [showMaritalStatus, setMaritalStatusModel] = React.useState(false);
-  const [selectedMaritalStatus, setMaritalStatus] = React.useState(null);
+  const {register, handleSubmit, setValue} = useForm();
+  const [option, setOption] = React.useState('');
+
   const dispatch:any=useAppDispatch();
   const religionList=useAppSelector(state=>state.religion.religionData);
   const casteList=useAppSelector(state=>state.religion.casteList);
@@ -39,12 +34,13 @@ const CasteInformation = ({navigation,updateEnableNext}: WizardProps) => {
   const [pageLoading, setPageLoading] = React.useState(true);
   const [casteListLoad, setloadCasteList] = React.useState(false);
   const [subcasteListLoad, setloadSubCasteList] = React.useState(false);
+  const accountId=useAppSelector(state=>state.registration.accountId);
+  
   useEffect(() => {
     try {
       casteData.map((item: any, index: any) => register(item.databind));
-  
+      console.log('acccountid',accountId)
     } catch (error) {
-      console.log(error);
     }
   }, [navigation]);
 
@@ -66,7 +62,6 @@ const CasteInformation = ({navigation,updateEnableNext}: WizardProps) => {
       .unwrap()
       .then(()=>{
         setloadCasteList(false)
-        console.log('caste',casteList)
       }).catch((error:any)=>{
         setloadCasteList(false)
       })  
@@ -78,7 +73,6 @@ const CasteInformation = ({navigation,updateEnableNext}: WizardProps) => {
       .unwrap()
       .then(()=>{
         setloadSubCasteList(false)
-        console.log('caste',casteList)
       }).catch((error:any)=>{
         setloadSubCasteList(false)
       })  
@@ -90,7 +84,15 @@ const CasteInformation = ({navigation,updateEnableNext}: WizardProps) => {
     },
     [],
   );
-  const onSubmit = useCallback((formData: any) => {
+  const onSubmit = useCallback((formData: CasteInfoDto) => {
+    console.log(religiondata)
+    CasteService.saveReligionDetail(religiondata,accountId).then((response:any)=>{
+      if(response){
+         console.log('accountId',response.data)
+          updateEnableNext(true);
+      }
+  }).catch((error:any)=>{
+      console.log('error:',error)})
     updateEnableNext(true)
     //validation for form
   }, []);
@@ -103,43 +105,35 @@ const CasteInformation = ({navigation,updateEnableNext}: WizardProps) => {
   function cancelMaritalStatusModel() {
     setMaritalStatusModel(!showMaritalStatus);
   }
-  function SelectedMaritalStatusItem(id: any) {
-    MaritalList.map((item: any) => {
-      if (item.id == id) {
-        setMaritalStatus(item.title);
-        setValue('maritalStatus', item.title);
-      }
-    });
-  }
+
   function SelectedCasteItem(id: any, title:any) {
-    religionList.map((item: any) => {
-      console.log('casteinfo', title)
-      if (item.id == id) {
-        if(title === 'Religion'){
-          religiondata.religion=item.name;
-          setloadCasteList(true)
-        }       
-        dispatch(setCasteData(religiondata))
-      }
-    });
-    casteList.map((item: any) => {
-      if (item.id == id) {
-        if(title === 'Caste'){
-          religiondata.caste=item.name;
-          setloadCasteList(true)
-          setloadSubCasteList(true)
+    if(title === 'Religion'){
+      religionList.map((item: any) => {
+        if (item.id == id) {
+            religiondata.religion=item.name;
+            setloadCasteList(true)    
+          dispatch(setCasteData(religiondata))
         }
-      }
-    });
-    subcasteList.map((item: any) => {
-      console.log('subcasteinfo', title)
-      if (item.id == id) {
-        if(title === 'Sub Caste'){
-          religiondata.subcaste=item.name;
-          setloadSubCasteList(true)
+      });
+    }
+    if(title === 'Caste'){
+      casteList.map((item: any) => {
+        if (item.id == id) {
+            religiondata.caste=item.name;
+            setloadCasteList(true)
+            setloadSubCasteList(true)
         }
-      }
-    });
+      });
+    }
+    if(title === 'Sub Caste'){
+      subcasteList.map((item: any) => {
+        if (item.id == id) {
+            religiondata.subCaste=item.name;
+            setloadSubCasteList(true)
+        }
+      });
+    }
+
 
   }
   return (
@@ -180,7 +174,7 @@ const CasteInformation = ({navigation,updateEnableNext}: WizardProps) => {
                 onPress={setMaritalStatusModel}
                 onChangeField={onChangeField}
                 dataBind={item.databind}
-                value={religiondata.subcaste}
+                value={religiondata.subCaste}
                 icon={item.icon}
               />
             );

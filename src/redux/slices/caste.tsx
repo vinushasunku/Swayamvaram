@@ -14,7 +14,7 @@ export function createCaste(): CasteInfoDto{
     return{
         religion:'',
         caste:'',
-        subcaste:''
+        subCaste:''
     };
 
 }
@@ -69,7 +69,6 @@ export const fetchCastelists=createAsyncThunk(
 export const fetchSubCastelists=createAsyncThunk(
   '/matrimony/Subreligion/',
   async (religion:CasteInfoDto) =>{
-    console.log('')
     const res= await CasteService.getSubcaste(religion.religion,religion.caste);
     return res? res?.data?.values :undefined
   }
@@ -102,10 +101,8 @@ export const casteSlice = createSlice({
         state.religionError='Unable to get list';
       }),
       builder.addCase(fetchCastelists.fulfilled, (state, action) => {
-        console.log('payload',action)
         state.religionStatus='succeeded',
         state.religionError='';
-        console.log('success',action)
         if(action.payload){
           state.casteList=action.payload
         }
@@ -119,10 +116,8 @@ export const casteSlice = createSlice({
         state.religionError='Unable to get list';
       }),
       builder.addCase(fetchSubCastelists.fulfilled, (state, action) => {
-        console.log('payload',action)
         state.religionStatus='succeeded',
         state.religionError='';
-        console.log('success',action)
         if(action.payload){
           state.subCasteList=action.payload
         }
