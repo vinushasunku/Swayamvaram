@@ -8,13 +8,14 @@ import appDataReducer from '../redux/slices/appData'
 import casteReducer from './slices/caste'
 import registrationReducer from './slices/registration'
 import locationReducer from './slices/location'
-
+import personalReducer from './slices/personal'
 const reducers=combineReducers({
     loginId: loginReducer,
     appData:appDataReducer,
     religion:casteReducer,
     registration:registrationReducer,
-    location:locationReducer
+    location:locationReducer,
+    personal:personalReducer
 })
 const persistConfig={
     key:'root',

@@ -34,7 +34,7 @@ export const AppTextInput = ({
         placeholderTextColor="#2F4F4F"
          style={[styles.mediumText]}
         editable={true}
-        onChangeText={onChangeText(databind)}
+        onChangeText={(value) => onChangeText(databind,value)}
       />
       </View>
 

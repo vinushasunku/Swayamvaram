@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 import {GetStyle} from '../styles/style-sheet';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
-import {getCasteData, getCasteList,fetchReligionlists, setCasteData, fetchCastelists, fetchSubCastelists} from '../redux/slices/caste';
+import {getCasteData, getCasteList,fetchReligionlists, setCasteData, fetchCastelists, fetchSubCastelists, getReligion} from '../redux/slices/caste';
 import TextInputWithIcon from '../components/TextInputWithIcon';
 import {useForm} from 'react-hook-form';
 import AppModalList from '../components/AppModalList';
@@ -18,12 +18,10 @@ type WizardProps = {
 };
 
 const CasteInformation = ({navigation,updateEnableNext}: WizardProps) => {
-  const casteData: any = useAppSelector(getCasteData);
   //const casteList: any = useAppSelector(getCasteList);
   const [showCaste, setCasteModel] = React.useState(false);
   const [showReligion, setReligionModel] = React.useState(false);
   const [showMaritalStatus, setMaritalStatusModel] = React.useState(false);
-  const {register, handleSubmit, setValue} = useForm();
   const [option, setOption] = React.useState('');
 
   const dispatch:any=useAppDispatch();
@@ -38,17 +36,20 @@ const CasteInformation = ({navigation,updateEnableNext}: WizardProps) => {
   
   useEffect(() => {
     try {
-      casteData.map((item: any, index: any) => register(item.databind));
       console.log('acccountid',accountId)
+      updateEnableNext(false);
+      setPageLoading(true);
     } catch (error) {
     }
   }, [navigation]);
 
   useEffect(()=>{
+    console.log(pageLoading)
     if(pageLoading){
       dispatch(fetchReligionlists())
       .unwrap()
       .then(()=>{
+        console.log('religion',religionList)
         setPageLoading(false)
       }).catch((error:any)=>{
         setPageLoading(false)
@@ -78,24 +79,18 @@ const CasteInformation = ({navigation,updateEnableNext}: WizardProps) => {
       })  
     }
   },[subcasteListLoad])
-  const onChangeField = useCallback(
-    (name: any) => (text: any) => {
-      setValue(name, text);
-    },
-    [],
-  );
-  const onSubmit = useCallback((formData: CasteInfoDto) => {
-    console.log(religiondata)
+
+  function onSubmit(){
     CasteService.saveReligionDetail(religiondata,accountId).then((response:any)=>{
       if(response){
-         console.log('accountId',response.data)
+         console.log('accountId',response)
           updateEnableNext(true);
       }
   }).catch((error:any)=>{
       console.log('error:',error)})
     updateEnableNext(true)
-    //validation for form
-  }, []);
+  }
+
   function cancelCasteModel() {
     setCasteModel(!showCaste);
   }
@@ -109,7 +104,7 @@ const CasteInformation = ({navigation,updateEnableNext}: WizardProps) => {
   function SelectedCasteItem(id: any, title:any) {
     if(title === 'Religion'){
       religionList.map((item: any) => {
-        if (item.id == id) {
+        if (item.name == id) {
             religiondata.religion=item.name;
             setloadCasteList(true)    
           dispatch(setCasteData(religiondata))
@@ -118,7 +113,7 @@ const CasteInformation = ({navigation,updateEnableNext}: WizardProps) => {
     }
     if(title === 'Caste'){
       casteList.map((item: any) => {
-        if (item.id == id) {
+        if (item.name == id) {
             religiondata.caste=item.name;
             setloadCasteList(true)
             setloadSubCasteList(true)
@@ -127,7 +122,7 @@ const CasteInformation = ({navigation,updateEnableNext}: WizardProps) => {
     }
     if(title === 'Sub Caste'){
       subcasteList.map((item: any) => {
-        if (item.id == id) {
+        if (item.name == id) {         
             religiondata.subCaste=item.name;
             setloadSubCasteList(true)
         }
@@ -138,49 +133,29 @@ const CasteInformation = ({navigation,updateEnableNext}: WizardProps) => {
   }
   return (
     <View style={{marginBottom:10}}>
-      {casteData.map((item: any, index: any) => {
-        if (item.textIcon === true) {
-          if (item.databind === 'caste') {
-            return (
-              <TextInputWithIcon
-                key={index}
-                lable={item.title}
-                onPress={setCasteModel}
-                onChangeField={onChangeField}
-                dataBind={item.databind}
-                value={religiondata.caste}
-                icon={item.icon}
-              />
-            );
-          }
-          if (item.databind === 'religion') {
-            return (
-              <TextInputWithIcon
-                key={index}
-                lable={item.title}
+
+               <TextInputWithIcon
+                lable={'Religion'}
                 onPress={setReligionModel}
-                onChangeField={onChangeField}
-                dataBind={item.databind}
+                dataBind={'religion'}
                 value={religiondata.religion}
-                icon={item.icon}
+                icon={'chevron-forward-outline'}
               />
-            );
-          }
-          if (item.databind === 'subcaste') {
-            return (
               <TextInputWithIcon
-                key={index}
-                lable={item.title}
-                onPress={setMaritalStatusModel}
-                onChangeField={onChangeField}
-                dataBind={item.databind}
-                value={religiondata.subCaste}
-                icon={item.icon}
+                lable={'Caste'}
+                onPress={setCasteModel}
+                dataBind={'caste'}
+                value={religiondata.caste}
+                icon={'chevron-forward-outline'}
               />
-            );
-          }
-        }
-      })}
+               <TextInputWithIcon
+                lable={'Sub Caste'}
+                onPress={setMaritalStatusModel}
+                dataBind={'subCaste'}
+                value={religiondata.subCaste}
+                icon={'chevron-forward-outline'}
+              />
+
 
 <View
           style={{
@@ -192,7 +167,7 @@ const CasteInformation = ({navigation,updateEnableNext}: WizardProps) => {
           }}>
           <TouchableOpacity
             activeOpacity={0.9}
-            onPress={handleSubmit(onSubmit)}
+            onPress={()=>onSubmit()}
             style={[styles.submitButton]}>
             <Text style={[styles.mediumHeaderText, styles.buttonText]}>
               {'Save'}

@@ -56,6 +56,7 @@ export const fetchReligionlists=createAsyncThunk(
   'matrimony/getReligion',
   async () =>{
     const res= await CasteService.getReligion();
+    console.log('getreligion',res?.data?.values)
     return res? res?.data?.values :undefined
   }
 );

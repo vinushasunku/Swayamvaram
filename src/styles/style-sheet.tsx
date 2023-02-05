@@ -222,7 +222,31 @@ const LightStyle=StyleSheet.create({
         alignItems:'center',
         justifyContent:'center',
         backgroundColor:Colors.White
-    }
+    },
+    container: {
+        flex: 1,
+        backgroundColor: '#ffffff',
+      },
+      stepIndicator: {
+        marginVertical: 50,
+      },
+      page: {
+        flex: 2,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      stepLabel: {
+        fontSize: 12,
+        textAlign: 'center',
+        fontWeight: '500',
+        color: '#999999',
+      },
+      stepLabelSelected: {
+        fontSize: 12,
+        textAlign: 'center',
+        fontWeight: '500',
+        color: '#4aae4f',
+      },
 });
 const DarkStyle=StyleSheet.create({
     sectionContainer:{
@@ -435,6 +459,30 @@ const DarkStyle=StyleSheet.create({
         borderWidth: 1,
         alignItems: 'center',
         paddingVertical: 10,
-    }
+    },
+    container: {
+        flex: 1,
+        backgroundColor: '#ffffff',
+      },
+      stepIndicator: {
+        marginVertical: 50,
+      },
+      page: {
+        flex: 2,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      stepLabel: {
+        fontSize: 12,
+        textAlign: 'center',
+        fontWeight: '500',
+        color: '#999999',
+      },
+      stepLabelSelected: {
+        fontSize: 12,
+        textAlign: 'center',
+        fontWeight: '500',
+        color: '#4aae4f',
+      },
 });
 export {LightStyle,DarkStyle, GetStyle}

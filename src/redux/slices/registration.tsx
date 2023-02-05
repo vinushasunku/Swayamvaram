@@ -4,7 +4,7 @@ import { RegistrationDto } from '../../services/RegistrationService'
 
 export const initialState={
     registrationData:createRegistration(),
-    accountId:''
+    accountId:'25d6b319-6cfb-46c6-932a-38c602092fa8'
 }
 export function createRegistration(): RegistrationDto{
     return{

@@ -1868,10 +1868,10 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@^16.8 || ^17.0 || ^18.0", "@types/react@^18.0.26":
-  "integrity" "sha512-hCR3PJQsAIXyxhTNSiDFY//LhnMZWpNNr5etoCqx/iUfGc5gXWtQR2Phl908jVR6uPXacojQWTg4qRpkxTuGug=="
-  "resolved" "https://registry.npmjs.org/@types/react/-/react-18.0.26.tgz"
-  "version" "18.0.26"
+"@types/react@*", "@types/react@^16.8 || ^17.0 || ^18.0", "@types/react@^18.0.27":
+  "integrity" "sha512-3vtRKHgVxu3Jp9t718R9BuzoD4NcQ8YJ5XRzsSKxNDiDonD2MXIT1TmSkenxuCycZJoQT5d2vE8LwWJxBC1gmA=="
+  "resolved" "https://registry.npmjs.org/@types/react/-/react-18.0.27.tgz"
+  "version" "18.0.27"
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
@@ -6436,6 +6436,16 @@
   "integrity" "sha512-mKOfBLIBFBcs9br1rlZDvxD5+mAl8Gfr5CounwJtxI6Z82rGrMO+Kgl9EIg3RMVf3G855a85YVqHJL2f5EDRlw=="
   "resolved" "https://registry.npmjs.org/react-native-size-matters/-/react-native-size-matters-0.3.1.tgz"
   "version" "0.3.1"
+
+"react-native-step-indicator-v2@^1.0.3":
+  "integrity" "sha512-PVuvh4KzYuqXUpBG+mCER2Rmq1OTmHQuApCaFFx9rEdGQ1FvVhwowGzq4LiX+dTBzvbC1MucWw9cu4kXzWe7pg=="
+  "resolved" "https://registry.npmjs.org/react-native-step-indicator-v2/-/react-native-step-indicator-v2-1.0.3.tgz"
+  "version" "1.0.3"
+
+"react-native-step-indicator@^1.0.3":
+  "integrity" "sha512-WwTb6lpJl0T7MV59sus1utoEQuqbuWHq6V0R0iDWmlPRFjM0qirhTNTS5on1+V9Qmc9dsUCT380/mRgDF+U6zw=="
+  "resolved" "https://registry.npmjs.org/react-native-step-indicator/-/react-native-step-indicator-1.0.3.tgz"
+  "version" "1.0.3"
 
 "react-native-tab-view@^3.3.4":
   "integrity" "sha512-rceAYWpHa6knA7tsTnnjlcOxlCErR4F+yXQPpNm125IvYFyv09YRhE5uMU2IzyPIQ1CJvADCHurF3KySzVI+4Q=="

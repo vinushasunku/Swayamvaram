@@ -6,14 +6,14 @@ import {GetStyle} from '../styles/style-sheet';
 type TextinputiconProps = {
  lable:any
  onPress:any
- onChangeField:any
+ //onChangeField:any
  dataBind:any
  value:any
  icon:any
   //buttonLink:boolean;
 };
 
-export const TextInputWithIcon = ({lable, onPress,onChangeField,dataBind,value,icon}: TextinputiconProps) => {
+export const TextInputWithIcon = ({lable, onPress,dataBind,value,icon}: TextinputiconProps) => {
   const styles = GetStyle();
   return (
     <View style={{marginTop:10}}>
@@ -30,7 +30,7 @@ export const TextInputWithIcon = ({lable, onPress,onChangeField,dataBind,value,i
         onTouchStart={()=> onPress(true)}
         editable={false}
         //onChangeText={(searchString) => {this.setState({searchString})}}
-        onChangeText={onChangeField(dataBind)}
+        //onChangeText={onChangeField(dataBind)}
         underlineColorAndroid="transparent"
       />
       <TouchableOpacity onPress={() => onPress(true)}>

@@ -29,6 +29,7 @@ const LocationInformation = ({navigation,updateEnableNext}: WizardProps) => {
      const [stateListLoad, setloadStateList] = React.useState(false);
     const [cityListLoad, setloadcityList] = React.useState(false);
     const [pageLoading, setPageLoading] = React.useState(true);
+    const accountId=useAppSelector(state=>state.registration.accountId);
     useEffect(()=>{
         setPageLoading(true)
         if(pageLoading){
@@ -55,7 +56,6 @@ const LocationInformation = ({navigation,updateEnableNext}: WizardProps) => {
         }
       },[stateListLoad])
       useEffect(()=>{
-        console.log('pageloading2',pageLoading)
         if(cityListLoad){
           dispatch(fetchCitylists(locationdata))
           .unwrap()
@@ -72,18 +72,18 @@ const LocationInformation = ({navigation,updateEnableNext}: WizardProps) => {
         },
         [],
       );
-      const onSubmit = useCallback((formData: LocationDataDto) => {
+      function onSubmit(){
         console.log(locationdata)
-    //     LocationService.saveReligionDetail(religiondata,accountId).then((response:any)=>{
-    //       if(response){
-    //          console.log('accountId',response.data)
-    //           updateEnableNext(true);
-    //       }
-    //   }).catch((error:any)=>{
-    //       console.log('error:',error)})
-        updateEnableNext(true)
-        //validation for form
-      }, []);
+     LocationService.saveLocationDetail(locationdata,accountId).then((response:any)=>{
+          if(response){
+             console.log('accountId',response)
+              updateEnableNext(true);
+          }
+      }).catch((error:any)=>{
+          console.log('error:',error)})
+      }
+        
+
       function cancelCountryModel() {
         setCountryModel(!showCountry);
       }
@@ -96,7 +96,7 @@ const LocationInformation = ({navigation,updateEnableNext}: WizardProps) => {
       function SelectedLocationItem(id: any, title:any) {
         if(title === 'Country'){
           countryList.map((item: any) => {
-            if (item.id == id) {
+            if (item.name == id) {
                 locationdata.country=item.name;   
                 setloadStateList(true);
             }
@@ -104,15 +104,15 @@ const LocationInformation = ({navigation,updateEnableNext}: WizardProps) => {
         }
         if(title === 'State'){
           stateList.map((item: any) => {
-            if (item.id == id) {
+            if (item.name == id) {
                 locationdata.state=item.name;
                 setloadcityList(true);
             }
           });
         }
-        if(title === 'city'){
+        if(title === 'City'){
           cityList.map((item: any) => {
-            if (item.id == id) {
+            if (item.name == id) {
                 locationdata.city=item.name;
             }
           });
@@ -126,7 +126,7 @@ const LocationInformation = ({navigation,updateEnableNext}: WizardProps) => {
                   <TextInputWithIcon
                     lable={'Country'}
                     onPress={setCountryModel}
-                    onChangeField={onChangeField}
+                    //onChangeField={onChangeField}
                     dataBind={'country'}
                     value={locationdata.country}
                     icon={'chevron-forward-outline'}
@@ -134,7 +134,7 @@ const LocationInformation = ({navigation,updateEnableNext}: WizardProps) => {
                   <TextInputWithIcon
                     lable={'State'}
                     onPress={setStateModel}
-                    onChangeField={onChangeField}
+                    //onChangeField={onChangeField}
                     dataBind={'state'}
                     value={locationdata.state}
                     icon={'chevron-forward-outline'}
@@ -142,7 +142,7 @@ const LocationInformation = ({navigation,updateEnableNext}: WizardProps) => {
                   <TextInputWithIcon
                     lable={'City'}
                     onPress={setCityModel}
-                    onChangeField={onChangeField}
+                    //onChangeField={onChangeField}
                     dataBind={'city'}
                     value={locationdata.city}
                     icon={'chevron-forward-outline'}
@@ -159,7 +159,7 @@ const LocationInformation = ({navigation,updateEnableNext}: WizardProps) => {
               }}>
               <TouchableOpacity
                 activeOpacity={0.9}
-                onPress={handleSubmit(onSubmit)}
+                onPress={()=>onSubmit()}
                 style={[styles.submitButton]}>
                 <Text style={[styles.mediumHeaderText, styles.buttonText]}>
                   {'Save'}
