@@ -18,8 +18,6 @@ import {
 
 } from '../redux/slices/registration';
 import RegistrationService from '../services/RegistrationService';
-import {useForm} from 'react-hook-form';
-import moment from 'moment';
 import { setModalData} from '../redux/slices/appData';
 import { PersonalDto } from '../services/PersonalService';
 const styles: any = GetStyle();

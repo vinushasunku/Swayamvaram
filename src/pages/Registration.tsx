@@ -1,13 +1,13 @@
 import React, {useEffect} from 'react';
 import {View, Text, TouchableOpacity, Dimensions} from 'react-native';
 import {GetStyle} from '../styles/style-sheet';
-import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {ScrollView} from 'react-native-gesture-handler';
-//import { ProgressSteps, ProgressStep } from 'react-native-progress-steps';
 import PersonalInfo from './PersonalInfo';
 import CasteInformation from './CasteInformation';
 import LocationInformation from './LocationInformation';
-import StepIndicator from 'react-native-step-indicator';
+import Education from './Education';
+import Family from './FamilyScreen';
+import { useAppSelector } from '../redux/hooks';
 const styles: any = GetStyle();
 type WizardProps = {
   navigation: any;
@@ -16,11 +16,31 @@ const Registration = ({navigation}: WizardProps) => {
   const [currentPostion, setCurrentPage] = React.useState<number>(0);
   const {width, height} = Dimensions.get('window');
   const [enableNext, setEnableNext] = React.useState<boolean>(true);
+  const profileData=useAppSelector(state=>state.loginId.profileData);
   const updateEnableNext = (enable: boolean): void => {
     setEnableNext(true);
   };
   useEffect(() => {
     setEnableNext(true)
+    console.log('profiledata',profileData)
+    if(profileData.personalDetails === null){
+      setCurrentPage(0)
+    }
+    else if(profileData.regionDetails === null){
+      setCurrentPage(1)
+    }
+    else if(profileData.locationDetails === null){
+      setCurrentPage(2)
+    }
+    else if(profileData.educationDetails === null){
+      setCurrentPage(3)
+    }
+    else if(profileData.professionDetails === null){
+      setCurrentPage(4)
+    }
+    else if(profileData.familyDetails === null){
+      setCurrentPage(5)
+    }
     navigation.setOptions({
       headerTitle: '',
       headerBackVisible: true,
@@ -35,7 +55,9 @@ const Registration = ({navigation}: WizardProps) => {
       ),
     });
   }, [navigation]);
-  useEffect(() => {}, [currentPostion]);
+  useEffect(() => {
+
+  }, [currentPostion]);
   function setpagination() {
     navigation.navigate('LoginPage');
   }
@@ -48,30 +70,6 @@ const Registration = ({navigation}: WizardProps) => {
     'Family',
     'photo',
   ];
-  const customStyles = {
-    stepIndicatorSize: 25,
-    currentStepIndicatorSize: 30,
-    separatorStrokeWidth: 1,
-    currentStepStrokeWidth: 2,
-    stepStrokeCurrentColor: '#fe7013',
-    stepStrokeWidth: 3,
-    stepStrokeFinishedColor: '#fe7013',
-    stepStrokeUnFinishedColor: '#aaaaaa',
-    separatorFinishedColor: '#fe7013',
-    separatorUnFinishedColor: '#aaaaaa',
-    stepIndicatorFinishedColor: '#fe7013',
-    stepIndicatorUnFinishedColor: '#ffffff',
-    stepIndicatorCurrentColor: '#ffffff',
-    stepIndicatorLabelFontSize: 13,
-    currentStepIndicatorLabelFontSize: 13,
-    stepIndicatorLabelCurrentColor: '#fe7013',
-    stepIndicatorLabelFinishedColor: '#ffffff',
-    stepIndicatorLabelUnFinishedColor: '#aaaaaa',
-    labelColor: '#999999',
-    labelSize: 13,
-    currentStepLabelColor: '#fe7013',
-    borderRadiusSize: 10,
-  };
   const renderViewPagerPage = (data: any) => {
     if (data === 'Info') {
       return (
@@ -87,6 +85,22 @@ const Registration = ({navigation}: WizardProps) => {
     if (data === 'Location') {
       return (
         <LocationInformation
+          navigation={navigation}
+          updateEnableNext={updateEnableNext}
+        />
+      );
+    }
+    if(data === 'Education'){
+      return (
+        <Education
+          navigation={navigation}
+          updateEnableNext={updateEnableNext}
+        />
+      );
+    }
+    if(data === 'Family'){
+      return (
+        <Family
           navigation={navigation}
           updateEnableNext={updateEnableNext}
         />
@@ -146,10 +160,10 @@ const Registration = ({navigation}: WizardProps) => {
             </Text>
           ))}
         </View>
-        <ScrollView>{renderViewPagerPage(labels[currentPostion])}</ScrollView>
+        <ScrollView style={{height:'80%'}}>{renderViewPagerPage(labels[currentPostion])}</ScrollView>
       </View>
-      {enableNext ? (
-        <View style={{height: 50, borderTopWidth: 1, borderColor: 'grey'}}>
+     
+        <View style={{height: '10%', borderTopWidth: 1, borderColor: 'grey'}}>
           <TouchableOpacity
             activeOpacity={0.9}
             onPress={() => {
@@ -166,9 +180,8 @@ const Registration = ({navigation}: WizardProps) => {
             </Text>
           </TouchableOpacity>
         </View>
-      ) : (
-        <></>
-      )}
+
+     
     </View>
   );
 };

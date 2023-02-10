@@ -1,15 +1,42 @@
 import {InitialState} from '@react-navigation/native'
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { profileDto } from '../../services/LoginService';
+import { createCaste } from './caste';
+import { createEducation, createProfessional } from './education';
+import { createFamily } from './family';
+import { createLocation } from './location';
+import { createPersonal } from './personal';
 
-const loginSlice = createSlice({
+export const initialState={
+  loginStatus:'idle',
+  loginError:'',
+  pagination:'',
+  registrationComplete:false,
+  profileData:createProfile(),
+}
+export function createProfile(): profileDto{
+  return{
+     id:'',
+     password:'',
+     personalDetails:createPersonal(),
+     familyDetails:createFamily(),
+     regionDetails:createCaste(),
+     locationDetails:createLocation(),
+     professionDetails:createProfessional(),
+     educationDetails:createEducation()
+
+  };
+
+}
+export const loginSlice = createSlice({
     name: "loginId",
-    initialState: {
-      loginId: undefined,
-      pagination:'login'
-    },
+    initialState,
     reducers: {
-      setLoginId(state, action: PayloadAction<any>) {
-        state.loginId = action.payload
+      setProfileInfo(state, action: PayloadAction<any>) {
+        state.profileData = action.payload
+      },
+      setResitrationInfo(state, action: PayloadAction<any>) {
+        state.registrationComplete = action.payload
       },
       setPaginationId(state, action: PayloadAction<any>) {
         state.pagination = action.payload
@@ -17,5 +44,5 @@ const loginSlice = createSlice({
     }
   })
   
-  export const { setLoginId,setPaginationId} = loginSlice.actions
+  export const { setProfileInfo,setPaginationId,setResitrationInfo} = loginSlice.actions
   export default loginSlice.reducer

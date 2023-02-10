@@ -1,7 +1,6 @@
 import React from 'react';
-import {TouchableOpacity,Text,View, Modal} from 'react-native'
+import {TouchableOpacity,Text,View, Modal,ScrollView} from 'react-native'
 import { ReligionDataDto } from '../services/CasteService';
-import { dropdowndata } from '../services/RegistrationService';
 import {GetStyle} from '../styles/style-sheet'
 import AppButton from './AppButton';
 
@@ -41,7 +40,8 @@ type WizardProps={
                             </Text>
                         
                         </View>
-                        <View>
+                        <ScrollView>
+                            <View>
                             {
                                 modaldatalist.map((item:ReligionDataDto,index)=>(
                                     <View key={index} style={{ justifyContent: 'center',marginBottom: 10, marginTop: 10,backgroundColor:(option !='' && option== item.id) ?'grey':'white', borderBottomColor:'grey',borderBottomWidth:1}}>
@@ -55,7 +55,8 @@ type WizardProps={
                                 ))
   
                             }
-                        </View>
+                            </View>
+                        </ScrollView>
                      
                         <View style={{marginTop:10}}>
                         <AppButton onPress={cancelModel} title={'Close'} disabled={false} />

@@ -9,13 +9,17 @@ import casteReducer from './slices/caste'
 import registrationReducer from './slices/registration'
 import locationReducer from './slices/location'
 import personalReducer from './slices/personal'
+import educationReducer from './slices/education'
+import familyReducer from './slices/family'
 const reducers=combineReducers({
     loginId: loginReducer,
     appData:appDataReducer,
     religion:casteReducer,
     registration:registrationReducer,
     location:locationReducer,
-    personal:personalReducer
+    personal:personalReducer,
+    education:educationReducer,
+    family:familyReducer
 })
 const persistConfig={
     key:'root',

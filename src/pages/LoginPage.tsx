@@ -3,7 +3,7 @@ import {View, Text, TouchableOpacity, TextInput} from 'react-native';
 import {GetStyle} from '../styles/style-sheet';
 import AppButton from '../components/AppButton';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
-import login, {setLoginId, setPaginationId} from '../redux/slices/login';
+import login, {setProfileInfo, setPaginationId, setResitrationInfo} from '../redux/slices/login';
 import IntlPhoneInput from 'react-native-intl-phone-input';
 import Registration from './Registration';
 import LoginService from '../services/LoginService';
@@ -43,7 +43,20 @@ const LoginPage = ({navigation}: any) => {
     }
     LoginService.getLoginDetail(logindto).then((response:any)=>{
         if(response){
-            dispatch(setLoginId(response.data.id))
+            dispatch(setProfileInfo(response.data))
+            if(response.data.personalDetails != null &&
+              response.data.familyDetails !=null && 
+              response.data.regionDetails !=null && 
+              response.data.locationDetails !=null && 
+               response.data.educationDetails !=null && 
+               response.data.professionDetails !=null && 
+              response.data.familyDetails != null 
+               ){
+               dispatch(setResitrationInfo(true))
+            }else{
+              navigation.navigate('Registration');
+            }
+          
         }
     }).catch((error:any)=>{
         console.log('error:',error)})

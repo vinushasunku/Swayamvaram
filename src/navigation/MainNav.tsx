@@ -5,42 +5,21 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Colors from '../styles/colors';
 import {
-  NavigationContainer,
-  getFocusedRouteNameFromRoute,
-  Route,
+  NavigationContainer
 } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
-import login, {setLoginId, setPaginationId} from '../redux/slices/login';
 import LoginPage from '../pages/LoginPage';
 import {GetStyle} from '../styles/style-sheet';
 import Registration from '../pages/Registration';
-import {useNavigation} from '@react-navigation/native';
 import GlobalModal from '../components/GlobalModal';
 import HomeScreen from '../pages/HomeScreen';
-import { color } from 'react-native-reanimated';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import MatchesScreen from '../pages/MatchesScreen';
 const styles: any = GetStyle();
 Icon.loadFont();
-const RegistrationStack = createNativeStackNavigator();
 const HomeStack = createNativeStackNavigator();
 const MainStack = createNativeStackNavigator();
 const isLightMode= Appearance.getColorScheme() ==='light'?true:false;
-// function RegistrationStackNav() {
-//   return (
-//     <RegistrationStack.Navigator>
-//       <RegistrationStack.Screen
-//         name="Registration"
-//         component={Registration}
-//         options={({route}) => ({
-//           headerTitle: 'Registration',
-//           headerBackVisible: false,
-//         })}
-//       />
-//     </RegistrationStack.Navigator>
-//   );
-// }
 function HomeStackNav() {
   return (
     <HomeStack.Navigator >
@@ -101,13 +80,14 @@ function MainTab() {
 
 export function MainNav() {
   const styles = GetStyle();
-  const loginid = useAppSelector(state => state.loginId.loginId);
+  const loginid = useAppSelector(state => state.loginId.profileData.id);
+  const registrationStatus = useAppSelector(state => state.loginId.registrationComplete);
   return (
    
     <>
       <NavigationContainer>
         <MainStack.Navigator initialRouteName="LoginPage" screenOptions={{ contentStyle: {backgroundColor: '#f6f6f6f'}}}>
-          {loginid === undefined || loginid === '' ? (
+          {registrationStatus === false ? (
             <>
               <MainStack.Screen
                 name="LoginPage"
