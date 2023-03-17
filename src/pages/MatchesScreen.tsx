@@ -16,11 +16,13 @@ import {
   getsortList,
   getMatchesList,
   getMoreMatchesList,
+  fetchMatcheslists,
 } from '../redux/slices/matches';
 import {Avatar, Icon, SearchBar} from 'react-native-elements';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
+import { MatchesInfoDto } from '../services/MatchesService';
 const styles: any = GetStyle();
 type WizardProps = {
   navigation: any;
@@ -28,13 +30,18 @@ type WizardProps = {
 
 const MatchesScreen = ({navigation}: WizardProps) => {
   const sortMatchData: any = useAppSelector(getsortList);
-  const getMatchList: any = useAppSelector(getMatchesList);
+  //const getMatchList: any = useAppSelector(getMatchesList);
+  const getMatchList=useAppSelector(state=>state.matches.matchesData);
   const getMoreMatchList: any = useAppSelector(getMoreMatchesList);
-  const [data, setData] = useState([]);
+  const [data, setData]  = useState<[MatchesInfoDto] | null>(null);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [doneLoading, setStatusLoading] = useState(false);
   const [searchtext, setSearch] = React.useState('');
   const [filteredDataSource, setFilteredDataSource] = React.useState([]);
   const [masterDataSource, setMasterDataSource] = React.useState([]);
+  const accountId=useAppSelector(state=>state.registration.accountId);
+  const dispatch:any=useAppDispatch();
+
   let stopFetchMore = true;
   const searchFilterFunction = (text: any) => {
     if (text) {
@@ -46,18 +53,28 @@ const MatchesScreen = ({navigation}: WizardProps) => {
     }
   };
   const fetchData = async () => {
-    setData(getMatchList);
+    if(accountId){
+      dispatch(fetchMatcheslists(accountId))
+      .unwrap()
+      .then(()=>{
+        setData(getMatchList);
+        setStatusLoading(true);
+      }).catch((error:any)=>{
+        console.log('get matches list',error)
+      })  
+    } 
+    //setData(getMatchList);
   };
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [doneLoading]);
   const handleOnEndReached = async () => {
     console.log('loadmore', stopFetchMore);
     setLoadingMore(true);
     if (!stopFetchMore) {
-      if (data.length < 8) {
-        setData([...data, ...getMoreMatchList]);
+      if (data != null && data.length < 8) {
+       // setData([...data, ...getMoreMatchList]);
       }
 
       stopFetchMore = true;
@@ -74,7 +91,7 @@ style={{width: 400, height: 400}} /> */}
 
           <ImageBackground
             style={{width: '100%', height: 280  }}
-            source={{uri: item.image}}>
+            source={{uri: item.profilePhotoLink}}>
             <LinearGradient
               colors={['#00000000', '#000000']}
               style={{height: '100%', width: '100%',paddingLeft:10}}>
@@ -133,9 +150,9 @@ style={{width: 400, height: 400}} /> */}
     return (
       <FlatList
         data={data}
-        keyExtractor={item => `${item.id}`}
+        keyExtractor={item => `${item.accountId}`}
         renderItem={renderItem}
-        onEndReached={handleOnEndReached}
+        //onEndReached={handleOnEndReached}
         onEndReachedThreshold={0.5}
         onScrollBeginDrag={() => {
           stopFetchMore = false;

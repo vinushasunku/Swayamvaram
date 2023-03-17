@@ -15,7 +15,7 @@ export interface PersonalDto{
 
 class PersonalService{
     SavePersonalDetail = (personalDto: PersonalDto) =>     
-          securePost('/matrimony/account/create', personalDto, 'Unable to Create Account Please try again later.'); 
+    securePost('/matrimony/account/create', personalDto, 'Unable to Create Account Please try again later.'); 
         
 }
 

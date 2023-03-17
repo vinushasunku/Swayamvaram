@@ -11,6 +11,7 @@ import locationReducer from './slices/location'
 import personalReducer from './slices/personal'
 import educationReducer from './slices/education'
 import familyReducer from './slices/family'
+import matcheReducer from './slices/matches'
 const reducers=combineReducers({
     loginId: loginReducer,
     appData:appDataReducer,
@@ -19,7 +20,9 @@ const reducers=combineReducers({
     location:locationReducer,
     personal:personalReducer,
     education:educationReducer,
-    family:familyReducer
+    family:familyReducer,
+    matches:matcheReducer
+
 })
 const persistConfig={
     key:'root',

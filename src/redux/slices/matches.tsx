@@ -1,31 +1,57 @@
 import {InitialState} from '@react-navigation/native'
-import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { CasteInfo } from '../../services/CasteService'
-import { Matchesservice } from '../../services/MatchesService';
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
+import MatchesService,{ MatchesInfoDto } from '../../services/MatchesService';
 
 export const initialState={
     matchesData:createMatches(),
-    
+    matchesStatus: 'idle',
+    matchesError: '',
 }
-export function createMatches(): Matchesservice{
-    return{
-        firstName:'',
-        lastName:'',
-        year:''
-    };
+export function createMatches(): [MatchesInfoDto]{
+    return[{
+      accountId:'',
+      firstName:'',
+      middleName:'',
+      lastName:'',
+      age:'',
+      profilePhotoLink:''
+  }];
 
 }
+export const fetchMatcheslists=createAsyncThunk(
+  '/matrimony/matching/',
+  async (accountId:string) =>{
+    const res= await MatchesService.getMatchesList(accountId);
+    return res? res?.data?.matchingProfiles :undefined
+  }
+);
 export const matcheSlice = createSlice({
     name: "Matches",
     initialState,
     reducers: {
       setMatches:(state, action: PayloadAction<any>)=> {
-        state.matchesData.push(action.payload)
-        
+        state.matchesData.push(action.payload)      
       },
       resetQuery:()=>{
         return initialState
       }
+    },
+    extraReducers: builder => {
+      builder.addCase(fetchMatcheslists.fulfilled, (state, action) => {
+        state.matchesStatus='succeeded',
+        state.matchesError='';
+        if(action.payload){
+          state.matchesData=action.payload
+        }
+      }),
+      builder.addCase(fetchMatcheslists.pending, (state, action) => {
+        state.matchesStatus='loading',
+        state.matchesError='';
+      }),
+      builder.addCase(fetchMatcheslists.rejected, (state, action) => {
+        state.matchesStatus='failed',
+        state.matchesError='Unable to get list';
+      })
     }
   })
   
@@ -140,3 +166,5 @@ export const matcheSlice = createSlice({
   },
   ]
   }
+
+  export default matcheSlice.reducer
