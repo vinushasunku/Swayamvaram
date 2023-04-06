@@ -1,11 +1,22 @@
 import {InitialState} from '@react-navigation/native'
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
-import MatchesService,{ MatchesInfoDto } from '../../services/MatchesService';
+import { profileDto } from '../../services/LoginService';
+import MatchesService,{ MatchesInfoDto, MatchesPageInfoDto, ProfileSelectedDto } from '../../services/MatchesService';
+import { createCaste } from './caste';
+import { createEducation, createProfessional } from './education';
+import { createFamily } from './family';
+import { createLocation } from './location';
+import { createPersonal } from './personal';
 
 export const initialState={
     matchesData:createMatches(),
     matchesStatus: 'idle',
     matchesError: '',
+    profileDetailStatus: 'idle',
+    profileDetailError: '',
+    selectedProfileId:selectedprofileInfo(),
+    matchesPageInfo:matchesPageInfo(),
+    profileDetail:createDetailProfile(),
 }
 export function createMatches(): [MatchesInfoDto]{
     return[{
@@ -18,11 +29,46 @@ export function createMatches(): [MatchesInfoDto]{
   }];
 
 }
+export function matchesPageInfo(): MatchesPageInfoDto{
+  return{
+      accountId:'',
+      pageToke:1
+  };
+
+}
+export function selectedprofileInfo(): ProfileSelectedDto{
+  return{
+      accountId:'',
+      selectedProfileId:''
+  };
+
+}
+export function createDetailProfile(): profileDto{
+  return{
+     id:'',
+     password:'',
+     personalDetails:createPersonal(),
+     familyDetails:createFamily(),
+     regionDetails:createCaste(),
+     locationDetails:createLocation(),
+     professionDetails:createProfessional(),
+     educationDetails:createEducation()
+
+  };
+
+}
 export const fetchMatcheslists=createAsyncThunk(
   '/matrimony/matching/',
-  async (accountId:string) =>{
-    const res= await MatchesService.getMatchesList(accountId);
+  async (info:MatchesPageInfoDto) =>{
+    const res= await MatchesService.getMatchesList(info.accountId, info.pageToke);
     return res? res?.data?.matchingProfiles :undefined
+  }
+);
+export const fetchProfiledetail=createAsyncThunk(
+  '/matrimony/profilDetail/',
+  async (info:ProfileSelectedDto) =>{
+    const res= await MatchesService.getProfileDetail(info.accountId, info.selectedProfileId);
+    return res? res?.data :undefined
   }
 );
 export const matcheSlice = createSlice({
@@ -31,6 +77,13 @@ export const matcheSlice = createSlice({
     reducers: {
       setMatches:(state, action: PayloadAction<any>)=> {
         state.matchesData.push(action.payload)      
+      },
+      // setselectedProfileId(state, action: PayloadAction<any>) {
+      //   state.selectedProfileId = action.payload
+      // },
+      setselectedProfileId:(state, action: PayloadAction<any>)=> {
+        state.selectedProfileId=action.payload
+        
       },
       resetQuery:()=>{
         return initialState
@@ -51,11 +104,29 @@ export const matcheSlice = createSlice({
       builder.addCase(fetchMatcheslists.rejected, (state, action) => {
         state.matchesStatus='failed',
         state.matchesError='Unable to get list';
+      }),
+      builder.addCase(fetchProfiledetail.fulfilled, (state, action) => {
+        state.profileDetailStatus='succeeded',
+        state.profileDetailError='';
+        if(action.payload){
+          state.profileDetail=action.payload
+          console.log(action.payload,action.payload["mobileNumber"])
+          state.profileDetail.personalDetails.mobileNumber=action.payload["mobileNumber"]
+          state.profileDetail.personalDetails.countryCode=action.payload["countryCode"]
+        }
+      }),
+      builder.addCase(fetchProfiledetail.pending, (state, action) => {
+        state.profileDetailStatus='loading',
+        state.profileDetailError='';
+      }),
+      builder.addCase(fetchProfiledetail.rejected, (state, action) => {
+        state.profileDetailStatus='failed',
+        state.profileDetailError='Unable to get list';
       })
     }
   })
   
-  export const { setMatches} = matcheSlice.actions
+  export const { setMatches,setselectedProfileId} = matcheSlice.actions
   export  const getMatches=(state:any)=>state.matchesData;
   export const getMatchList=(state:any)=>{
     return[

@@ -7,6 +7,7 @@ import {
   FlatList,
   Image,
   ImageBackground,
+  TouchableOpacity,
 } from 'react-native';
 import {GetStyle} from '../styles/style-sheet';
 import SafeAreaView from 'react-native-safe-area-view';
@@ -17,12 +18,13 @@ import {
   getMatchesList,
   getMoreMatchesList,
   fetchMatcheslists,
+  setselectedProfileId,
 } from '../redux/slices/matches';
 import {Avatar, Icon, SearchBar} from 'react-native-elements';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
-import { MatchesInfoDto } from '../services/MatchesService';
+import {MatchesInfoDto} from '../services/MatchesService';
+import {createSecureService} from '../services/APIServices';
 const styles: any = GetStyle();
 type WizardProps = {
   navigation: any;
@@ -31,16 +33,20 @@ type WizardProps = {
 const MatchesScreen = ({navigation}: WizardProps) => {
   const sortMatchData: any = useAppSelector(getsortList);
   //const getMatchList: any = useAppSelector(getMatchesList);
-  const getMatchList=useAppSelector(state=>state.matches.matchesData);
+  const getMatchList = useAppSelector(state => state.matches.matchesData);
+  const getPagetokenInfo = useAppSelector(
+    state => state.matches.matchesPageInfo,
+  );
   const getMoreMatchList: any = useAppSelector(getMoreMatchesList);
-  const [data, setData]  = useState<[MatchesInfoDto] | null>(null);
+  const [data, setData] = useState([] as any);
   const [loadingMore, setLoadingMore] = useState(false);
   const [doneLoading, setStatusLoading] = useState(false);
   const [searchtext, setSearch] = React.useState('');
   const [filteredDataSource, setFilteredDataSource] = React.useState([]);
   const [masterDataSource, setMasterDataSource] = React.useState([]);
-  const accountId=useAppSelector(state=>state.registration.accountId);
-  const dispatch:any=useAppDispatch();
+  const [pagetoken, setPreviousPagetoken] = React.useState(1);
+  const accountId = useAppSelector(state => state.registration.accountId);
+  const dispatch: any = useAppDispatch();
 
   let stopFetchMore = true;
   const searchFilterFunction = (text: any) => {
@@ -53,16 +59,19 @@ const MatchesScreen = ({navigation}: WizardProps) => {
     }
   };
   const fetchData = async () => {
-    if(accountId){
-      dispatch(fetchMatcheslists(accountId))
-      .unwrap()
-      .then(()=>{
-        setData(getMatchList);
-        setStatusLoading(true);
-      }).catch((error:any)=>{
-        console.log('get matches list',error)
-      })  
-    } 
+    if (accountId) {
+      getPagetokenInfo.accountId = accountId;
+      getPagetokenInfo.pageToke = pagetoken;
+      dispatch(fetchMatcheslists(getPagetokenInfo))
+        .unwrap()
+        .then(() => {
+          setData(getMatchList);
+          setStatusLoading(true);
+        })
+        .catch((error: any) => {
+          console.log('get matches list', error);
+        });
+    }
     //setData(getMatchList);
   };
 
@@ -73,84 +82,107 @@ const MatchesScreen = ({navigation}: WizardProps) => {
     console.log('loadmore', stopFetchMore);
     setLoadingMore(true);
     if (!stopFetchMore) {
-      if (data != null && data.length < 8) {
-       // setData([...data, ...getMoreMatchList]);
-      }
-
+      getPagetokenInfo.accountId = accountId;
+      getPagetokenInfo.pageToke = pagetoken + 1;
+      dispatch(fetchMatcheslists(getPagetokenInfo))
+        .unwrap()
+        .then(() => {
+          //setData(getMatchList);
+          setData([...data, getMatchList]);
+          setStatusLoading(true);
+        })
+        .catch((error: any) => {
+          console.log('get matches list', error);
+        });
       stopFetchMore = true;
     }
     setLoadingMore(false);
   };
+  function selectProfile(id: any) {
+    const selectProfileId = {
+      accountId: accountId,
+      selectedProfileId: id,
+    };
+    dispatch(setselectedProfileId(selectProfileId));
+    navigation.navigate('ProfileDetail');
+  }
   function matcheProfile() {
     const renderItem = ({item}) => {
       return (
-        <View style={{marginBottom: 10 , borderRadius:10,overflow: 'hidden',}}>
-          {/* <Image source={{uri: item.image}}
-style={{width: 400, height: 400}} /> */}
-          {/* <Text>{item.firstName}</Text> */}
-
-          <ImageBackground
-            style={{width: '100%', height: 280  }}
-            source={{uri: item.profilePhotoLink}}>
-            <LinearGradient
-              colors={['#00000000', '#000000']}
-              style={{height: '100%', width: '100%',paddingLeft:10}}>
-              <View style={{height: '65%'}}>
-
-              </View>
-              <Text
-                style={{fontSize:20,
-                  fontWeight:'bold',color:'white', paddingBottom:10}}>
-                {item.firstName}
-              </Text>
-              <View style={{flexDirection: 'row', marginBottom:10, paddingBottom:10}}>
-              <TouchableOpacity style={{marginRight:5}}>
-                <Text style={{paddingRight: 10}}>
-                  <Icons
-                    name='checkmark-circle-outline'
-                    size={50}
-                    color="#FFAA33"
-                  />
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={{marginRight:5}}>
-                <Text style={{paddingRight: 10}}>
-                  <Icons
-                    name='close-circle-outline'
-                    size={50}
-                    color="#c40000"
-                  />
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={{marginRight:5}}>
-                <Text style={{paddingRight: 10}}>
-                  <Icons
-                    name='heart-circle-outline'
-                    size={50}
-                    color="green"
-                  />
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={{marginRight:5}}>
-                <Text style={{paddingRight: 10}}>
-                  <Icons
-                    name='star-outline'
-                    size={50}
-                    color="green"
-                  />
-                </Text>
-              </TouchableOpacity>
-              </View>
-
-            </LinearGradient>
-          </ImageBackground>
+        <View style={{marginBottom: 10, borderRadius: 10, overflow: 'hidden'}}>
+          {item.accountId != '' ? (
+            <TouchableOpacity
+              onPress={() => {
+                selectProfile(item.accountId);
+              }}>
+              <ImageBackground
+                style={{width: '100%', height: 280}}
+                source={{uri: item.profilePhotoLink}}>
+                <LinearGradient
+                  colors={['#00000000', '#000000']}
+                  style={{height: '100%', width: '100%', paddingLeft: 10}}>
+                  <View style={{height: '65%'}}></View>
+                  <Text
+                    style={{
+                      fontSize: 20,
+                      fontWeight: 'bold',
+                      color: 'white',
+                      paddingBottom: 10,
+                    }}>
+                    {item.firstName}
+                  </Text>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      marginBottom: 10,
+                      paddingBottom: 10,
+                    }}>
+                    <TouchableOpacity style={{marginRight: 5}}>
+                      <Text style={{paddingRight: 10}}>
+                        <Icons
+                          name="checkmark-circle-outline"
+                          size={50}
+                          color="#FFAA33"
+                        />
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{marginRight: 5}}>
+                      <Text style={{paddingRight: 10}}>
+                        <Icons
+                          name="close-circle-outline"
+                          size={50}
+                          color="#c40000"
+                        />
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{marginRight: 5}}>
+                      <Text style={{paddingRight: 10}}>
+                        <Icons
+                          name="heart-circle-outline"
+                          size={50}
+                          color="green"
+                        />
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{marginRight: 5}}>
+                      <Text style={{paddingRight: 10}}>
+                        <Icons name="star-outline" size={50} color="green" />
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </LinearGradient>
+              </ImageBackground>
+            </TouchableOpacity>
+          ) : (
+            <></>
+          )}
         </View>
       );
     };
     return (
       <FlatList
         data={data}
-        keyExtractor={item => `${item.accountId}`}
+        keyExtractor={item => `${item.accountId + pagetoken}`}
         renderItem={renderItem}
         //onEndReached={handleOnEndReached}
         onEndReachedThreshold={0.5}

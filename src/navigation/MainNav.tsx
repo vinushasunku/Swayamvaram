@@ -15,10 +15,12 @@ import Registration from '../pages/Registration';
 import GlobalModal from '../components/GlobalModal';
 import HomeScreen from '../pages/HomeScreen';
 import MatchesScreen from '../pages/MatchesScreen';
+import ProfileDetailScreen from '../pages/ProfileDetailScreen';
 const styles: any = GetStyle();
 Icon.loadFont();
 const HomeStack = createNativeStackNavigator();
 const MainStack = createNativeStackNavigator();
+const MatchStack=createNativeStackNavigator();
 const isLightMode= Appearance.getColorScheme() ==='light'?true:false;
 function HomeStackNav() {
   return (
@@ -26,7 +28,40 @@ function HomeStackNav() {
       <HomeStack.Screen
         name="Home"
         component={HomeScreen}
-        options={({route}) => ({headerTitle: '', headerBackVisible: false,
+        options={{
+          headerShown: true,
+          headerBackVisible: true,
+          headerRight: () => null,
+          headerTitleAlign: 'left',
+          headerStyle: {
+            backgroundColor: Colors.White,
+          },
+          headerTitleStyle: {
+            color: Colors.Black,
+          },
+        }}
+    //     options={({route}) => ({headerTitle: '', headerBackVisible: false,
+    //     headerShown: false,
+    //     headerRight: () => null,
+    //     headerTitleAlign: 'center',
+    //     headerStyle: {
+    //         backgroundColor: isLightMode?Colors.White:Colors.Brand
+    //       },
+    //     headerTitleStyle: {
+    //       color: Colors.Black,
+    //     },
+    // })}
+      />
+    </HomeStack.Navigator>
+  );
+}
+function MatchStackNav() {
+  return (
+    <MatchStack.Navigator >
+      <MatchStack.Screen
+        name="Match"
+        component={MatchesScreen}
+        options={({route}) => ({headerTitle: '',
         headerShown: false,
         headerRight: () => null,
         headerTitleAlign: 'center',
@@ -38,7 +73,23 @@ function HomeStackNav() {
         },
     })}
       />
-    </HomeStack.Navigator>
+      <MatchStack.Screen
+        name="ProfileDetail"
+        component={ProfileDetailScreen}
+        options={({route}) => ({ 
+        headerShown: true,
+        headerTitle:'',
+        headerRight: () => null,
+        headerTitleAlign: 'center',
+        // headerStyle: {
+        //     backgroundColor: isLightMode?Colors.White:Colors.Brand
+        //   },
+        headerTitleStyle: {
+          color: Colors.Black,
+        },
+    })}
+      />
+    </MatchStack.Navigator>
   );
 }
 const Tab = createBottomTabNavigator();
@@ -66,7 +117,7 @@ function MainTab() {
 
 <Tab.Screen
         name="Matches"
-        component={MatchesScreen}
+        component={MatchStackNav}
         options={{
           headerShown: false,
           title: 'Matches',
@@ -128,7 +179,7 @@ export function MainNav() {
               <MainStack.Screen
                 name="Main"
                 component={MainTab}
-                options={{headerShown: true,  headerTitle: 'Swayamvaram  ',
+                options={{headerShown: false,
                 headerTitleAlign: 'center',
                 headerStyle: {
                     backgroundColor: Colors.White,

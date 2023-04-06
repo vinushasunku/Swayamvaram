@@ -82,7 +82,7 @@ const ERROR_CODES = {
   };
 
   export async function secureGet(url: string) {
-
+    console.log('url',url)
     try {
       const ret = await _secureCall?.get(url);
   
