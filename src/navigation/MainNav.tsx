@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {Appearance, TouchableOpacity, Button, Text, StatusBar} from 'react-native';
+import {Appearance, TouchableOpacity, Button, Text, StatusBar, Image, ImageBackground, View, ScrollView} from 'react-native';
 import store from '../redux/store';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -16,11 +16,14 @@ import GlobalModal from '../components/GlobalModal';
 import HomeScreen from '../pages/HomeScreen';
 import MatchesScreen from '../pages/MatchesScreen';
 import ProfileDetailScreen from '../pages/ProfileDetailScreen';
+import { BackgroundImage } from 'react-native-elements/dist/config';
+import { Dimensions } from 'react-native'
 const styles: any = GetStyle();
 Icon.loadFont();
 const HomeStack = createNativeStackNavigator();
 const MainStack = createNativeStackNavigator();
 const MatchStack=createNativeStackNavigator();
+const { width,height } = Dimensions.get('screen');
 const isLightMode= Appearance.getColorScheme() ==='light'?true:false;
 function HomeStackNav() {
   return (
@@ -56,20 +59,21 @@ function HomeStackNav() {
   );
 }
 function MatchStackNav() {
+  const profileDetail = useAppSelector(state => state.matches.profileDetail);
   return (
     <MatchStack.Navigator >
       <MatchStack.Screen
         name="Match"
         component={MatchesScreen}
-        options={({route}) => ({headerTitle: '',
-        headerShown: false,
+        options={({route}) => ({headerTitle: 'Matches',
+        headerShown: true,
         headerRight: () => null,
         headerTitleAlign: 'center',
         headerStyle: {
             backgroundColor: isLightMode?Colors.White:Colors.Brand
           },
         headerTitleStyle: {
-          color: Colors.Black,
+          color: Colors.FrenchRose,
         },
     })}
       />
@@ -79,8 +83,58 @@ function MatchStackNav() {
         options={({route}) => ({ 
         headerShown: true,
         headerTitle:'',
-        headerRight: () => null,
+        headerBackVisible:true,
+        // headerRight: () => null,
+        header: () =>
+        (
+          <View style={{ height: 200 }}>
+             <ScrollView
+          horizontal={true}
+          style={{width:'100%'}}>
+         {/* <Image source = {{uri:'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg'}}  
+         style = {{ width: 400, height: '100%' }} /> */}
+         {profileDetail.photoLinks.map((item: any, index: any) => (
+            // <Image key={index} source = {{uri:item}}  
+            // style = {{ width: 400, height: '100%' }} />
+            <ImageBackground
+            key={index}
+            style={{
+              width: width,
+              // aspectRatio: 1.6,
+              // borderWidth: 1,
+              // borderRadius: 5,
+              // borderTopEndRadius:5
+            }}
+            resizeMode="cover"
+            source={{
+              uri: item,
+            }}></ImageBackground>
+          ))}
+          
+
+        </ScrollView>
+            {/* <BackArrow navigation={navigation.goBack} style={{ position: 'absolute', left: 30, bottom: 35 }} /> */}
+            {/* <View>
+              <Text>TITLE</Text>
+              <Text>TITLE</Text>
+            </View> */}
+
+          </View>
+        ),
         headerTitleAlign: 'center',
+        //   <ImageBackground
+        //         style={{
+        //           width: '100%',
+        //           aspectRatio: 1.6,
+        //           borderWidth: 1,
+        //           borderRadius: 5,
+        //           borderTopEndRadius:5
+        //         }}
+        //         resizeMode="cover"
+        //         source={{
+        //           uri: profileDetail.photoLinks[0],
+        //         }}></ImageBackground>
+        // ),
         // headerStyle: {
         //     backgroundColor: isLightMode?Colors.White:Colors.Brand
         //   },

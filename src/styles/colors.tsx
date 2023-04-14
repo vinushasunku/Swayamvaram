@@ -10,6 +10,7 @@ export default {
   Black: '#333333',
   Highlight: '#d9f6fa',
   Failure: '#c40000',
+  FrenchRose:'#F64A8A',
 
   DMBackground: '#2F343F',
   DMCardBackground: '#3E424F',

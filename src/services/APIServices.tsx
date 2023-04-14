@@ -110,10 +110,10 @@ const ERROR_CODES = {
   
    
   
-  export async function securePut(url: string, body: any) {
+  export async function securePut(url: string) {
     try {
   
-      const ret = await _secureCall?.put(url, body);
+      const ret = await _secureCall?.put(url);
   
       store.dispatch(resetData());
   

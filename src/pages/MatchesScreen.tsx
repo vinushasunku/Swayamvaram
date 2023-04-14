@@ -9,6 +9,7 @@ import {
   ImageBackground,
   TouchableOpacity,
 } from 'react-native';
+//import { Tooltip } from 'react-native-paper';
 import {GetStyle} from '../styles/style-sheet';
 import SafeAreaView from 'react-native-safe-area-view';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
@@ -20,11 +21,13 @@ import {
   fetchMatcheslists,
   setselectedProfileId,
 } from '../redux/slices/matches';
-import {Avatar, Icon, SearchBar} from 'react-native-elements';
+import {Avatar, Icon, SearchBar, Tooltip} from 'react-native-elements';
 import Icons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
-import {MatchesInfoDto} from '../services/MatchesService';
+import MatchesService, {MatchesInfoDto} from '../services/MatchesService';
 import {createSecureService} from '../services/APIServices';
+import AppButton from '../components/AppButton';
+import Colors from '../styles/colors';
 const styles: any = GetStyle();
 type WizardProps = {
   navigation: any;
@@ -106,6 +109,20 @@ const MatchesScreen = ({navigation}: WizardProps) => {
     dispatch(setselectedProfileId(selectProfileId));
     navigation.navigate('ProfileDetail');
   }
+  function sendButton(id:any) {
+    console.log('Send');
+    MatchesService.sendProposal(accountId,id).then((response:any)=>{
+     console.log('success send')
+  }).catch((error:any)=>{
+      console.log('error:',error)})
+  }
+  function rejectButton(id:any) {
+    console.log('Send');
+    MatchesService.rejectProposal(accountId,id).then((response:any)=>{
+     console.log('success send')
+  }).catch((error:any)=>{
+      console.log('error:',error)})
+  }
   function matcheProfile() {
     const renderItem = ({item}) => {
       return (
@@ -116,62 +133,55 @@ const MatchesScreen = ({navigation}: WizardProps) => {
                 selectProfile(item.accountId);
               }}>
               <ImageBackground
-                style={{width: '100%', height: 280}}
-                source={{uri: item.profilePhotoLink}}>
-                <LinearGradient
-                  colors={['#00000000', '#000000']}
-                  style={{height: '100%', width: '100%', paddingLeft: 10}}>
-                  <View style={{height: '65%'}}></View>
-                  <Text
-                    style={{
-                      fontSize: 20,
-                      fontWeight: 'bold',
-                      color: 'white',
-                      paddingBottom: 10,
-                    }}>
-                    {item.firstName}
-                  </Text>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      marginBottom: 10,
-                      paddingBottom: 10,
-                    }}>
-                    <TouchableOpacity style={{marginRight: 5}}>
-                      <Text style={{paddingRight: 10}}>
-                        <Icons
-                          name="checkmark-circle-outline"
-                          size={50}
-                          color="#FFAA33"
-                        />
-                      </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{marginRight: 5}}>
-                      <Text style={{paddingRight: 10}}>
-                        <Icons
-                          name="close-circle-outline"
-                          size={50}
-                          color="#c40000"
-                        />
-                      </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{marginRight: 5}}>
-                      <Text style={{paddingRight: 10}}>
-                        <Icons
-                          name="heart-circle-outline"
-                          size={50}
-                          color="green"
-                        />
-                      </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{marginRight: 5}}>
-                      <Text style={{paddingRight: 10}}>
-                        <Icons name="star-outline" size={50} color="green" />
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </LinearGradient>
-              </ImageBackground>
+                style={{
+                  width: '100%',
+                  aspectRatio: 1.6,
+                  borderWidth: 1,
+                  borderRadius: 5,
+                  borderTopEndRadius:5
+                }}
+                resizeMode="cover"
+                source={{
+                  uri: 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg',
+                }}></ImageBackground>
+              <View
+                style={{
+                  top: -20,
+                  height: 150,
+                  width: '90%',
+                  alignSelf: 'center',
+                  borderWidth: 1,
+                  borderColor: '#aaa',
+                  backgroundColor: 'white',
+                  borderRadius: 10,
+                }}>
+                <Text
+                  style={[
+                    styles.mediumHeaderText,
+                    {fontSize: 25, paddingLeft: 10},
+                  ]}>
+                  {item.firstName}
+                </Text>
+                <Text
+                  style={[
+                    styles.mediumHeaderText,
+                    {fontSize: 25, paddingLeft: 10},
+                  ]}>
+                  {item.age + 'Yrs'}
+                </Text>
+                <View style={[{flexDirection: 'row'}]}>
+                  <TouchableOpacity
+                    style={[styles.submitButton, {marginTop: 10, width:'40%', height:"60%", alignItems:'center'}]}
+                    onPress={()=>{sendButton(item.accountId)}}>
+                    <Text style={[styles.buttonText]}>{'Send'}</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.submitButton, {marginTop: 10,marginLeft:0, width:'40%', marginRight:10, height:"60%",alignItems:'center'}]}
+                    onPress={()=>{rejectButton(item.accountId)}}>
+                    <Text style={[styles.buttonText]}>{'Not Intrested'}</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
             </TouchableOpacity>
           ) : (
             <></>
@@ -224,7 +234,7 @@ const MatchesScreen = ({navigation}: WizardProps) => {
   }
   return (
     <View style={[styles.backgroundView]}>
-      <View>
+      {/* <View>
         <ScrollView
           horizontal={true}
           style={{backgroundColor: 'white', paddingBottom: 10}}>
@@ -247,9 +257,9 @@ const MatchesScreen = ({navigation}: WizardProps) => {
             </View>
           ))}
         </ScrollView>
-      </View>
+      </View> */}
 
-      {search()}
+      {/* {search()} */}
       {matcheProfile()}
     </View>
   );

@@ -9,15 +9,16 @@ const GetStyle=()=>{
 const LightStyle=StyleSheet.create({
     submitButton:{
         width:'90%',
-        paddingTop:10,
-        paddingBottom:10,
+        //paddingTop:10,
+        //paddingBottom:10,
         marginLeft:20,
         marginRight:20,
-       backgroundColor:Colors.Interaction,
+       backgroundColor:Colors.FrenchRose,
         borderRadius:8,
         height:40,
         marginTop:15, marginBottom:15,
-        alignItems:'center'
+        alignItems:'center',
+        justifyContent:'center'
        
     },
     buttonText:{
@@ -66,7 +67,7 @@ const LightStyle=StyleSheet.create({
         //borderRadius:10
     },
     mediumHeaderText:{
-        fontSize:14,
+        fontSize:16,
         fontWeight:'bold',
         color:Colors.Black
     },
@@ -303,7 +304,7 @@ const DarkStyle=StyleSheet.create({
         borderRadius:10
     },
     mediumHeaderText:{
-        fontSize:14,
+        fontSize:16,
         fontWeight:'bold',
         color:Colors.White
     },

@@ -23,7 +23,8 @@ export function createProfile(): profileDto{
      regionDetails:createCaste(),
      locationDetails:createLocation(),
      professionDetails:createProfessional(),
-     educationDetails:createEducation()
+     educationDetails:createEducation(),
+     photoLinks:[]
 
   };
 

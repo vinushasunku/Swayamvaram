@@ -18,6 +18,7 @@ export interface profileDto{
   professionDetails:ProfessionalDataDto;
   educationDetails:EducationInfoDto;
   password:string;
+  photoLinks:string[];
 }
 class LoginService {
     

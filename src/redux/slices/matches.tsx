@@ -1,7 +1,7 @@
 import {InitialState} from '@react-navigation/native'
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { profileDto } from '../../services/LoginService';
-import MatchesService,{ MatchesInfoDto, MatchesPageInfoDto, ProfileSelectedDto } from '../../services/MatchesService';
+import MatchesService,{ MatchesInfoDto, MatchesPageInfoDto, MatchesStatusInfoDto, ProfileSelectedDto } from '../../services/MatchesService';
 import { createCaste } from './caste';
 import { createEducation, createProfessional } from './education';
 import { createFamily } from './family';
@@ -12,11 +12,14 @@ export const initialState={
     matchesData:createMatches(),
     matchesStatus: 'idle',
     matchesError: '',
+    matchingStatusLoading:'idle',
+    matchingStatusError:'',
     profileDetailStatus: 'idle',
     profileDetailError: '',
     selectedProfileId:selectedprofileInfo(),
     matchesPageInfo:matchesPageInfo(),
     profileDetail:createDetailProfile(),
+    matchingStatus:createMatchingStatus()
 }
 export function createMatches(): [MatchesInfoDto]{
     return[{
@@ -52,8 +55,23 @@ export function createDetailProfile(): profileDto{
      regionDetails:createCaste(),
      locationDetails:createLocation(),
      professionDetails:createProfessional(),
-     educationDetails:createEducation()
+     educationDetails:createEducation(),
+     photoLinks:[]
 
+  };
+
+}
+export function createMatchingStatus(): MatchesStatusInfoDto{
+  return{
+      profile1Id:'',
+      profile2Id:'',
+      status:'',
+      statusReason:{
+        requestSentByProfileId:'',
+        acceptedByProfileId:'',
+        rejectedByProfileId:[],
+        viewedByProfileIds:[]        
+      }
   };
 
 }
@@ -68,6 +86,13 @@ export const fetchProfiledetail=createAsyncThunk(
   '/matrimony/profilDetail/',
   async (info:ProfileSelectedDto) =>{
     const res= await MatchesService.getProfileDetail(info.accountId, info.selectedProfileId);
+    return res? res?.data :undefined
+  }
+);
+export const fetchMatchingStatus=createAsyncThunk(
+  '/matrimony/matchingStatus/',
+  async (info:ProfileSelectedDto) =>{
+    const res= await MatchesService.getMatchingStatus(info.accountId, info.selectedProfileId);
     return res? res?.data :undefined
   }
 );
@@ -111,6 +136,9 @@ export const matcheSlice = createSlice({
         if(action.payload){
           state.profileDetail=action.payload
           console.log(action.payload,action.payload["mobileNumber"])
+          state.profileDetail.photoLinks.push('https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg')
+          state.profileDetail.photoLinks.push('https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg')
+          state.profileDetail.photoLinks.push('https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg')
           state.profileDetail.personalDetails.mobileNumber=action.payload["mobileNumber"]
           state.profileDetail.personalDetails.countryCode=action.payload["countryCode"]
         }
@@ -122,6 +150,21 @@ export const matcheSlice = createSlice({
       builder.addCase(fetchProfiledetail.rejected, (state, action) => {
         state.profileDetailStatus='failed',
         state.profileDetailError='Unable to get list';
+      }),
+      builder.addCase(fetchMatchingStatus.fulfilled, (state, action) => {
+        state.matchingStatusLoading='succeeded',
+        state.matchingStatusError='';
+        if(action.payload){
+          state.matchingStatus=action.payload
+        }
+      }),
+      builder.addCase(fetchMatchingStatus.pending, (state, action) => {
+        state.matchingStatusLoading='loading',
+        state.matchingStatusError='';
+      }),
+      builder.addCase(fetchMatchingStatus.rejected, (state, action) => {
+        state.matchingStatusLoading='failed',
+        state.matchingStatusError='Unable to get list';
       })
     }
   })
