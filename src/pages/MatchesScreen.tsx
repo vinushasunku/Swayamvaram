@@ -20,6 +20,7 @@ import {
   getMoreMatchesList,
   fetchMatcheslists,
   setselectedProfileId,
+  fetchProfiledetail,
 } from '../redux/slices/matches';
 import {Avatar, Icon, SearchBar, Tooltip} from 'react-native-elements';
 import Icons from 'react-native-vector-icons/Ionicons';
@@ -28,6 +29,7 @@ import MatchesService, {MatchesInfoDto} from '../services/MatchesService';
 import {createSecureService} from '../services/APIServices';
 import AppButton from '../components/AppButton';
 import Colors from '../styles/colors';
+import { profileDto } from '../services/LoginService';
 const styles: any = GetStyle();
 type WizardProps = {
   navigation: any;
@@ -49,6 +51,8 @@ const MatchesScreen = ({navigation}: WizardProps) => {
   const [masterDataSource, setMasterDataSource] = React.useState([]);
   const [pagetoken, setPreviousPagetoken] = React.useState(1);
   const accountId = useAppSelector(state => state.registration.accountId);
+  const [selectProfileDetail, setselectProfileDetail] = React.useState<profileDto|null>(null);
+  const [pageLoading, setPageLoading] = React.useState(true);
   const dispatch: any = useAppDispatch();
 
   let stopFetchMore = true;
@@ -81,6 +85,9 @@ const MatchesScreen = ({navigation}: WizardProps) => {
   useEffect(() => {
     fetchData();
   }, [doneLoading]);
+  useEffect(()=>{
+    setPageLoading(false)
+  },[selectProfileDetail])
   const handleOnEndReached = async () => {
     console.log('loadmore', stopFetchMore);
     setLoadingMore(true);
@@ -107,6 +114,15 @@ const MatchesScreen = ({navigation}: WizardProps) => {
       selectedProfileId: id,
     };
     dispatch(setselectedProfileId(selectProfileId));
+    dispatch(fetchProfiledetail(selectProfileId))
+        .unwrap()
+        .then((response: any) => {
+          setselectProfileDetail(response)
+          //setStatusLoading(true);
+        })
+        .catch((error: any) => {
+          console.log('get matches list', error);
+        });
     navigation.navigate('ProfileDetail');
   }
   function sendButton(id:any) {
@@ -233,7 +249,7 @@ const MatchesScreen = ({navigation}: WizardProps) => {
     );
   }
   return (
-    <View style={[styles.backgroundView]}>
+    <SafeAreaView style={[styles.backgroundView]}>
       {/* <View>
         <ScrollView
           horizontal={true}
@@ -261,7 +277,7 @@ const MatchesScreen = ({navigation}: WizardProps) => {
 
       {/* {search()} */}
       {matcheProfile()}
-    </View>
+    </SafeAreaView>
   );
 };
 

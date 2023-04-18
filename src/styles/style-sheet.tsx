@@ -248,6 +248,17 @@ const LightStyle=StyleSheet.create({
         fontWeight: '500',
         color: '#4aae4f',
       },
+      circleicon:{
+        height : 70,
+        width : 70,
+        borderRadius : 50,
+        overflow : 'hidden',
+        alignSelf : "center",
+        alignItems:'center',
+        justifyContent:'center',
+        borderWidth : 2,
+        borderColor : '#fff0f5'
+      }
 });
 const DarkStyle=StyleSheet.create({
     sectionContainer:{
@@ -485,5 +496,16 @@ const DarkStyle=StyleSheet.create({
         fontWeight: '500',
         color: '#4aae4f',
       },
+      circleicon:{
+        height : 70,
+        width : 70,
+        borderRadius : 50,
+        overflow : 'hidden',
+        alignSelf : "center",
+        alignItems:'center',
+        justifyContent:'center',
+        borderWidth : 2,
+        borderColor : '#fff0f5'
+      }
 });
 export {LightStyle,DarkStyle, GetStyle}

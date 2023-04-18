@@ -38,6 +38,10 @@ class MatchesService{
     securePut('/matrimony/'+accountId+'/matching/'+ProfileId+'/sentProposal');  
     rejectProposal = (accountId:string, ProfileId:string) =>     
     securePut('/matrimony/'+accountId+'/matching/'+ProfileId+'/reject');  
+    acceptProposal = (accountId:string, ProfileId:string) =>     
+    securePut('/matrimony/'+accountId+'/matching/'+ProfileId+'/accept');  
+    withDrawalProposal = (accountId:string, ProfileId:string) =>     
+    securePut('/matrimony/'+accountId+'/matching/'+ProfileId+'/withdraw');  
 }
 
 export default new MatchesService();

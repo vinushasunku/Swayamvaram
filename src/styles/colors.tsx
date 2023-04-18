@@ -11,6 +11,7 @@ export default {
   Highlight: '#d9f6fa',
   Failure: '#c40000',
   FrenchRose:'#F64A8A',
+  RoseBlue:'#7D7CC0',
 
   DMBackground: '#2F343F',
   DMCardBackground: '#3E424F',

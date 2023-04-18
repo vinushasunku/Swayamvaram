@@ -1,18 +1,32 @@
 import React, {useEffect, useCallback, useState} from 'react';
-import {View, Text, StatusBar, useWindowDimensions, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  StatusBar,
+  useWindowDimensions,
+  TouchableOpacity,
+} from 'react-native';
 import {GetStyle} from '../styles/style-sheet';
 import SafeAreaView from 'react-native-safe-area-view';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {fetchMatchingStatus, fetchProfiledetail} from '../redux/slices/matches';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import MatchesService from '../services/MatchesService';
+// import MatchesService from '../services/MatchesService';
 import Colors from '../styles/colors';
+import {
+  acceptButton,
+  rejectButton,
+  sendButton,
+  withdrawalButton,
+} from '../utils/actionfunctions';
 const styles: any = GetStyle();
 type WizardProps = {
   navigation: any;
+  showProfileDetail:any;
+  //edit:boolean;
 };
 
-const ProfileDetailScreen = ({navigation}: WizardProps) => {
+export const ProfileDetailScreen = ({navigation,showProfileDetail}: WizardProps) => {
   const accountId = useAppSelector(state => state.registration.accountId);
   const selectProfileId = useAppSelector(
     state => state.matches.selectedProfileId,
@@ -43,7 +57,7 @@ const ProfileDetailScreen = ({navigation}: WizardProps) => {
         .catch((error: any) => {
           console.log('get matches list', error);
         });
-        dispatch(fetchMatchingStatus(selectProfileId))
+      dispatch(fetchMatchingStatus(selectProfileId))
         .unwrap()
         .then((response: any) => {
           console.log('matchingstatus', matchingstatus);
@@ -53,59 +67,137 @@ const ProfileDetailScreen = ({navigation}: WizardProps) => {
         });
     }
   }, [doneLoading]);
-  function sendButton(id:any) {
-    console.log('Send');
-    MatchesService.sendProposal(accountId,id).then((response:any)=>{
-     console.log('success send')
-  }).catch((error:any)=>{
-      console.log('error:',error)})
-  }
-  function rejectButton(id:any) {
-    console.log('Send');
-    MatchesService.rejectProposal(accountId,id).then((response:any)=>{
-     console.log('success send')
-  }).catch((error:any)=>{
-      console.log('error:',error)})
-  }
+  // function sendButton(id:any) {
+  //   console.log('Send');
+  //   MatchesService.sendProposal(accountId,id).then((response:any)=>{
+  //    console.log('success send')
+  // }).catch((error:any)=>{
+  //     console.log('error:',error)})
+  // }
+  // function rejectButton(id:any) {
+  //   console.log('Send');
+  //   MatchesService.rejectProposal(accountId,id).then((response:any)=>{
+  //    console.log('success send')
+  // }).catch((error:any)=>{
+  //     console.log('error:',error)})
+  // }
+
   const actionDisplay = () => {
-    return(
-      <View style={{flexDirection:'row', borderBottomWidth:1, borderBottomColor:Colors.Grey}}>
+    return (
+      <View
+        style={{
+          flexDirection: 'row',
+          borderBottomWidth: 1,
+          borderBottomColor: Colors.Grey,
+        }}>
+        {matchingstatus.statusReason.requestSentByProfileId !=
+        matchingstatus.profile1Id ? (
+          matchingstatus.status === 'NONE' ||
+          matchingstatus.status === 'WITHDRAWN' ? (
             <View style={[{flexDirection: 'row'}]}>
-                  <TouchableOpacity
-                    style={[styles.submitButton, {marginTop: 10, width:'42%', alignItems:'center'}]}
-                    onPress={()=>{sendButton(selectProfileId.selectedProfileId)}}>
-                    <Text style={[styles.buttonText]}>{'Send'}</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={[styles.submitButton, {marginTop: 10,marginLeft:0,width:'42%', marginRight:20,alignItems:'center'}]}
-                    onPress={()=>{rejectButton(selectProfileId.selectedProfileId)}}>
-                    <Text style={[styles.buttonText]}>{'Not Intrested'}</Text>
-                  </TouchableOpacity>
-                </View>
+              <TouchableOpacity
+                style={[
+                  styles.submitButton,
+                  {marginTop: 10, width: '42%', alignItems: 'center'},
+                ]}
+                onPress={() => {
+                  sendButton(
+                    selectProfileId.accountId,
+                    selectProfileId.selectedProfileId,
+                  );
+                }}>
+                <Text style={[styles.buttonText]}>{'Send'}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.submitButton,
+                  {
+                    marginTop: 10,
+                    marginLeft: 0,
+                    width: '42%',
+                    marginRight: 20,
+                    alignItems: 'center',
+                  },
+                ]}
+                onPress={() => {
+                  rejectButton(
+                    selectProfileId.accountId,
+                    selectProfileId.selectedProfileId,
+                  );
+                }}>
+                <Text style={[styles.buttonText]}>{'Not Intrested'}</Text>
+              </TouchableOpacity>
+            </View>
+          ) : matchingstatus.status === 'REQUEST_SENT' ? (
+            <View style={[{flexDirection: 'row'}]}>
+              <TouchableOpacity
+                style={[
+                  styles.submitButton,
+                  {marginTop: 10, alignItems: 'center'},
+                ]}
+                onPress={() => {
+                  withdrawalButton(
+                    selectProfileId.accountId,
+                    selectProfileId.selectedProfileId,
+                  );
+                }}>
+                <Text style={[styles.buttonText]}>
+                  {'WithDraw your request'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <></>
+          )
+        ) : (
+          <></>
+        )}
+        {
+          matchingstatus.statusReason.requestSentByProfileId === matchingstatus.profile1Id ?
+          matchingstatus.status === 'REQUEST_SENT'? <View style={[{flexDirection: 'row'}]}>
+          <TouchableOpacity
+            style={[
+              styles.submitButton,
+              {marginTop: 10, width: '42%', alignItems: 'center'},
+            ]}
+            onPress={() => {
+              acceptButton(
+                selectProfileId.accountId,
+                selectProfileId.selectedProfileId,
+              );
+            }}>
+            <Text style={[styles.buttonText]}>{'Accept'}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.submitButton,
+              {
+                marginTop: 10,
+                marginLeft: 0,
+                width: '42%',
+                marginRight: 20,
+                alignItems: 'center',
+              },
+            ]}
+            onPress={() => {
+              rejectButton(
+                selectProfileId.accountId,
+                selectProfileId.selectedProfileId,
+              );
+            }}>
+            <Text style={[styles.buttonText]}>{'Reject'}</Text>
+          </TouchableOpacity>
+        </View>:<></>:<></>
+        }
       </View>
-    )
-  }
-  // useEffect(() => {
-  //   navigation.setOptions({
-  //     headerBackVisible:true,
-  //     headerLeft: () => (
-  //       <TouchableOpacity
-  //       onPress={()=>{navigation.goBack}}
-  //       style={{width:100}}
-  //       >
-  //         <Text style={{color:'black'}}>{'back'}</Text>
-  //       </TouchableOpacity>
-  //       // <Button onPress={() => setCount((c) => c + 1)} title="Update count" />
-  //     )
-      
-  //   });
-  // }, [navigation]);
+    );
+  };
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={{flex: 1, backgroundColor: 'white'}}>
-        {actionDisplay()}
+        { actionDisplay()}
         {MyTabs()}
-        </View>
+      </View>
     </SafeAreaView>
   );
 };

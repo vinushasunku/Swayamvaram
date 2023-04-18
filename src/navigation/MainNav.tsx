@@ -18,6 +18,7 @@ import MatchesScreen from '../pages/MatchesScreen';
 import ProfileDetailScreen from '../pages/ProfileDetailScreen';
 import { BackgroundImage } from 'react-native-elements/dist/config';
 import { Dimensions } from 'react-native'
+import AccountProfile from '../pages/AccountProfile';
 const styles: any = GetStyle();
 Icon.loadFont();
 const HomeStack = createNativeStackNavigator();
@@ -43,17 +44,6 @@ function HomeStackNav() {
             color: Colors.Black,
           },
         }}
-    //     options={({route}) => ({headerTitle: '', headerBackVisible: false,
-    //     headerShown: false,
-    //     headerRight: () => null,
-    //     headerTitleAlign: 'center',
-    //     headerStyle: {
-    //         backgroundColor: isLightMode?Colors.White:Colors.Brand
-    //       },
-    //     headerTitleStyle: {
-    //       color: Colors.Black,
-    //     },
-    // })}
       />
     </HomeStack.Navigator>
   );
@@ -91,19 +81,11 @@ function MatchStackNav() {
              <ScrollView
           horizontal={true}
           style={{width:'100%'}}>
-         {/* <Image source = {{uri:'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg'}}  
-         style = {{ width: 400, height: '100%' }} /> */}
          {profileDetail.photoLinks.map((item: any, index: any) => (
-            // <Image key={index} source = {{uri:item}}  
-            // style = {{ width: 400, height: '100%' }} />
             <ImageBackground
             key={index}
             style={{
               width: width,
-              // aspectRatio: 1.6,
-              // borderWidth: 1,
-              // borderRadius: 5,
-              // borderTopEndRadius:5
             }}
             resizeMode="cover"
             source={{
@@ -176,6 +158,16 @@ function MainTab() {
           headerShown: false,
           title: 'Matches',
           tabBarIcon:({color}) => <Icon name="people-outline" color={color} size={30}/>,
+          unmountOnBlur:true
+        }}
+      />
+      <Tab.Screen
+        name="Account"
+        component={AccountProfile}
+        options={{
+          headerShown: false,
+          title: 'Account',
+          tabBarIcon:({color}) => <Icon name="person-circle-outline" color={color} size={30}/>,
           unmountOnBlur:true
         }}
       />
