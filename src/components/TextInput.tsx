@@ -6,7 +6,7 @@ type ButtonProps = {
   onChangeText: any;
   //placeholder:string;
   onFocus: any;
-  //value: string;
+  value: string;
   lable:any;
   databind:any
 };
@@ -15,6 +15,7 @@ export const AppTextInput = ({
   //value,
   onChangeText,
   onFocus,
+  value,
   lable,
   databind
 }: ButtonProps) => {
@@ -34,6 +35,7 @@ export const AppTextInput = ({
         placeholderTextColor="#2F4F4F"
          style={[styles.mediumText]}
         editable={true}
+        value={value}
         onChangeText={(value) => onChangeText(databind,value)}
       />
       </View>

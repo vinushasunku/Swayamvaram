@@ -12,6 +12,7 @@ import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {fetchMatchingStatus, fetchProfiledetail} from '../redux/slices/matches';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 // import MatchesService from '../services/MatchesService';
+import Icon from 'react-native-vector-icons/Ionicons';
 import Colors from '../styles/colors';
 import {
   acceptButton,
@@ -19,21 +20,26 @@ import {
   sendButton,
   withdrawalButton,
 } from '../utils/actionfunctions';
+import PersonalInfo from './PersonalInfo';
+import ProfileEdit from './ProfileEdit';
+import { createProfile, setEditProfileDetailInfo } from '../redux/slices/login';
 const styles: any = GetStyle();
 type WizardProps = {
   navigation: any;
-  showProfileDetail:any;
+
   //edit:boolean;
 };
 
-export const ProfileDetailScreen = ({navigation,showProfileDetail}: WizardProps) => {
+export const ProfileDetailScreen = ({navigation}: WizardProps) => {
   const accountId = useAppSelector(state => state.registration.accountId);
   const selectProfileId = useAppSelector(
     state => state.matches.selectedProfileId,
   );
   const profileDetail = useAppSelector(state => state.matches.profileDetail);
   const matchingstatus = useAppSelector(state => state.matches.matchingStatus);
+  const profileEditVisiable = useAppSelector(state => state.loginId.editProfileDetail);
   const [doneLoading, setStatusLoading] = useState(false);
+  const editBackPage = useAppSelector(state => state.loginId.editProfile);
   const dispatch: any = useAppDispatch();
   const Tab = createMaterialTopTabNavigator();
 
@@ -46,9 +52,12 @@ export const ProfileDetailScreen = ({navigation,showProfileDetail}: WizardProps)
       </Tab.Navigator>
     );
   }
-  useEffect(() => {
-    console.log('select profile', selectProfileId);
-    if (selectProfileId.selectedProfileId != '') {
+  // useEffect(()=>{
+
+  // },[profileEditVisiable])
+  useEffect(() => {  
+    if (editBackPage === false && selectProfileId.selectedProfileId != '') {
+      console.log('select profile', selectProfileId);
       dispatch(fetchProfiledetail(selectProfileId))
         .unwrap()
         .then((response: any) => {
@@ -152,57 +161,80 @@ export const ProfileDetailScreen = ({navigation,showProfileDetail}: WizardProps)
         ) : (
           <></>
         )}
-        {
-          matchingstatus.statusReason.requestSentByProfileId === matchingstatus.profile1Id ?
-          matchingstatus.status === 'REQUEST_SENT'? <View style={[{flexDirection: 'row'}]}>
-          <TouchableOpacity
-            style={[
-              styles.submitButton,
-              {marginTop: 10, width: '42%', alignItems: 'center'},
-            ]}
-            onPress={() => {
-              acceptButton(
-                selectProfileId.accountId,
-                selectProfileId.selectedProfileId,
-              );
-            }}>
-            <Text style={[styles.buttonText]}>{'Accept'}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.submitButton,
-              {
-                marginTop: 10,
-                marginLeft: 0,
-                width: '42%',
-                marginRight: 20,
-                alignItems: 'center',
-              },
-            ]}
-            onPress={() => {
-              rejectButton(
-                selectProfileId.accountId,
-                selectProfileId.selectedProfileId,
-              );
-            }}>
-            <Text style={[styles.buttonText]}>{'Reject'}</Text>
-          </TouchableOpacity>
-        </View>:<></>:<></>
-        }
+        {matchingstatus.statusReason.requestSentByProfileId ===
+        matchingstatus.profile1Id ? (
+          matchingstatus.status === 'REQUEST_SENT' ? (
+            <View style={[{flexDirection: 'row'}]}>
+              <TouchableOpacity
+                style={[
+                  styles.submitButton,
+                  {marginTop: 10, width: '42%', alignItems: 'center'},
+                ]}
+                onPress={() => {
+                  acceptButton(
+                    selectProfileId.accountId,
+                    selectProfileId.selectedProfileId,
+                  );
+                }}>
+                <Text style={[styles.buttonText]}>{'Accept'}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.submitButton,
+                  {
+                    marginTop: 10,
+                    marginLeft: 0,
+                    width: '42%',
+                    marginRight: 20,
+                    alignItems: 'center',
+                  },
+                ]}
+                onPress={() => {
+                  rejectButton(
+                    selectProfileId.accountId,
+                    selectProfileId.selectedProfileId,
+                  );
+                }}>
+                <Text style={[styles.buttonText]}>{'Reject'}</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <></>
+          )
+        ) : (
+          <></>
+        )}
       </View>
     );
+  };
+  const updateEnableNext = (enable: boolean): void => {
+    // setEnableNext(true);
   };
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={{flex: 1, backgroundColor: 'white'}}>
-        { actionDisplay()}
+        {actionDisplay()}
         {MyTabs()}
       </View>
+      <ProfileEdit profileEditVisiable={profileEditVisiable} editType={'Basic'} navigation={navigation}/>
     </SafeAreaView>
   );
 };
-const PersonalInfoRoute = () => {
-  const profileDetail = useAppSelector(state => state.matches.profileDetail);
+const PersonalInfoRoute = ({navigation}) => {
+  let selectedprofileDetail = useAppSelector(state => state.matches.profileDetail);
+  const editBackPage = useAppSelector(state => state.loginId.editProfile);
+  let loginprofileDetail = useAppSelector(state => state.loginId.profileData);
+  const [profileDetail, setprofileDetail] = React.useState(createProfile());
+  const dispatch: any = useAppDispatch();
+  useEffect(() => {
+    console.log(editBackPage)
+    if(editBackPage)
+    {
+      setprofileDetail(loginprofileDetail)
+    }else{
+      setprofileDetail(selectedprofileDetail)
+    }
+  },[])
   return (
     <View style={{flex: 1, backgroundColor: 'white', paddingLeft: 20}}>
       <Text style={[styles.mediumHeaderText, {paddingTop: 20, fontSize: 20}]}>
@@ -217,9 +249,32 @@ const PersonalInfoRoute = () => {
           borderRadius: 10,
           paddingLeft: 20,
         }}>
-        <Text style={[styles.mediumHeaderText, {paddingTop: 20, fontSize: 20}]}>
-          {'Basic Detail'}
-        </Text>
+        <View style={{flexDirection: 'row', marginTop: 20}}>
+          <Text style={[styles.mediumHeaderText, {fontSize: 20}]}>
+            {'Basic Detail'}
+          </Text>
+          {editBackPage ? (
+            <TouchableOpacity
+              style={{
+                alignItems: 'flex-end',
+                justifyContent: 'flex-end',
+                right: 10,
+                position: 'absolute',
+              }}
+              onPress={() => {
+                dispatch(setEditProfileDetailInfo(true))
+              }}>
+              <Icon
+                name={'pencil-outline'}
+                size={25}
+                color={Colors.FrenchRose}
+              />
+            </TouchableOpacity>
+          ) : (
+            <></>
+          )}
+        </View>
+
         <View style={{flexDirection: 'row'}}>
           <Text style={[styles.mediumText, {width: '50%'}]}>
             {'First Name'}
@@ -272,9 +327,28 @@ const PersonalInfoRoute = () => {
           borderRadius: 10,
           paddingLeft: 20,
         }}>
-        <Text style={[styles.mediumHeaderText, {paddingTop: 20, fontSize: 20}]}>
-          {'Family Details'}
-        </Text>
+        <View style={{flexDirection: 'row', marginTop: 20}}>
+          <Text style={[styles.mediumHeaderText, {fontSize: 20}]}>
+            {'Family Details'}
+          </Text>
+          {editBackPage ? (
+            <TouchableOpacity
+              style={{
+                alignItems: 'flex-end',
+                justifyContent: 'flex-end',
+                right: 10,
+                position: 'absolute',
+              }}>
+              <Icon
+                name={'pencil-outline'}
+                size={25}
+                color={Colors.FrenchRose}
+              />
+            </TouchableOpacity>
+          ) : (
+            <></>
+          )}
+        </View>
         <View style={{flexDirection: 'row'}}>
           <Text style={[styles.mediumText, {width: '50%'}]}>
             {'Father Name'}

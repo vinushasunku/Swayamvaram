@@ -5,6 +5,7 @@ import SafeAreaView from 'react-native-safe-area-view';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Colors from '../styles/colors';
+import { setEditProfileDetail } from '../redux/slices/login';
 const styles: any = GetStyle();
 type WizardProps = {
   navigation: any;
@@ -14,6 +15,7 @@ const AccountProfile = ({navigation}: WizardProps) => {
   const accountProfiledetail = useAppSelector(
     state => state.loginId.profileData,
   );
+  const dispatch: any = useAppDispatch();
   const profilePicture = () => {
     return (
       <View>
@@ -64,7 +66,8 @@ const AccountProfile = ({navigation}: WizardProps) => {
     );
   };
  function navigateprofile(){
-   //navigation.navigate('Matches',{screen:'ProfileDetail'})
+    dispatch(setEditProfileDetail(true))
+   navigation.navigate('Matches',{screen:'ProfileDetail'})
  }
   const iconAction=()=>{
     return(

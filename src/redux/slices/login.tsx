@@ -12,6 +12,8 @@ export const initialState={
   loginError:'',
   pagination:'',
   registrationComplete:false,
+  editProfile:false,
+  editProfileDetail:false,
   profileData:createProfile(),
 }
 export function createProfile(): profileDto{
@@ -34,16 +36,27 @@ export const loginSlice = createSlice({
     initialState,
     reducers: {
       setProfileInfo(state, action: PayloadAction<any>) {
+        console.log('loginprofile',action.payload.password)
         state.profileData = action.payload
+        state.profileData.personalDetails.emailAddress=action.payload.emailAddress
+        state.profileData.personalDetails.mobileNumber=action.payload.mobileNumber
+        state.profileData.personalDetails.countryCode=action.payload.countryCode
+        state.profileData.personalDetails.password=action.payload.password
       },
       setResitrationInfo(state, action: PayloadAction<any>) {
         state.registrationComplete = action.payload
       },
       setPaginationId(state, action: PayloadAction<any>) {
         state.pagination = action.payload
+      },
+      setEditProfileDetail(state, action: PayloadAction<any>) {
+        state.editProfile = action.payload
+      },
+      setEditProfileDetailInfo(state, action: PayloadAction<any>) {
+        state.editProfileDetail = action.payload
       }
     }
   })
   
-  export const { setProfileInfo,setPaginationId,setResitrationInfo} = loginSlice.actions
+  export const { setProfileInfo,setPaginationId,setResitrationInfo,setEditProfileDetail,setEditProfileDetailInfo} = loginSlice.actions
   export default loginSlice.reducer

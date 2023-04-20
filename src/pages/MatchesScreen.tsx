@@ -30,6 +30,7 @@ import {createSecureService} from '../services/APIServices';
 import AppButton from '../components/AppButton';
 import Colors from '../styles/colors';
 import { profileDto } from '../services/LoginService';
+import { setEditProfileDetail } from '../redux/slices/login';
 const styles: any = GetStyle();
 type WizardProps = {
   navigation: any;
@@ -84,6 +85,7 @@ const MatchesScreen = ({navigation}: WizardProps) => {
 
   useEffect(() => {
     fetchData();
+    dispatch(setEditProfileDetail(false))
   }, [doneLoading]);
   useEffect(()=>{
     setPageLoading(false)
@@ -113,6 +115,7 @@ const MatchesScreen = ({navigation}: WizardProps) => {
       accountId: accountId,
       selectedProfileId: id,
     };
+    dispatch(setEditProfileDetail(false))
     dispatch(setselectedProfileId(selectProfileId));
     dispatch(fetchProfiledetail(selectProfileId))
         .unwrap()

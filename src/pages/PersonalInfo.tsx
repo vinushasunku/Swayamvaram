@@ -20,6 +20,7 @@ import {
 import RegistrationService from '../services/RegistrationService';
 import { setModalData} from '../redux/slices/appData';
 import { PersonalDto } from '../services/PersonalService';
+import { createPersonal } from '../redux/slices/personal';
 const styles: any = GetStyle();
 type WizardProps = {
   navigation: any;
@@ -29,7 +30,9 @@ type WizardProps = {
 const PersonalInfo = ({navigation,updateEnableNext}: WizardProps) => {
   const dispatch: any = useAppDispatch();
   const [validmessage, setMessage] = React.useState(false);
-  const personaldata=useAppSelector(state=>state.personal.personalData);
+  //const personaldata=useAppSelector(state=>state.personal.personalData);
+  const profile=useAppSelector(state=>state.loginId.profileData);
+  const [personaldata, setpersonaldata] = React.useState(createPersonal());
   const gender = [
     {label: 'FEMALE', value: '1'},
     {label: 'MALE', value: '2'},
@@ -37,21 +40,32 @@ const PersonalInfo = ({navigation,updateEnableNext}: WizardProps) => {
   ];
   const creatorList = [{label: 'SELF', value: '1'}];
   useEffect(() => {
+  if(profile.personalDetails){
+    setpersonaldata(profile.personalDetails);
+  }
 
-  }, [personaldata]);
+  }, []);
+  useEffect(() => {
+    console.log('personal', personaldata)
+  
+    }, [personaldata]);
+
   function onChangeValue(name:any,text:any){
+    var newProfile={...personaldata}
     if(name == 'emailAddress'){
-      personaldata.emailAddress=text
+      console.log('test',name, text)
+      newProfile.emailAddress=text
     }
     if(name == 'firstName'){
-      personaldata.firstName=text
+      newProfile.firstName=text
     }
     if(name == 'lastName'){
-      personaldata.lastName=text
+      newProfile.lastName=text
     }
     if(name == 'password'){
-      personaldata.password=text
+      newProfile.password=text
     }
+    setpersonaldata(newProfile)
   }
   function validatePersonalInfo(data: PersonalDto) {
     let message = '';
@@ -128,21 +142,21 @@ const PersonalInfo = ({navigation,updateEnableNext}: WizardProps) => {
         onFocus={true}
         lable={'Email'}
         databind={'emailAddress'}
-        //value={personaldata.emailAddress}
+        value={personaldata.emailAddress}
       />
       <AppTextInput
         onChangeText={onChangeValue}
         onFocus={true}
         lable={'First Name'}
         databind={'firstName'}
-        //value={personaldata.firstName}
+        value={personaldata.firstName}
       />
       <AppTextInput
         onChangeText={onChangeValue}
         onFocus={true}
         lable={'Last Name'}
         databind={'lastName'}
-        //value={personaldata.lastName}
+        value={personaldata.lastName}
       />
       <AppDropDown
         gender={gender}
@@ -164,6 +178,7 @@ const PersonalInfo = ({navigation,updateEnableNext}: WizardProps) => {
             color: 'black',
             fontSize: 16.0,
           }}
+          defaultValue={personaldata.mobileNumber}
           onChangeText={onChangeText}
           dialCodeTextStyle={{color: 'black'}}
           defaultCountry="IN"
@@ -175,7 +190,7 @@ const PersonalInfo = ({navigation,updateEnableNext}: WizardProps) => {
         onFocus={true}
         lable={'Password'}
         databind={'password'}
-        //value={personaldata.password}
+        value={personaldata.password}
       />
       <View
         style={{
