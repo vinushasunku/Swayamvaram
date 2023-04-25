@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 import {GetStyle} from '../styles/style-sheet';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
-import {getCasteData, getCasteList,fetchReligionlists, setCasteData, fetchCastelists, fetchSubCastelists, getReligion} from '../redux/slices/caste';
+import {getCasteData, getCasteList,fetchReligionlists, setCasteData, fetchCastelists, fetchSubCastelists, getReligion, createCaste} from '../redux/slices/caste';
 import TextInputWithIcon from '../components/TextInputWithIcon';
 import {useForm} from 'react-hook-form';
 import AppModalList from '../components/AppModalList';
@@ -28,15 +28,32 @@ const CasteInformation = ({navigation,updateEnableNext}: WizardProps) => {
   const religionList=useAppSelector(state=>state.religion.religionData);
   const casteList=useAppSelector(state=>state.religion.casteList);
   const subcasteList=useAppSelector(state=>state.religion.subCasteList);
-  const religiondata=useAppSelector(state=>state.religion.casteData);
+  //const religiondata=useAppSelector(state=>state.religion.casteData);
   const [pageLoading, setPageLoading] = React.useState(true);
   const [casteListLoad, setloadCasteList] = React.useState(false);
   const [subcasteListLoad, setloadSubCasteList] = React.useState(false);
   const accountId=useAppSelector(state=>state.registration.accountId);
+
+  const profile=useAppSelector(state=>state.loginId.profileData);
+  const [religiondata, setCastedata] = React.useState(createCaste());
+  const [intialpageLoad, setintialpageLoad] = React.useState(true);
   
   useEffect(() => {
     try {
       console.log('acccountid',accountId)
+      if(intialpageLoad)
+      {
+      setCastedata(profile.regionDetails)
+      if(profile.regionDetails.religion != null){
+        console.log('loadcaste')
+        setloadCasteList(true)
+      }
+      if(profile.regionDetails.caste != null){
+        console.log('loadcaste')
+        setloadSubCasteList(true)
+      }
+      setintialpageLoad(false)
+    }
       updateEnableNext(false);
       setPageLoading(true);
     } catch (error) {
@@ -59,6 +76,7 @@ const CasteInformation = ({navigation,updateEnableNext}: WizardProps) => {
 
   useEffect(()=>{
     if(casteListLoad){
+      console.log('loadcaste2',religiondata.religion)
       dispatch(fetchCastelists(religiondata.religion))
       .unwrap()
       .then(()=>{

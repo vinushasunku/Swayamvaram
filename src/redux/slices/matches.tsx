@@ -7,6 +7,7 @@ import { createEducation, createProfessional } from './education';
 import { createFamily } from './family';
 import { createLocation } from './location';
 import { createPersonal } from './personal';
+import { createProfilePhotoDetail } from './photoDetailLink';
 
 export const initialState={
     matchesData:createMatches(),
@@ -56,6 +57,7 @@ export function createDetailProfile(): profileDto{
      locationDetails:createLocation(),
      professionDetails:createProfessional(),
      educationDetails:createEducation(),
+     photoDetails:createProfilePhotoDetail(),
      photoLinks:[]
 
   };
@@ -136,9 +138,9 @@ export const matcheSlice = createSlice({
         if(action.payload){
           state.profileDetail=action.payload
           console.log(action.payload,action.payload["mobileNumber"])
-          state.profileDetail.photoLinks.push('https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg')
-          state.profileDetail.photoLinks.push('https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg')
-          state.profileDetail.photoLinks.push('https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg')
+           state.profileDetail.photoLinks.push('https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg')
+           state.profileDetail.photoLinks.push('https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg')
+           state.profileDetail.photoLinks.push('https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg')
           state.profileDetail.personalDetails.mobileNumber=action.payload["mobileNumber"]
           state.profileDetail.personalDetails.countryCode=action.payload["countryCode"]
         }

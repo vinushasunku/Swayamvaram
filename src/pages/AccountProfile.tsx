@@ -15,6 +15,7 @@ const AccountProfile = ({navigation}: WizardProps) => {
   const accountProfiledetail = useAppSelector(
     state => state.loginId.profileData,
   );
+  console.log('accountprofile',accountProfiledetail)
   const dispatch: any = useAppDispatch();
   const profilePicture = () => {
     return (
@@ -29,7 +30,7 @@ const AccountProfile = ({navigation}: WizardProps) => {
           }}
           resizeMode="cover"
           source={{
-            uri: 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg',
+            uri: accountProfiledetail.photoDetails.profilePicture,
           }}></ImageBackground>
         <View
           style={{
@@ -46,7 +47,7 @@ const AccountProfile = ({navigation}: WizardProps) => {
           <View style={{width: '50%', marginTop: 10, marginLeft: 10}}>
             <Image
               source={{
-                uri: 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg',
+                uri: accountProfiledetail.photoDetails.profilePicture,
               }}
               style={{height: 130}}
             />

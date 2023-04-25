@@ -27,6 +27,7 @@ import ProfileDetailScreen from '../pages/ProfileDetailScreen';
 import {BackgroundImage} from 'react-native-elements/dist/config';
 import {Dimensions} from 'react-native';
 import AccountProfile from '../pages/AccountProfile';
+import { createProfile } from '../redux/slices/login';
 const styles: any = GetStyle();
 Icon.loadFont();
 const HomeStack = createNativeStackNavigator();
@@ -59,6 +60,10 @@ function HomeStackNav() {
 function MatchStackNav() {
   const profileDetail = useAppSelector(state => state.matches.profileDetail);
   const editBackPage = useAppSelector(state => state.loginId.editProfile);
+  const loginprofileDetail = useAppSelector(state => state.loginId.profileData);
+ // const [profileDetail, setprofileDetail] = React.useState(createProfile());
+  // const dispatch: any = useAppDispatch();
+  
   return (
     <MatchStack.Navigator initialRouteName='Match'>
       <MatchStack.Screen
@@ -89,7 +94,8 @@ function MatchStackNav() {
           header: () => (
             <View style={{height: 200}}>
               <ScrollView horizontal={true} style={{width: '100%'}}>
-                {profileDetail.photoLinks.map((item: any, index: any) => (
+                {
+                editBackPage === false?profileDetail.photoLinks.map((item: any, index: any) => (
                   <ImageBackground
                     key={index}
                     style={{
@@ -102,7 +108,7 @@ function MatchStackNav() {
                     <TouchableOpacity
                       style={[{marginTop: 10}]}
                       onPress={() => {
-                       editBackPage === false? navigation.navigate('Matches', {screen: 'Match'}) :navigation.navigate('Account');
+                       navigation.navigate('Matches', {screen: 'Match'}) 
                       }}>
                       <Icon
                         name={'arrow-back-outline'}
@@ -111,7 +117,30 @@ function MatchStackNav() {
                       />
                     </TouchableOpacity>
                   </ImageBackground>
-                ))}
+                ))
+                :
+                  <ImageBackground
+                    style={{
+                      width: width,
+                    }}
+                    resizeMode="cover"
+                    source={{
+                      uri: loginprofileDetail.photoDetails.profilePicture,
+                    }}>
+                    <TouchableOpacity
+                      style={[{marginTop: 10}]}
+                      onPress={() => {
+                      navigation.navigate('Account');
+                      }}>
+                      <Icon
+                        name={'arrow-back-outline'}
+                        size={35}
+                        color={Colors.FrenchRose}
+                      />
+                    </TouchableOpacity>
+                  </ImageBackground>
+             
+              }
               </ScrollView>
             </View>
           ),

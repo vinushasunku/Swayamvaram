@@ -10,7 +10,15 @@ export interface RegistrationDto{
     creator:string,
     password:string
 }
-
+export enum typeProfileDetail {
+    Basic,
+    FamilyDetail,
+    CasteDetail,
+    LocationDetail,
+    VisaDetail,
+    ProfessionalDetail,
+    Educationdetail
+  }
 export interface  dropdowndata{
     id:string,
     title:string

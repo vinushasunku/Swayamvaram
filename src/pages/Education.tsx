@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
-import {TouchableOpacity, View} from 'react-native';
+import {TouchableOpacity, View,ScrollView} from 'react-native';
 import {Text} from 'react-native-elements';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {GetStyle} from '../styles/style-sheet';
@@ -12,18 +12,18 @@ import DatePicker from 'react-native-date-picker';
 import TextInputWithIcon from '../components/TextInputWithIcon';
 import AppModalList from '../components/AppModalList';
 import AppTextInput from '../components/TextInput';
-import { ScrollView } from 'react-native-gesture-handler';
-const dbDegree = [{label: 'B.Tech', value: '1'}];
-const dbCourse = [{label: 'Cse', value: '1'}];
+import { createEducation, createProfessional } from '../redux/slices/education';
+const dbDegree = [{label: 'B.Tech', value: 'B.Tech'}];
+const dbCourse = [{label: 'CSE', value: 'CSE'}];
 const dbEmployment = [
-  {label: 'STUDYING', value: '1'},
-  {label: 'BUSINESS', value: '2'},
-  {label: 'GOVERNMENT', value: '3'},
-  {label: 'PRIVATE', value: '4'},
+  {label: 'STUDYING', value: 'STUDYING'},
+  {label: 'BUSINESS', value: 'BUSINESS'},
+  {label: 'GOVERNMENT', value: 'GOVERNMENT'},
+  {label: 'PRIVATE', value: 'PRIVATE'},
 ];
 const dbCurrency = [
-  {label: 'USD', value: '1'},
-  {label: 'INR', value: '2'},
+  {label: 'USD', value: 'USD'},
+  {label: 'INR', value: 'INR'},
 ];
 
 const styles: any = GetStyle();
@@ -33,10 +33,10 @@ type WizardProps = {
 };
 
 const Education = ({navigation, updateEnableNext}: WizardProps) => {
-  const educationdata = useAppSelector(state => state.education.educationData);
-  const professionaldata = useAppSelector(
-    state => state.education.professionalData,
-  );
+  // const educationdata = useAppSelector(state => state.education.educationData);
+  // const professionaldata = useAppSelector(
+  //   state => state.education.professionalData,
+  // );
   const accountId = useAppSelector(state => state.registration.accountId);
   const [showPassoutYear, setPassOutyearModel] = React.useState(false);
   const [loadYear, setLoadYearList] = React.useState(false);
@@ -49,6 +49,12 @@ const Education = ({navigation, updateEnableNext}: WizardProps) => {
       nextLevelName: '',
     },
   ]);
+
+  const profile=useAppSelector(state=>state.loginId.profileData);
+  const [educationdata, setEducationdata] = React.useState(createEducation());
+  const [professionaldata, setProfessionaldata] = React.useState(createProfessional());
+  const [intialpageLoad, setintialpageLoad] = React.useState(true);
+
   useEffect(() => {
     updateEnableNext(true)
     const currentYear = new Date().getFullYear();
@@ -64,21 +70,34 @@ const Education = ({navigation, updateEnableNext}: WizardProps) => {
         setLoadYearList(!loadYear);
       }
     }
-  }, []);
-  //   useEffect(() => {
-  //   },[loadYear])
+    if(intialpageLoad)
+      {
+        setEducationdata(profile.educationDetails)
+        setProfessionaldata(profile.professionDetails)
+        setintialpageLoad(false)
+    }
+  }, [navigation]);
+
   function setDegreedata(label: any) {
-    educationdata.degree = label;
+    var neweducationdata={...educationdata}
+    neweducationdata.degree = label;
+    setEducationdata(neweducationdata)
   }
 
   function setCoursedata(label: any) {
-    educationdata.course = label;
+    var neweducationdata={...educationdata}
+    neweducationdata.course = label;
+    setEducationdata(neweducationdata)
   }
   function setEmploymentdata(label: any) {
-    professionaldata.employment = label;
+    var newprofessionaldata={...professionaldata}
+    newprofessionaldata.employment = label;
+    setProfessionaldata(newprofessionaldata)
   }
   function setCurrencydata(label: any) {
-    professionaldata.currency = label;
+    var newprofessionaldata={...professionaldata}
+    newprofessionaldata.currency = label;
+    setProfessionaldata(newprofessionaldata)
   }
   function onSubmit() {
     EducationServices.saveeducationDetail(educationdata, accountId)
@@ -107,7 +126,9 @@ const Education = ({navigation, updateEnableNext}: WizardProps) => {
     if (title === 'Year') {
       yearList.map((item: any) => {
         if (item.name == id) {
-          educationdata.passoutYear = item.name;
+          var neweducationdata={...educationdata}
+          neweducationdata.passoutYear = item.name;
+          setEducationdata(neweducationdata)
           setPassOutyearModel(!showPassoutYear);
           //setLoadYearList(!loadYear)
         }
@@ -115,19 +136,21 @@ const Education = ({navigation, updateEnableNext}: WizardProps) => {
     }
   }
   function onChangeValue(name: any, text: any) {
+    var newprofessionaldata={...professionaldata}
     if (name == 'profession') {
-      professionaldata.profession = text;
+      newprofessionaldata.profession = text;
     }
     if (name == 'company') {
-      professionaldata.company = text;
+      newprofessionaldata.company = text;
     }
     if (name == 'salary') {
-      professionaldata.salary = text;
+      newprofessionaldata.salary = text;
     }
+    setProfessionaldata(newprofessionaldata)
   }
   return (
 
-    <View>
+    <ScrollView>
         <AppDropDown
         gender={dbDegree}
         value={educationdata.degree}
@@ -144,7 +167,7 @@ const Education = ({navigation, updateEnableNext}: WizardProps) => {
         lable={'PassOut Year'}
         onPress={setPassOutyearModel}
         dataBind={'year'}
-        value={educationdata.passoutYear}
+        value={educationdata.passoutYear.toString()}
         icon={'chevron-forward-outline'}
       />
 
@@ -167,21 +190,21 @@ const Education = ({navigation, updateEnableNext}: WizardProps) => {
         onFocus={true}
         lable={'Profession'}
         databind={'profession'}
-        //value={personaldata.emailAddress}
+        value={professionaldata.profession}
       />
       <AppTextInput
         onChangeText={onChangeValue}
         onFocus={true}
         lable={'Company'}
         databind={'company'}
-        //value={personaldata.emailAddress}
+        value={professionaldata.company}
       />
       <AppTextInput
         onChangeText={onChangeValue}
         onFocus={true}
         lable={'Salary'}
         databind={'salary'}
-        //value={personaldata.emailAddress}
+        value={professionaldata.salary.toString()}
       />
       <AppDropDown
         gender={dbCurrency}
@@ -199,7 +222,7 @@ const Education = ({navigation, updateEnableNext}: WizardProps) => {
       </TouchableOpacity>
     
 
-    </View>
+    </ScrollView>
 
 
   );

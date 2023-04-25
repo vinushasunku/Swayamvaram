@@ -51,8 +51,9 @@ const MatchesScreen = ({navigation}: WizardProps) => {
   const [filteredDataSource, setFilteredDataSource] = React.useState([]);
   const [masterDataSource, setMasterDataSource] = React.useState([]);
   const [pagetoken, setPreviousPagetoken] = React.useState(1);
-  const accountId = useAppSelector(state => state.registration.accountId);
-  const [selectProfileDetail, setselectProfileDetail] = React.useState<profileDto|null>(null);
+  const loginprofileDetail = useAppSelector(state => state.loginId.profileData);
+  //const accountId = useAppSelector(state => state.registration.accountId);
+  //const [selectProfileDetail, setselectProfileDetail] = React.useState<profileDto|null>(null);
   const [pageLoading, setPageLoading] = React.useState(true);
   const dispatch: any = useAppDispatch();
 
@@ -67,8 +68,8 @@ const MatchesScreen = ({navigation}: WizardProps) => {
     }
   };
   const fetchData = async () => {
-    if (accountId) {
-      getPagetokenInfo.accountId = accountId;
+    if (loginprofileDetail.id) {
+      getPagetokenInfo.accountId = loginprofileDetail.id;
       getPagetokenInfo.pageToke = pagetoken;
       dispatch(fetchMatcheslists(getPagetokenInfo))
         .unwrap()
@@ -87,14 +88,14 @@ const MatchesScreen = ({navigation}: WizardProps) => {
     fetchData();
     dispatch(setEditProfileDetail(false))
   }, [doneLoading]);
-  useEffect(()=>{
-    setPageLoading(false)
-  },[selectProfileDetail])
+  // useEffect(()=>{
+  //   setPageLoading(false)
+  // },[selectProfileDetail])
   const handleOnEndReached = async () => {
     console.log('loadmore', stopFetchMore);
     setLoadingMore(true);
     if (!stopFetchMore) {
-      getPagetokenInfo.accountId = accountId;
+      getPagetokenInfo.accountId = loginprofileDetail.id;
       getPagetokenInfo.pageToke = pagetoken + 1;
       dispatch(fetchMatcheslists(getPagetokenInfo))
         .unwrap()
@@ -112,7 +113,7 @@ const MatchesScreen = ({navigation}: WizardProps) => {
   };
   function selectProfile(id: any) {
     const selectProfileId = {
-      accountId: accountId,
+      accountId: loginprofileDetail.id,
       selectedProfileId: id,
     };
     dispatch(setEditProfileDetail(false))
@@ -120,24 +121,25 @@ const MatchesScreen = ({navigation}: WizardProps) => {
     dispatch(fetchProfiledetail(selectProfileId))
         .unwrap()
         .then((response: any) => {
-          setselectProfileDetail(response)
+          //setselectProfileDetail(response)
           //setStatusLoading(true);
+          navigation.navigate('ProfileDetail');
         })
         .catch((error: any) => {
           console.log('get matches list', error);
         });
-    navigation.navigate('ProfileDetail');
+
   }
   function sendButton(id:any) {
     console.log('Send');
-    MatchesService.sendProposal(accountId,id).then((response:any)=>{
+    MatchesService.sendProposal(loginprofileDetail.id,id).then((response:any)=>{
      console.log('success send')
   }).catch((error:any)=>{
       console.log('error:',error)})
   }
   function rejectButton(id:any) {
     console.log('Send');
-    MatchesService.rejectProposal(accountId,id).then((response:any)=>{
+    MatchesService.rejectProposal(loginprofileDetail.id,id).then((response:any)=>{
      console.log('success send')
   }).catch((error:any)=>{
       console.log('error:',error)})

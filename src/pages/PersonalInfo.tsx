@@ -103,7 +103,6 @@ const PersonalInfo = ({navigation,updateEnableNext}: WizardProps) => {
       RegistrationService.getRegistrationDetail(personaldata)
         .then((response: any) => {
           if (response) {
-            console.log('accountId', response.data);
             dispatch(setAccountId(response.data));
             updateEnableNext(true);
           }

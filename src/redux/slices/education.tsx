@@ -25,17 +25,7 @@ export function createProfessional(): ProfessionalDataDto {
     currency:''
     };
   }
-// export function createEducationList(): [EducationDataDto]{
-//     return[
-//       {
-//         id:'',
-//         name:'',
-//         hasNextLevel:'',
-//         nextLevelName:''
-//     }
-//     ]
-  
-//   }
+
 export const educationSlice = createSlice({
   name: 'education',
   initialState,

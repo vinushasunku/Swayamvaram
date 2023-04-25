@@ -38,6 +38,7 @@ export const AppDropDown=({gender,value,onSelection,label}:ButtonProps)=>{
             placeholder="Select item"
             searchPlaceholder="Search..."
             value={value}
+            
             onChange={item => {
                 onSelection(item.label);
             }}

@@ -1,11 +1,13 @@
 import React, { useEffect} from 'react';
 import {TouchableOpacity, View} from 'react-native';
 import {Text} from 'react-native-elements';
-import { useAppSelector} from '../redux/hooks';
+import { useAppDispatch, useAppSelector} from '../redux/hooks';
 import {GetStyle} from '../styles/style-sheet';
 
 import AppTextInput from '../components/TextInput';
 import FamilyService from '../services/FamilyService';
+import { createFamily } from '../redux/slices/family';
+import { setProfileInfo } from '../redux/slices/login';
 
 const styles: any = GetStyle();
 type WizardProps = {
@@ -14,22 +16,34 @@ type WizardProps = {
 };
 
 const Family = ({navigation, updateEnableNext}: WizardProps) => {
-  const familydata = useAppSelector(state => state.family.familyData);
+  //const familydata = useAppSelector(state => state.family.familyData);
 
   const accountId = useAppSelector(state => state.registration.accountId);
-
+  const profile=useAppSelector(state=>state.loginId.profileData);
+  const [familydata, setFamilydata] = React.useState(createFamily());
+  const [intialpageLoad, setintialpageLoad] = React.useState(true);
+  const dispatch: any = useAppDispatch();
   useEffect(() => {
     updateEnableNext(true)
-  }, []);
+    if(profile.personalDetails && intialpageLoad){
+      setFamilydata(profile.familyDetails);
+      setintialpageLoad(false)
+    }
+  
+  }, [familydata]);
 
-
+  // useEffect(() => {
+  //   updateEnableNext(true)
+  
+  //   }, [familydata]);
 
   function onSubmit() {
-    console.log(familydata)
+    console.log('family',accountId)
     FamilyService.saveFamilyDetail(familydata, accountId)
       .then((response: any) => {
         if (response) {
-          console.log('accountId', response);
+          profile.familyDetails=familydata;
+          dispatch(setProfileInfo(profile))
         }
       })
       .catch((error: any) => {
@@ -39,18 +53,20 @@ const Family = ({navigation, updateEnableNext}: WizardProps) => {
 
 
   function onChangeValue(name: any, text: any) {
+    var newfamilydata={...familydata}
     if (name == 'fatherName') {
-        familydata.fatherName = text;
+      newfamilydata.fatherName = text;
     }
     if (name == 'motherName') {
-        familydata.motherName = text;
+      newfamilydata.motherName = text;
     }
     if (name == 'brothers') {
-      familydata.brothers = Number(text);
+      newfamilydata.brothers = Number(text);
     }
     if (name == 'sisters') {
-        familydata.sisters = Number(text);
+      newfamilydata.sisters = Number(text);
       }
+      setFamilydata(newfamilydata)
   }
   return (
 
@@ -60,28 +76,28 @@ const Family = ({navigation, updateEnableNext}: WizardProps) => {
         onFocus={true}
         lable={'Father Name'}
         databind={'fatherName'}
-        //value={personaldata.emailAddress}
+        value={familydata.fatherName}
       />
       <AppTextInput
         onChangeText={onChangeValue}
         onFocus={true}
         lable={'Mother Name'}
         databind={'motherName'}
-        //value={personaldata.emailAddress}
+        value={familydata.motherName}
       />
       <AppTextInput
         onChangeText={onChangeValue}
         onFocus={true}
         lable={'Number of Brothers'}
         databind={'brothers'}
-        //value={personaldata.emailAddress}
+        value={familydata.brothers.toString()}
       />
        <AppTextInput
         onChangeText={onChangeValue}
         onFocus={true}
         lable={'Number of sisters'}
         databind={'sisters'}
-        //value={personaldata.emailAddress}
+        value={familydata.sisters.toString()}
       />
 
       <TouchableOpacity

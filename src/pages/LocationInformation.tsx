@@ -10,6 +10,7 @@ import {
   fetchCountrylists,
   fetchCitylists,
   fetchStatelists,
+  createLocation,
 } from '../redux/slices/location';
 import {GetStyle} from '../styles/style-sheet';
 import AppDropDown from '../components/AppDropDown';
@@ -29,13 +30,18 @@ const LocationInformation = ({navigation, updateEnableNext}: WizardProps) => {
   const countryList = useAppSelector(state => state.location.countryData);
   const stateList = useAppSelector(state => state.location.stateList);
   const cityList = useAppSelector(state => state.location.cityList);
-  const locationdata = useAppSelector(state => state.location.locationData);
+  //const locationdata = useAppSelector(state => state.location.locationData);
   const [option, setOption] = React.useState('');
   const [stateListLoad, setloadStateList] = React.useState(false);
   const [showCitizenshipModel, setCitizenshipModel] = React.useState(false);
   const [cityListLoad, setloadcityList] = React.useState(false);
   const [pageLoading, setPageLoading] = React.useState(true);
   const accountId = useAppSelector(state => state.registration.accountId);
+
+  const profile=useAppSelector(state=>state.loginId.profileData);
+  const [locationdata, setLocationdata] = React.useState(createLocation());
+  const [intialpageLoad, setintialpageLoad] = React.useState(true);
+
   const citizenshipList: [LocationDataDto] = [
     {
       id: 'Country',
@@ -51,6 +57,25 @@ const LocationInformation = ({navigation, updateEnableNext}: WizardProps) => {
     {label: 'WORK_VISA', value: '3'},
     {label: 'PR', value: '4'},
   ];
+
+  useEffect(() => {
+    try {
+      console.log('acccountid',accountId)
+      if(intialpageLoad)
+      {
+        setLocationdata(profile.locationDetails)
+      if(profile.locationDetails.country != null){
+        setloadStateList(true)
+      }
+      if(profile.locationDetails.state != null){
+        setloadcityList(true)
+      }
+      setintialpageLoad(false)
+    }
+    } catch (error) {
+    }
+  }, [navigation]);
+
   useEffect(() => {
     setPageLoading(true);
     if (pageLoading) {
@@ -63,7 +88,7 @@ const LocationInformation = ({navigation, updateEnableNext}: WizardProps) => {
           setPageLoading(false);
         });
     }
-  }, [pageLoading]);
+  }, []);
 
   useEffect(() => {
     console.log('pageloading1', locationdata.country);

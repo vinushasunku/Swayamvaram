@@ -9,11 +9,13 @@ import Registration from './Registration';
 import LoginService from '../services/LoginService';
 import { setModalData } from '../redux/slices/appData';
 import { createSecureService } from '../services/APIServices';
+import { setAccountId } from '../redux/slices/registration';
 const style: any = GetStyle();
 const LoginPage = ({navigation}: any) => {
   const dispatch = useAppDispatch();
   const [inLoginPage, setInLoginPage] = React.useState(false);
   const [passwordinput, setPassword] = React.useState('');
+  const [emailinput, setEmailPassword] = React.useState('');
   const [mobileinput, setMobile] = React.useState(0);
   const [countryCode, setCountryCode] = React.useState(0);
 
@@ -37,13 +39,15 @@ const LoginPage = ({navigation}: any) => {
   };
   function signupButton() {
     const logindto={
-            countryCode:Number(countryCode),
-            mobileNumber: Number(mobileinput),
+            // countryCode:Number(countryCode),
+            // mobileNumber: Number(mobileinput),
+            emailAddress:emailinput,
             password :passwordinput  
     }
     LoginService.getLoginDetail(logindto).then((response:any)=>{
         if(response){
             dispatch(setProfileInfo(response.data))
+            dispatch(setAccountId(response.data.id))
             if(response.data.personalDetails != null &&
               response.data.familyDetails !=null && 
               response.data.regionDetails !=null && 
@@ -72,7 +76,16 @@ const LoginPage = ({navigation}: any) => {
       <View style={{width: '95%'}}>
         <View
           style={styles.loginTestbox}>
-          <IntlPhoneInput
+          <TextInput
+            placeholderTextColor="#2F4F4F"
+            style={[styles.mediumText]}
+            placeholder={'Enter Email'}
+            //SonFocus={true}
+            editable={true}
+            //value={value}
+            onChangeText={(data)=>setEmailPassword(data)}
+          />
+          {/* <IntlPhoneInput
             phoneInputStyle={{
               flex: 1,
               marginLeft: 30,
@@ -83,7 +96,7 @@ const LoginPage = ({navigation}: any) => {
             dialCodeTextStyle={{color: 'black'}}
             defaultCountry="IN"
             placeholder="Enter Mobile Number"
-          />
+          /> */}
         </View>
         <View
           style={styles.loginTestbox}>

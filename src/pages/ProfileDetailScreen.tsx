@@ -4,6 +4,7 @@ import {
   Text,
   StatusBar,
   useWindowDimensions,
+  ScrollView,
   TouchableOpacity,
 } from 'react-native';
 import {GetStyle} from '../styles/style-sheet';
@@ -22,7 +23,15 @@ import {
 } from '../utils/actionfunctions';
 import PersonalInfo from './PersonalInfo';
 import ProfileEdit from './ProfileEdit';
-import { createProfile, setEditProfileDetailInfo } from '../redux/slices/login';
+import {
+  createProfile,
+  setEditProfileDetailInfo,
+  setEditType,
+} from '../redux/slices/login';
+import {typeProfileDetail} from '../services/RegistrationService';
+import {createIconSetFromFontello} from 'react-native-vector-icons';
+import {useIsFocused} from '@react-navigation/native';
+
 const styles: any = GetStyle();
 type WizardProps = {
   navigation: any;
@@ -37,12 +46,15 @@ export const ProfileDetailScreen = ({navigation}: WizardProps) => {
   );
   const profileDetail = useAppSelector(state => state.matches.profileDetail);
   const matchingstatus = useAppSelector(state => state.matches.matchingStatus);
-  const profileEditVisiable = useAppSelector(state => state.loginId.editProfileDetail);
+  const profileEditVisiable = useAppSelector(
+    state => state.loginId.editProfileDetail,
+  );
+  const editType = useAppSelector(state => state.loginId.editType);
   const [doneLoading, setStatusLoading] = useState(false);
   const editBackPage = useAppSelector(state => state.loginId.editProfile);
   const dispatch: any = useAppDispatch();
   const Tab = createMaterialTopTabNavigator();
-
+  const isFocused = useIsFocused();
   function MyTabs() {
     return (
       <Tab.Navigator>
@@ -55,17 +67,9 @@ export const ProfileDetailScreen = ({navigation}: WizardProps) => {
   // useEffect(()=>{
 
   // },[profileEditVisiable])
-  useEffect(() => {  
+  useEffect(() => {
     if (editBackPage === false && selectProfileId.selectedProfileId != '') {
       console.log('select profile', selectProfileId);
-      dispatch(fetchProfiledetail(selectProfileId))
-        .unwrap()
-        .then((response: any) => {
-          setStatusLoading(true);
-        })
-        .catch((error: any) => {
-          console.log('get matches list', error);
-        });
       dispatch(fetchMatchingStatus(selectProfileId))
         .unwrap()
         .then((response: any) => {
@@ -75,22 +79,7 @@ export const ProfileDetailScreen = ({navigation}: WizardProps) => {
           console.log('get matches list', error);
         });
     }
-  }, [doneLoading]);
-  // function sendButton(id:any) {
-  //   console.log('Send');
-  //   MatchesService.sendProposal(accountId,id).then((response:any)=>{
-  //    console.log('success send')
-  // }).catch((error:any)=>{
-  //     console.log('error:',error)})
-  // }
-  // function rejectButton(id:any) {
-  //   console.log('Send');
-  //   MatchesService.rejectProposal(accountId,id).then((response:any)=>{
-  //    console.log('success send')
-  // }).catch((error:any)=>{
-  //     console.log('error:',error)})
-  // }
-
+  }, [selectProfileId]);
   const actionDisplay = () => {
     return (
       <View
@@ -216,25 +205,44 @@ export const ProfileDetailScreen = ({navigation}: WizardProps) => {
         {actionDisplay()}
         {MyTabs()}
       </View>
-      <ProfileEdit profileEditVisiable={profileEditVisiable} editType={'Basic'} navigation={navigation}/>
+      <ProfileEdit
+        profileEditVisiable={profileEditVisiable}
+        editType={editType}
+        navigation={navigation}
+      />
     </SafeAreaView>
   );
 };
 const PersonalInfoRoute = ({navigation}) => {
-  let selectedprofileDetail = useAppSelector(state => state.matches.profileDetail);
+  let selectedprofileDetail = useAppSelector(
+    state => state.matches.profileDetail,
+  );
   const editBackPage = useAppSelector(state => state.loginId.editProfile);
   let loginprofileDetail = useAppSelector(state => state.loginId.profileData);
   const [profileDetail, setprofileDetail] = React.useState(createProfile());
+  const profileEditVisiable = useAppSelector(
+    state => state.loginId.editProfileDetail,
+  );
+  const selectProfileId = useAppSelector(
+    state => state.matches.selectedProfileId,
+  );
+  const isFocused = useIsFocused();
+
   const dispatch: any = useAppDispatch();
   useEffect(() => {
-    console.log(editBackPage)
-    if(editBackPage)
-    {
-      setprofileDetail(loginprofileDetail)
-    }else{
-      setprofileDetail(selectedprofileDetail)
+    if (editBackPage) {
+      setprofileDetail(loginprofileDetail);
+      console.log('selected profile2', loginprofileDetail);
+    } else {
+      console.log('selected profile', selectedprofileDetail);
+      setprofileDetail(selectedprofileDetail);
     }
-  },[])
+  }, [editBackPage, profileDetail, isFocused, profileEditVisiable]);
+  // useEffect(() => {
+  //   setprofileDetail(selectedprofileDetail)
+  //   console.log('test loading',profileDetail)
+  // },[profileDetail])
+
   return (
     <View style={{flex: 1, backgroundColor: 'white', paddingLeft: 20}}>
       <Text style={[styles.mediumHeaderText, {paddingTop: 20, fontSize: 20}]}>
@@ -262,7 +270,8 @@ const PersonalInfoRoute = ({navigation}) => {
                 position: 'absolute',
               }}
               onPress={() => {
-                dispatch(setEditProfileDetailInfo(true))
+                dispatch(setEditType(typeProfileDetail.Basic));
+                dispatch(setEditProfileDetailInfo(true));
               }}>
               <Icon
                 name={'pencil-outline'}
@@ -333,6 +342,10 @@ const PersonalInfoRoute = ({navigation}) => {
           </Text>
           {editBackPage ? (
             <TouchableOpacity
+              onPress={() => {
+                dispatch(setEditType(typeProfileDetail.FamilyDetail));
+                dispatch(setEditProfileDetailInfo(true));
+              }}
               style={{
                 alignItems: 'flex-end',
                 justifyContent: 'flex-end',
@@ -375,8 +388,8 @@ const PersonalInfoRoute = ({navigation}) => {
           <Text style={[styles.mediumText, {width: '50%'}]}>{'Brother'}</Text>
           <Text style={[styles.mediumText, {width: '10%'}]}>{'-'}</Text>
           <Text style={[styles.mediumText]}>
-            {profileDetail?.familyDetails?.motherName != null
-              ? profileDetail?.familyDetails?.motherName
+            {profileDetail?.familyDetails?.brothers != null
+              ? profileDetail?.familyDetails?.brothers
               : 'No Information'}
           </Text>
         </View>
@@ -395,9 +408,30 @@ const PersonalInfoRoute = ({navigation}) => {
 };
 
 const ReligiousInfoRoute = () => {
-  const profileDetail = useAppSelector(state => state.matches.profileDetail);
+  //const profileDetail = useAppSelector(state => state.matches.profileDetail);
+  const isFocused = useIsFocused();
+  let selectedprofileDetail = useAppSelector(
+    state => state.matches.profileDetail,
+  );
+  const editBackPage = useAppSelector(state => state.loginId.editProfile);
+  let loginprofileDetail = useAppSelector(state => state.loginId.profileData);
+  const [profileDetail, setprofileDetail] = React.useState(createProfile());
+  const profileEditVisiable = useAppSelector(
+    state => state.loginId.editProfileDetail,
+  );
+  const dispatch: any = useAppDispatch();
+  useEffect(() => {
+    if (editBackPage) {
+      setprofileDetail(loginprofileDetail);
+      console.log('selected profile2', loginprofileDetail);
+    } else {
+      console.log('selected profile', selectedprofileDetail);
+      setprofileDetail(selectedprofileDetail);
+    }
+  }, [editBackPage, profileDetail, isFocused, profileEditVisiable]);
+  // useEffect(() => {
   return (
-    <View style={{flex: 1, backgroundColor: 'white', paddingLeft: 20}}>
+    <ScrollView style={{flex: 1, backgroundColor: 'white', paddingLeft: 20}}>
       <Text style={[styles.mediumHeaderText, {paddingTop: 20, fontSize: 20}]}>
         {'Religious/Location Information'}
       </Text>
@@ -410,9 +444,33 @@ const ReligiousInfoRoute = () => {
           borderRadius: 10,
           paddingLeft: 20,
         }}>
-        <Text style={[styles.mediumHeaderText, {paddingTop: 20, fontSize: 20}]}>
-          {'Caste Detail'}
-        </Text>
+        <View style={{flexDirection: 'row', marginTop: 20}}>
+          <Text
+            style={[styles.mediumHeaderText, {paddingTop: 20, fontSize: 20}]}>
+            {'Caste Detail'}
+          </Text>
+          {editBackPage ? (
+            <TouchableOpacity
+              style={{
+                alignItems: 'flex-end',
+                justifyContent: 'flex-end',
+                right: 10,
+                position: 'absolute',
+              }}
+              onPress={() => {
+                dispatch(setEditType(typeProfileDetail.CasteDetail));
+                dispatch(setEditProfileDetailInfo(true));
+              }}>
+              <Icon
+                name={'pencil-outline'}
+                size={25}
+                color={Colors.FrenchRose}
+              />
+            </TouchableOpacity>
+          ) : (
+            <></>
+          )}
+        </View>
         <View style={{flexDirection: 'row'}}>
           <Text style={[styles.mediumText, {width: '50%'}]}>{'religion'}</Text>
           <Text style={[styles.mediumText, {width: '10%'}]}>{'-'}</Text>
@@ -436,7 +494,7 @@ const ReligiousInfoRoute = () => {
           <Text style={[styles.mediumText, {width: '10%'}]}>{'-'}</Text>
           <Text style={[styles.mediumText]}>
             {profileDetail?.regionDetails?.subCaste != null
-              ? profileDetail?.regionDetails?.caste
+              ? profileDetail?.regionDetails?.subCaste
               : 'No Information'}
           </Text>
         </View>
@@ -450,9 +508,33 @@ const ReligiousInfoRoute = () => {
           borderRadius: 10,
           paddingLeft: 20,
         }}>
-        <Text style={[styles.mediumHeaderText, {paddingTop: 20, fontSize: 20}]}>
-          {'Location Details'}
-        </Text>
+        <View style={{flexDirection: 'row', marginTop: 20}}>
+          <Text
+            style={[styles.mediumHeaderText, {paddingTop: 20, fontSize: 20}]}>
+            {'Location Details'}
+          </Text>
+          {editBackPage ? (
+            <TouchableOpacity
+              style={{
+                alignItems: 'flex-end',
+                justifyContent: 'flex-end',
+                right: 10,
+                position: 'absolute',
+              }}
+              onPress={() => {
+                dispatch(setEditType(typeProfileDetail.LocationDetail));
+                dispatch(setEditProfileDetailInfo(true));
+              }}>
+              <Icon
+                name={'pencil-outline'}
+                size={25}
+                color={Colors.FrenchRose}
+              />
+            </TouchableOpacity>
+          ) : (
+            <></>
+          )}
+        </View>
         <View style={{flexDirection: 'row'}}>
           <Text style={[styles.mediumText, {width: '50%'}]}>{'Country'}</Text>
           <Text style={[styles.mediumText, {width: '10%'}]}>{'-'}</Text>
@@ -531,17 +613,58 @@ const ReligiousInfoRoute = () => {
           </Text>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
 const ProfessionalInfoRoute = () => {
-  const profileDetail = useAppSelector(state => state.matches.profileDetail);
+  let selectedprofileDetail = useAppSelector(
+    state => state.matches.profileDetail,
+  );
+  const editBackPage = useAppSelector(state => state.loginId.editProfile);
+  let loginprofileDetail = useAppSelector(state => state.loginId.profileData);
+  const [profileDetail, setprofileDetail] = React.useState(createProfile());
+  const profileEditVisiable = useAppSelector(
+    state => state.loginId.editProfileDetail,
+  );
+  const selectProfileId = useAppSelector(
+    state => state.matches.selectedProfileId,
+  );
+  const isFocused = useIsFocused();
+
+  const dispatch: any = useAppDispatch();
+  useEffect(() => {
+    if (editBackPage) {
+      setprofileDetail(loginprofileDetail);
+    } else {
+      setprofileDetail(selectedprofileDetail);
+    }
+  }, [editBackPage, profileDetail, isFocused, profileEditVisiable]);
+
   return (
     <View style={{flex: 1, backgroundColor: 'white', paddingLeft: 20}}>
-      <Text style={[styles.mediumHeaderText, {paddingTop: 20, fontSize: 20}]}>
-        {'Professional Information'}
-      </Text>
+      <View style={{flexDirection: 'row', marginTop: 20}}>
+        <Text style={[styles.mediumHeaderText, {paddingTop: 20, fontSize: 20}]}>
+          {'Professional Information'}
+        </Text>
+        {editBackPage ? (
+          <TouchableOpacity
+            style={{
+              alignItems: 'flex-end',
+              justifyContent: 'flex-end',
+              right: 10,
+              position: 'absolute',
+            }}
+            onPress={() => {
+              dispatch(setEditType(typeProfileDetail.ProfessionalDetail));
+              dispatch(setEditProfileDetailInfo(true));
+            }}>
+            <Icon name={'pencil-outline'} size={25} color={Colors.FrenchRose} />
+          </TouchableOpacity>
+        ) : (
+          <></>
+        )}
+      </View>
       <View
         style={{
           borderWidth: 1,

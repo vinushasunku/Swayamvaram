@@ -5,8 +5,9 @@ import { FamilyInfoDto } from './FamilyService';
 import { LocationInfoDto } from './LocationService';
 import { PersonalDto } from './PersonalService';
 export interface LoginDto {
-  countryCode: number;
-  mobileNumber: number;
+  // countryCode: number;
+  // mobileNumber: number;
+  emailAddress:string;
   password: string;
 }
 export interface profileDto{
@@ -18,7 +19,17 @@ export interface profileDto{
   professionDetails:ProfessionalDataDto;
   educationDetails:EducationInfoDto;
   password:string;
+  photoDetails:PhotoDetails;
   photoLinks:string[];
+}
+export interface PhotoDetails {
+  photoList: PhotoList[]
+  profilePicture: any
+}
+
+export interface PhotoList {
+  photoId: string
+  verificationStatus: string
 }
 class LoginService {
     
