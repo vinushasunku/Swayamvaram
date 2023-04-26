@@ -20,7 +20,8 @@ export const initialState={
     selectedProfileId:selectedprofileInfo(),
     matchesPageInfo:matchesPageInfo(),
     profileDetail:createDetailProfile(),
-    matchingStatus:createMatchingStatus()
+    matchingStatus:createMatchingStatus(),
+    preferenceShow:false
 }
 export function createMatches(): [MatchesInfoDto]{
     return[{
@@ -105,6 +106,9 @@ export const matcheSlice = createSlice({
       setMatches:(state, action: PayloadAction<any>)=> {
         state.matchesData.push(action.payload)      
       },
+      setPreferenceVisiable:(state, action: PayloadAction<any>)=> {
+        state.preferenceShow=action.payload    
+      },
       // setselectedProfileId(state, action: PayloadAction<any>) {
       //   state.selectedProfileId = action.payload
       // },
@@ -171,7 +175,7 @@ export const matcheSlice = createSlice({
     }
   })
   
-  export const { setMatches,setselectedProfileId} = matcheSlice.actions
+  export const { setMatches,setselectedProfileId,setPreferenceVisiable} = matcheSlice.actions
   export  const getMatches=(state:any)=>state.matchesData;
   export const getMatchList=(state:any)=>{
     return[

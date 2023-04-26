@@ -21,6 +21,12 @@ export interface StatusReasonDto{
     viewedByProfileIds:string[]
 
 }
+export interface  ListDropDownDto{
+    id:string,
+    name:string,
+    hasNextLevel:string,
+    nextLevelName:string
+}
 
 export interface MatchesPageInfoDto{
     accountId:string,
@@ -30,6 +36,29 @@ export interface ProfileSelectedDto{
     accountId:string,
     selectedProfileId:string
 }
+
+export interface PrefrenceDataDto {
+    age: Age
+    salary: Salary
+    salaryCurrency: string
+    visaStatus: any[]
+    employment: any[]
+    countries: string[]
+    religions: string[]
+    castes: string[]
+    subCastes: any[]
+    profession: any[]
+  }
+  
+  export interface Age {
+    min: number
+    max: number
+  }
+  
+  export interface Salary {
+    min: number
+    max: number
+  }
 class MatchesService{
     getMatchesList=(accountId:string, pageToke:number)=>secureGet('/matrimony/'+accountId+'/matching?pageSize=3&pageToke='+pageToke);
     getProfileDetail=(accountId:string, ProfileId:string)=>secureGet('/matrimony/'+accountId+'/matching/'+ProfileId+'/details');

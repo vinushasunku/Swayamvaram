@@ -1,4 +1,4 @@
-import React, {useEffect, useCallback, useState} from 'react';
+import React, {useEffect, useCallback, useState, useLayoutEffect} from 'react';
 import {
   View,
   Text,
@@ -21,6 +21,7 @@ import {
   fetchMatcheslists,
   setselectedProfileId,
   fetchProfiledetail,
+  setPreferenceVisiable,
 } from '../redux/slices/matches';
 import {Avatar, Icon, SearchBar, Tooltip} from 'react-native-elements';
 import Icons from 'react-native-vector-icons/Ionicons';
@@ -29,8 +30,9 @@ import MatchesService, {MatchesInfoDto} from '../services/MatchesService';
 import {createSecureService} from '../services/APIServices';
 import AppButton from '../components/AppButton';
 import Colors from '../styles/colors';
-import { profileDto } from '../services/LoginService';
-import { setEditProfileDetail } from '../redux/slices/login';
+import {profileDto} from '../services/LoginService';
+import {setEditProfileDetail} from '../redux/slices/login';
+import SavePreference from './SavePreference';
 const styles: any = GetStyle();
 type WizardProps = {
   navigation: any;
@@ -52,6 +54,7 @@ const MatchesScreen = ({navigation}: WizardProps) => {
   const [masterDataSource, setMasterDataSource] = React.useState([]);
   const [pagetoken, setPreviousPagetoken] = React.useState(1);
   const loginprofileDetail = useAppSelector(state => state.loginId.profileData);
+  const showPreference = useAppSelector(state => state.matches.preferenceShow);
   //const accountId = useAppSelector(state => state.registration.accountId);
   //const [selectProfileDetail, setselectProfileDetail] = React.useState<profileDto|null>(null);
   const [pageLoading, setPageLoading] = React.useState(true);
@@ -67,6 +70,22 @@ const MatchesScreen = ({navigation}: WizardProps) => {
       setSearch(text);
     }
   };
+  useEffect(() => {
+    fetchData();
+    dispatch(setEditProfileDetail(false));
+  }, [doneLoading]);
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity
+          onPress={() => {
+            dispatch(setPreferenceVisiable(true));
+          }}>
+          <Icons name="filter" size={24} color={Colors.FrenchRose} />
+        </TouchableOpacity>
+      ),
+    });
+  }, []);
   const fetchData = async () => {
     if (loginprofileDetail.id) {
       getPagetokenInfo.accountId = loginprofileDetail.id;
@@ -84,10 +103,6 @@ const MatchesScreen = ({navigation}: WizardProps) => {
     //setData(getMatchList);
   };
 
-  useEffect(() => {
-    fetchData();
-    dispatch(setEditProfileDetail(false))
-  }, [doneLoading]);
   // useEffect(()=>{
   //   setPageLoading(false)
   // },[selectProfileDetail])
@@ -116,33 +131,38 @@ const MatchesScreen = ({navigation}: WizardProps) => {
       accountId: loginprofileDetail.id,
       selectedProfileId: id,
     };
-    dispatch(setEditProfileDetail(false))
+    dispatch(setEditProfileDetail(false));
     dispatch(setselectedProfileId(selectProfileId));
     dispatch(fetchProfiledetail(selectProfileId))
-        .unwrap()
-        .then((response: any) => {
-          //setselectProfileDetail(response)
-          //setStatusLoading(true);
-          navigation.navigate('ProfileDetail');
-        })
-        .catch((error: any) => {
-          console.log('get matches list', error);
-        });
-
+      .unwrap()
+      .then((response: any) => {
+        //setselectProfileDetail(response)
+        //setStatusLoading(true);
+        navigation.navigate('ProfileDetail');
+      })
+      .catch((error: any) => {
+        console.log('get matches list', error);
+      });
   }
-  function sendButton(id:any) {
+  function sendButton(id: any) {
     console.log('Send');
-    MatchesService.sendProposal(loginprofileDetail.id,id).then((response:any)=>{
-     console.log('success send')
-  }).catch((error:any)=>{
-      console.log('error:',error)})
+    MatchesService.sendProposal(loginprofileDetail.id, id)
+      .then((response: any) => {
+        console.log('success send');
+      })
+      .catch((error: any) => {
+        console.log('error:', error);
+      });
   }
-  function rejectButton(id:any) {
+  function rejectButton(id: any) {
     console.log('Send');
-    MatchesService.rejectProposal(loginprofileDetail.id,id).then((response:any)=>{
-     console.log('success send')
-  }).catch((error:any)=>{
-      console.log('error:',error)})
+    MatchesService.rejectProposal(loginprofileDetail.id, id)
+      .then((response: any) => {
+        console.log('success send');
+      })
+      .catch((error: any) => {
+        console.log('error:', error);
+      });
   }
   function matcheProfile() {
     const renderItem = ({item}) => {
@@ -159,7 +179,7 @@ const MatchesScreen = ({navigation}: WizardProps) => {
                   aspectRatio: 1.6,
                   borderWidth: 1,
                   borderRadius: 5,
-                  borderTopEndRadius:5
+                  borderTopEndRadius: 5,
                 }}
                 resizeMode="cover"
                 source={{
@@ -192,13 +212,35 @@ const MatchesScreen = ({navigation}: WizardProps) => {
                 </Text>
                 <View style={[{flexDirection: 'row'}]}>
                   <TouchableOpacity
-                    style={[styles.submitButton, {marginTop: 10, width:'40%', height:"60%", alignItems:'center'}]}
-                    onPress={()=>{sendButton(item.accountId)}}>
+                    style={[
+                      styles.submitButton,
+                      {
+                        marginTop: 10,
+                        width: '40%',
+                        height: '60%',
+                        alignItems: 'center',
+                      },
+                    ]}
+                    onPress={() => {
+                      sendButton(item.accountId);
+                    }}>
                     <Text style={[styles.buttonText]}>{'Send'}</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    style={[styles.submitButton, {marginTop: 10,marginLeft:0, width:'40%', marginRight:10, height:"60%",alignItems:'center'}]}
-                    onPress={()=>{rejectButton(item.accountId)}}>
+                    style={[
+                      styles.submitButton,
+                      {
+                        marginTop: 10,
+                        marginLeft: 0,
+                        width: '40%',
+                        marginRight: 10,
+                        height: '60%',
+                        alignItems: 'center',
+                      },
+                    ]}
+                    onPress={() => {
+                      rejectButton(item.accountId);
+                    }}>
                     <Text style={[styles.buttonText]}>{'Not Intrested'}</Text>
                   </TouchableOpacity>
                 </View>
@@ -282,6 +324,10 @@ const MatchesScreen = ({navigation}: WizardProps) => {
 
       {/* {search()} */}
       {matcheProfile()}
+      <SavePreference
+        savePreferenceVisiable={showPreference}
+        navigation={navigation}
+      />
     </SafeAreaView>
   );
 };
