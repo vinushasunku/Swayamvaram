@@ -26,7 +26,7 @@ export const AppTextInput = ({
         style={{
           ...styles.mediumHeaderText,
           paddingBottom: 10,
-          textTransform: 'uppercase',
+          //textTransform: 'uppercase',
         }}>
         {lable}
       </Text>

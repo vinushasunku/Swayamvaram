@@ -93,6 +93,7 @@ const MatchesScreen = ({navigation}: WizardProps) => {
       dispatch(fetchMatcheslists(getPagetokenInfo))
         .unwrap()
         .then(() => {
+          console.log('fetchdata',getMatchList)
           setData(getMatchList);
           setStatusLoading(true);
         })

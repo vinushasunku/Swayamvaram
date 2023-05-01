@@ -3,21 +3,19 @@ import {View, Text, TouchableOpacity, TextInput} from 'react-native';
 import {GetStyle} from '../styles/style-sheet';
 import AppButton from '../components/AppButton';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
-import login, {setProfileInfo, setPaginationId, setResitrationInfo} from '../redux/slices/login';
-import IntlPhoneInput from 'react-native-intl-phone-input';
-import Registration from './Registration';
+import  {setProfileInfo, setResitrationInfo} from '../redux/slices/login';
 import LoginService from '../services/LoginService';
-import { setModalData } from '../redux/slices/appData';
 import { createSecureService } from '../services/APIServices';
 import { setAccountId } from '../redux/slices/registration';
+import AppTextInput from '../components/TextInput';
 const style: any = GetStyle();
 const LoginPage = ({navigation}: any) => {
   const dispatch = useAppDispatch();
   const [inLoginPage, setInLoginPage] = React.useState(false);
   const [passwordinput, setPassword] = React.useState('');
   const [emailinput, setEmailPassword] = React.useState('');
-  const [mobileinput, setMobile] = React.useState(0);
-  const [countryCode, setCountryCode] = React.useState(0);
+  // const [mobileinput, setMobile] = React.useState(0);
+  // const [countryCode, setCountryCode] = React.useState(0);
 
   const styles = GetStyle();
   useEffect(() => {
@@ -33,10 +31,10 @@ const LoginPage = ({navigation}: any) => {
       ),
     });
   }, [navigation]);
-  const onChangeText = ({dialCode, unmaskedPhoneNumber, phoneNumber, isVerified}) => {
-    setCountryCode(dialCode.replace("+", ""));
-    setMobile(unmaskedPhoneNumber);
-  };
+  // const onChangeText = ({dialCode, unmaskedPhoneNumber, phoneNumber, isVerified}) => {
+  //   setCountryCode(dialCode.replace("+", ""));
+  //   setMobile(unmaskedPhoneNumber);
+  // };
   function signupButton() {
     const logindto={
             // countryCode:Number(countryCode),
@@ -50,7 +48,6 @@ const LoginPage = ({navigation}: any) => {
             dispatch(setAccountId(response.data.id))
             if(response.data.personalDetails != null &&
               response.data.familyDetails !=null && 
-              response.data.regionDetails !=null && 
               response.data.locationDetails !=null && 
                response.data.educationDetails !=null && 
                response.data.professionDetails !=null && 
@@ -71,12 +68,24 @@ const LoginPage = ({navigation}: any) => {
   function validation(type: any, value: any) {
     console.log();
   }
+  function onChangeValue(name: any, text: any) {
+    if (name == 'email') {
+      setEmailPassword(text)
+    }
+  }
   return (
-    <View style={[styles.sectionContainer]}>
-      <View style={{width: '95%'}}>
-        <View
-          style={styles.loginTestbox}>
-          <TextInput
+    <View >
+
+        {/* <View
+          style={styles.loginTestbox}> */}
+           <AppTextInput
+        onChangeText={onChangeValue}
+        onFocus={true}
+        lable={'Email address'}
+        databind={'email'}
+        value={emailinput}
+      />
+          {/* <TextInput
             placeholderTextColor="#2F4F4F"
             style={[styles.mediumText]}
             placeholder={'Enter Email'}
@@ -84,7 +93,7 @@ const LoginPage = ({navigation}: any) => {
             editable={true}
             //value={value}
             onChangeText={(data)=>setEmailPassword(data)}
-          />
+          /> */}
           {/* <IntlPhoneInput
             phoneInputStyle={{
               flex: 1,
@@ -97,8 +106,8 @@ const LoginPage = ({navigation}: any) => {
             defaultCountry="IN"
             placeholder="Enter Mobile Number"
           /> */}
-        </View>
-        <View
+        {/* </View> */}
+        {/* <View
           style={styles.loginTestbox}>
           <TextInput
             placeholderTextColor="#2F4F4F"
@@ -110,12 +119,10 @@ const LoginPage = ({navigation}: any) => {
             //value={value}
             onChangeText={(data)=>setPassword(data)}
           />
-        </View>
-        <View>
+        </View> */}
           <AppButton onPress={signupButton} title={'Login'} disabled={false} />
         </View>
-      </View>
-    </View>
+  
   );
 };
 

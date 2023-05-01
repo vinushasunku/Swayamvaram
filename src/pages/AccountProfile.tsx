@@ -72,11 +72,12 @@ const AccountProfile = ({navigation}: WizardProps) => {
  }
   const iconAction=()=>{
     return(
-        <View style={{flexDirection:'row'}}>
-            <TouchableOpacity
+        <View style={[styles.horizotalDiv]}>
+          <View style={{flex:1}}>
+          <TouchableOpacity
                 style={[
                   //styles.submitButton,
-                  {marginTop: 10,  alignItems: 'center',marginLeft:'2%'},
+                  {marginTop: 10,  alignItems: 'center'},
                 ]}
                 onPress={() => {
                    
@@ -86,14 +87,17 @@ const AccountProfile = ({navigation}: WizardProps) => {
                      <Icon name={'thumbs-up-outline'} size={35} color={Colors.FrenchRose}/>
                     </View>   
                
-                <Text style={[styles.mediumHeaderText,{paddingTop:10}]}>{'Shortlisted '}</Text>
+                <Text style={[styles.mediumText,{paddingTop:10, paddingRight:10}]}>{'Shortlisted'}</Text>
                 </View>    
             
               </TouchableOpacity>
+          </View>
+        
+              <View style={{flex:1}}>
               <TouchableOpacity
                 style={[
                   //styles.submitButton,
-                  {marginTop: 10,  alignItems: 'center',marginLeft:'2%'},
+                  {marginTop: 10,  alignItems: 'center'},
                 ]}
                 onPress={() => {
                     //navigation.navigate('ProfileDetail',{edit:true})
@@ -104,14 +108,17 @@ const AccountProfile = ({navigation}: WizardProps) => {
                      <Icon name={'pencil-outline'} size={35} color={Colors.FrenchRose}/>
                     </View>   
                
-                <Text style={[styles.mediumHeaderText,{paddingTop:10}]}>{'Edit Profile '}</Text>
+                <Text style={[styles.mediumText,{paddingTop:10,paddingRight:10}]}>{'Edit Profile'}</Text>
                 </View>    
             
               </TouchableOpacity>
+              </View>
+          
+              <View style={{flex:1}}>
               <TouchableOpacity
                 style={[
                   //styles.submitButton,
-                  {marginTop: 10,  alignItems: 'center',marginLeft:'2%'},
+                  {marginTop: 10,  alignItems: 'center'},
                 ]}
                 onPress={() => {
                    
@@ -121,14 +128,17 @@ const AccountProfile = ({navigation}: WizardProps) => {
                      <Icon name={'settings-outline'} size={35} color={Colors.FrenchRose}/>
                     </View>   
                
-                <Text style={[styles.mediumHeaderText,{paddingTop:10}]}>{'Edit Preferences '}</Text>
+                <Text style={[styles.mediumText,{paddingTop:10,paddingRight:10}]}>{'Preferences'}</Text>
                 </View>    
             
               </TouchableOpacity>
+              </View>
+          
+              <View style={{flex:1}}>
               <TouchableOpacity
                 style={[
                   //styles.submitButton,
-                  {marginTop: 10,  alignItems: 'center',marginLeft:'2%'},
+                  {marginTop: 10,  alignItems: 'center'},
                 ]}
                 onPress={() => {
 
@@ -138,10 +148,12 @@ const AccountProfile = ({navigation}: WizardProps) => {
                      <Icon name={'chatbubble-ellipses-outline'} size={35} color={Colors.FrenchRose}/>
                     </View>   
                
-                <Text style={[styles.mediumHeaderText,{paddingTop:10}]}>{'Chat '}</Text>
+                <Text style={[styles.mediumText,{paddingTop:10,paddingRight:10}]}>{'Chat'}</Text>
                 </View>    
             
               </TouchableOpacity>
+              </View>
+            
         </View>
     )
   }

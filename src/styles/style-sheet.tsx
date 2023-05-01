@@ -7,6 +7,10 @@ const GetStyle=()=>{
     return styles;
 }
 const LightStyle=StyleSheet.create({
+    horizotalDiv:{
+        flexDirection:'row', flex:1, marginLeft:10, justifyContent:'center'
+    },
+    
     submitButton:{
         width:'90%',
         //paddingTop:10,
@@ -261,6 +265,12 @@ const LightStyle=StyleSheet.create({
       }
 });
 const DarkStyle=StyleSheet.create({
+    horizotalDiv:{
+        flexDirection:'row', flex:1, marginLeft:10, justifyContent:'center'
+    },
+
+
+
     sectionContainer:{
         flex:1,
         alignItems:'center',
