@@ -1,4 +1,4 @@
-import React, {useEffect, useCallback, useState, useLayoutEffect} from 'react';
+import React, { useEffect, useCallback, useState, useLayoutEffect } from 'react';
 import {
   View,
   Text,
@@ -10,9 +10,9 @@ import {
   TouchableOpacity,
 } from 'react-native';
 //import { Tooltip } from 'react-native-paper';
-import {GetStyle} from '../styles/style-sheet';
+import { GetStyle } from '../styles/style-sheet';
 import SafeAreaView from 'react-native-safe-area-view';
-import {useAppDispatch, useAppSelector} from '../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import {
   getMatchList,
   getsortList,
@@ -22,23 +22,25 @@ import {
   setselectedProfileId,
   fetchProfiledetail,
   setPreferenceVisiable,
+  fetchMatchingStatus,
 } from '../redux/slices/matches';
-import {Avatar, Icon, SearchBar, Tooltip} from 'react-native-elements';
+import { Avatar, Icon, SearchBar, Tooltip } from 'react-native-elements';
 import Icons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
-import MatchesService, {MatchesInfoDto} from '../services/MatchesService';
-import {createSecureService} from '../services/APIServices';
+import MatchesService, { MatchesInfoDto } from '../services/MatchesService';
+import { createSecureService } from '../services/APIServices';
 import AppButton from '../components/AppButton';
 import Colors from '../styles/colors';
-import {profileDto} from '../services/LoginService';
-import {setEditProfileDetail} from '../redux/slices/login';
+import { profileDto } from '../services/LoginService';
+import { setEditProfileDetail } from '../redux/slices/login';
 import SavePreference from './SavePreference';
+import { matchesStatusResult } from '../utils/actionfunctions';
 const styles: any = GetStyle();
 type WizardProps = {
   navigation: any;
 };
 
-const MatchesScreen = ({navigation}: WizardProps) => {
+const MatchesScreen = ({ navigation }: WizardProps) => {
   const sortMatchData: any = useAppSelector(getsortList);
   //const getMatchList: any = useAppSelector(getMatchesList);
   const getMatchList = useAppSelector(state => state.matches.matchesData);
@@ -93,7 +95,7 @@ const MatchesScreen = ({navigation}: WizardProps) => {
       dispatch(fetchMatcheslists(getPagetokenInfo))
         .unwrap()
         .then(() => {
-          console.log('fetchdata',getMatchList)
+          console.log('fetchdata', getMatchList)
           setData(getMatchList);
           setStatusLoading(true);
         })
@@ -136,10 +138,11 @@ const MatchesScreen = ({navigation}: WizardProps) => {
     dispatch(setselectedProfileId(selectProfileId));
     dispatch(fetchProfiledetail(selectProfileId))
       .unwrap()
-      .then((response: any) => {
-        //setselectProfileDetail(response)
-        //setStatusLoading(true);
-        navigation.navigate('ProfileDetail');
+      .then(async (response: any) => {
+        if(await matchesStatusResult(selectProfileId)){
+          navigation.navigate('ProfileDetail');
+        }
+   
       })
       .catch((error: any) => {
         console.log('get matches list', error);
@@ -166,9 +169,9 @@ const MatchesScreen = ({navigation}: WizardProps) => {
       });
   }
   function matcheProfile() {
-    const renderItem = ({item}) => {
+    const renderItem = ({ item }) => {
       return (
-        <View style={{marginBottom: 10, borderRadius: 10, overflow: 'hidden'}}>
+        <View style={{ marginBottom: 10, borderRadius: 10, overflow: 'hidden' }}>
           {item.accountId != '' ? (
             <TouchableOpacity
               onPress={() => {
@@ -196,54 +199,53 @@ const MatchesScreen = ({navigation}: WizardProps) => {
                   borderColor: '#aaa',
                   backgroundColor: 'white',
                   borderRadius: 10,
+                  paddingLeft: 20,
+                  paddingTop: 20
                 }}>
                 <Text
                   style={[
-                    styles.mediumHeaderText,
-                    {fontSize: 25, paddingLeft: 10},
+                    styles.mediumHeaderText
                   ]}>
-                  {item.firstName}
+                  {item.firstName + ' ' + item.lastName}
                 </Text>
                 <Text
                   style={[
-                    styles.mediumHeaderText,
-                    {fontSize: 25, paddingLeft: 10},
+                    styles.mediumHeaderText
                   ]}>
-                  {item.age + 'Yrs'}
+                  {item.age + ' ' + 'Yrs'}
                 </Text>
-                <View style={[{flexDirection: 'row'}]}>
-                  <TouchableOpacity
-                    style={[
-                      styles.submitButton,
-                      {
-                        marginTop: 10,
-                        width: '40%',
-                        height: '60%',
-                        alignItems: 'center',
-                      },
-                    ]}
-                    onPress={() => {
-                      sendButton(item.accountId);
-                    }}>
-                    <Text style={[styles.buttonText]}>{'Send'}</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={[
-                      styles.submitButton,
-                      {
-                        marginTop: 10,
-                        marginLeft: 0,
-                        width: '40%',
-                        marginRight: 10,
-                        height: '60%',
-                        alignItems: 'center',
-                      },
-                    ]}
-                    onPress={() => {
-                      rejectButton(item.accountId);
-                    }}>
-                    <Text style={[styles.buttonText]}>{'Not Intrested'}</Text>
-                  </TouchableOpacity>
+                <View style={[{
+                  flexDirection: 'row', flex: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }]}>
+                  <View style={{ flex: 1 }}>
+                    <TouchableOpacity
+                      style={[
+                        styles.submitButton,
+                        {
+                          // width:'45%',
+                          marginRight: 10
+                        },
+                      ]}
+                      onPress={() => {
+                        sendButton(item.accountId);
+                      }}>
+                      <Text style={[styles.buttonText]}>{'Send'}</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <TouchableOpacity
+                      style={[
+                        styles.submitButton, { marginRight: 10 }
+                      ]}
+                      onPress={() => {
+                        rejectButton(item.accountId);
+                      }}>
+                      <Text style={[styles.buttonText]}>{'Not Intrested'}</Text>
+                    </TouchableOpacity>
+                  </View>
+
                 </View>
               </View>
             </TouchableOpacity>
@@ -264,20 +266,20 @@ const MatchesScreen = ({navigation}: WizardProps) => {
           stopFetchMore = false;
         }}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{paddingBottom: 10 * 2.0}}
+        contentContainerStyle={{ paddingBottom: 10 * 2.0 }}
       />
     );
   }
   function search() {
     return (
       <View style={styles.searchView}>
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           <SearchBar
             round
             inputContainerStyle={styles.inputSearchContainer}
             containerStyle={styles.searchConatiner}
             cancelIcon={false}
-            searchIcon={{size: 24}}
+            searchIcon={{ size: 24 }}
             onChangeText={(text: any) => searchFilterFunction(text)}
             onClear={(text: any) => searchFilterFunction('')}
             placeholder="Search by ID"
@@ -285,7 +287,7 @@ const MatchesScreen = ({navigation}: WizardProps) => {
           />
         </View>
 
-        <TouchableOpacity style={{marginRight: 20}}>
+        <TouchableOpacity style={{ marginRight: 20 }}>
           <View>
             <Icons name="filter" size={24} color="#2F4F4F" />
           </View>

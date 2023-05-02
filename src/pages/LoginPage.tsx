@@ -45,6 +45,7 @@ const LoginPage = ({navigation}: any) => {
     }
     LoginService.getLoginDetail(logindto).then((response:any)=>{
         if(response){
+          console.log('profiledata',response.data.religionDetails)
             dispatch(setProfileInfo(response.data))
             dispatch(setAccountId(response.data.id))
             if(response.data.personalDetails != null &&
@@ -53,7 +54,9 @@ const LoginPage = ({navigation}: any) => {
                response.data.educationDetails !=null && 
                response.data.professionDetails !=null && 
               response.data.familyDetails != null 
+              && response.data.religionDetails != null
                ){
+                console.log('logged info',response)
                dispatch(setResitrationInfo(true))
             }else{
               navigation.navigate('Registration');

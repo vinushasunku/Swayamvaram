@@ -1,31 +1,50 @@
 import MatchesService from "../services/MatchesService";
-
+import store from '../redux/store'
+import { fetchMatchingStatus } from "../redux/slices/matches";
 export async function sendButton(accountId:any,id:any) {
-    console.log('Send');
-    MatchesService.sendProposal(accountId,id).then((response:any)=>{
-     console.log('success send')
+    return MatchesService.sendProposal(accountId,id).then((response:any)=>{
+    return true
   }).catch((error:any)=>{
+    return false
       console.log('error:',error)})
   }
  export async function rejectButton(accountId:any,id:any) {
     console.log('Send');
-    MatchesService.rejectProposal(accountId,id).then((response:any)=>{
-     console.log('success send')
+    return MatchesService.rejectProposal(accountId,id).then((response:any)=>{
+    return true
   }).catch((error:any)=>{
+    return false
       console.log('error:',error)})
   }
 
   export async function acceptButton(accountId:any,id:any) {
-    MatchesService.acceptProposal(accountId,id).then((response:any)=>{
-     console.log('success accept')
+    return MatchesService.acceptProposal(accountId,id).then((response:any)=>{
+    return true
   }).catch((error:any)=>{
+    return false
       console.log('error:',error)})
   }
 
   export async function withdrawalButton(accountId:any,id:any) {
     console.log('Send');
-    MatchesService.withDrawalProposal(accountId,id).then((response:any)=>{
-     console.log('success withdrawal')
+    return MatchesService.withDrawalProposal(accountId,id).then((response:any)=>{
+    return true
   }).catch((error:any)=>{
+    return false
       console.log('error:',error)})
+  }
+  export async function matchesStatusResult(selectProfileId:any){
+    return store.dispatch(fetchMatchingStatus(selectProfileId))
+    .unwrap()
+    .then((response: any) => {
+        console.log('matchingstatus2',response)
+    return true
+    
+    })
+    .catch((error: any) => {
+     
+      console.log('get matches list', error);
+      return false
+    });
+    //return true;
   }

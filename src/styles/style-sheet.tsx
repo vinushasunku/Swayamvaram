@@ -56,6 +56,11 @@ const LightStyle=StyleSheet.create({
         marginLeft:10,
         marginRight:10
     },
+    divDivision:{
+        flexDirection: 'row',   flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',marginLeft:10, marginTop:10, marginBottom:10
+    },
 
 
     buttonText:{

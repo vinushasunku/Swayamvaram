@@ -53,12 +53,12 @@ const AccountProfile = ({navigation}: WizardProps) => {
             />
           </View>
           <View style={{alignItems: 'center', paddingTop: 10}}>
-            <Text style={[styles.mediumHeaderText, {paddingLeft: 10}]}>
+            <Text style={[styles.mediumText, {paddingLeft: 10}]}>
               {accountProfiledetail.personalDetails.firstName +
                 ' ' +
                 accountProfiledetail.personalDetails.lastName}
             </Text>
-            <Text style={[styles.mediumHeaderText, {paddingLeft: 10}]}>
+            <Text style={[styles.mediumText, {paddingLeft: 10, marginTop:10}]}>
               {accountProfiledetail.personalDetails.gender}
             </Text>
           </View>

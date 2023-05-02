@@ -11,6 +11,7 @@ import TextInputWithIcon from '../components/TextInputWithIcon';
 import {useForm} from 'react-hook-form';
 import AppModalList from '../components/AppModalList';
 import CasteService, { CasteInfoDto } from '../services/CasteService';
+import AppButton from '../components/AppButton';
 const styles: any = GetStyle();
 type WizardProps = {
   navigation: any;
@@ -150,7 +151,7 @@ const CasteInformation = ({navigation,updateEnableNext}: WizardProps) => {
 
   }
   return (
-    <View style={{marginBottom:10}}>
+    <View style={{marginBottom:10, marginLeft:10}}>
 
                <TextInputWithIcon
                 lable={'Religion'}
@@ -173,9 +174,11 @@ const CasteInformation = ({navigation,updateEnableNext}: WizardProps) => {
                 value={religiondata.subCaste}
                 icon={'chevron-forward-outline'}
               />
+<View style={{width:'95%', marginTop:10}}>
+<AppButton onPress={onSubmit} title={'Continue'} disabled={false} />
+</View>
 
-
-<View
+{/* <View
           style={{
             //borderRadius: 1,
             height: '10%',
@@ -183,6 +186,7 @@ const CasteInformation = ({navigation,updateEnableNext}: WizardProps) => {
             width: '100%',
             flexDirection:'row'
           }}>
+        
           <TouchableOpacity
             activeOpacity={0.9}
             onPress={()=>onSubmit()}
@@ -190,8 +194,8 @@ const CasteInformation = ({navigation,updateEnableNext}: WizardProps) => {
             <Text style={[styles.mediumHeaderText, styles.buttonText]}>
               {'Save'}
             </Text>
-          </TouchableOpacity>
-        </View>
+          </TouchableOpacity> 
+        </View> */}
       <AppModalList
         modaldatalist={casteList}
         showReligious={showCaste}

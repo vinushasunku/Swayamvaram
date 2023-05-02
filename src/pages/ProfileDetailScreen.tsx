@@ -1,4 +1,4 @@
-import React, {useEffect, useCallback, useState} from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import {
   View,
   Text,
@@ -7,16 +7,17 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import {GetStyle} from '../styles/style-sheet';
+import { GetStyle } from '../styles/style-sheet';
 import SafeAreaView from 'react-native-safe-area-view';
-import {useAppDispatch, useAppSelector} from '../redux/hooks';
-import {fetchMatchingStatus, fetchProfiledetail} from '../redux/slices/matches';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { fetchMatchingStatus, fetchProfiledetail } from '../redux/slices/matches';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 // import MatchesService from '../services/MatchesService';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Colors from '../styles/colors';
 import {
   acceptButton,
+  matchesStatusResult,
   rejectButton,
   sendButton,
   withdrawalButton,
@@ -28,9 +29,9 @@ import {
   setEditProfileDetailInfo,
   setEditType,
 } from '../redux/slices/login';
-import {typeProfileDetail} from '../services/RegistrationService';
-import {createIconSetFromFontello} from 'react-native-vector-icons';
-import {useIsFocused} from '@react-navigation/native';
+import { typeProfileDetail } from '../services/RegistrationService';
+import { createIconSetFromFontello } from 'react-native-vector-icons';
+import { useIsFocused } from '@react-navigation/native';
 
 const styles: any = GetStyle();
 type WizardProps = {
@@ -39,7 +40,7 @@ type WizardProps = {
   //edit:boolean;
 };
 
-export const ProfileDetailScreen = ({navigation}: WizardProps) => {
+export const ProfileDetailScreen = ({ navigation }: WizardProps) => {
   const accountId = useAppSelector(state => state.registration.accountId);
   const selectProfileId = useAppSelector(
     state => state.matches.selectedProfileId,
@@ -54,6 +55,9 @@ export const ProfileDetailScreen = ({navigation}: WizardProps) => {
   const editBackPage = useAppSelector(state => state.loginId.editProfile);
   const dispatch: any = useAppDispatch();
   const Tab = createMaterialTopTabNavigator();
+  const [afterAction, setStatusAction] = useState(false);
+  const refreshData = () => setStatusLoading(false)
+
   const isFocused = useIsFocused();
   function MyTabs() {
     return (
@@ -64,22 +68,148 @@ export const ProfileDetailScreen = ({navigation}: WizardProps) => {
       </Tab.Navigator>
     );
   }
-  // useEffect(()=>{
-
-  // },[profileEditVisiable])
+  // useEffect(() => {
+  //   if (editBackPage === false && selectProfileId.selectedProfileId != '') {
+  //     console.log('matchingstatus', matchingstatus);
+  //     // console.log('selectid2', selectProfileId)
+  //     // console.log('select profile', selectProfileId);
+  //     // dispatch(fetchMatchingStatus(selectProfileId))
+  //     //   .unwrap()
+  //     //   .then((response: any) => {
+  //     //     console.log('matchingstatus', matchingstatus);
+  //     //   })
+  //     //   .catch((error: any) => {
+  //     //     console.log('get matches list', error);
+  //     //   });
+  //   }
+  // }, [selectProfileId]);
   useEffect(() => {
-    if (editBackPage === false && selectProfileId.selectedProfileId != '') {
-      console.log('select profile', selectProfileId);
-      dispatch(fetchMatchingStatus(selectProfileId))
-        .unwrap()
-        .then((response: any) => {
-          console.log('matchingstatus', matchingstatus);
-        })
-        .catch((error: any) => {
-          console.log('get matches list', error);
-        });
-    }
-  }, [selectProfileId]);
+    refreshData()
+    console.log('refresh', selectProfileId)
+  }, [afterAction])
+  function NoneorWithDraw() {
+    return (
+      <View style={[styles.divDivision]}>
+        <View style={{ flex: 1 }}>
+          <TouchableOpacity
+            style={[
+              styles.submitButton,
+              { marginRight: 10 },
+            ]}
+            onPress={async () => {
+              if (await sendButton(
+                selectProfileId.accountId,
+                selectProfileId.selectedProfileId,
+              )) {
+                if (await matchesStatusResult(selectProfileId)) {
+                  setStatusAction(!afterAction);
+                }
+              }
+            }}>
+            <Text style={[styles.buttonText]}>{'Send'}</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{ flex: 1 }}>
+          <TouchableOpacity
+            style={[
+              styles.submitButton,
+              { marginRight: 10 },
+            ]}
+            onPress={async () => {
+              if (await rejectButton(
+                selectProfileId.accountId,
+                selectProfileId.selectedProfileId,
+              )) {
+                if (await matchesStatusResult(selectProfileId)) {
+                  setStatusAction(!afterAction);
+                }
+              }
+            }}>
+            <Text style={[styles.buttonText]}>{'Not Intrested'}</Text>
+          </TouchableOpacity>
+        </View>
+
+
+      </View>
+    )
+  }
+  function RequestSent() {
+    return (
+      <View style={[styles.divDivision]}>
+        <View style={{ flex: 1 }}>
+          <TouchableOpacity
+            style={[
+              styles.submitButton,
+              { marginRight: 10 },
+            ]}
+            onPress={async () => {
+              if (await withdrawalButton(
+                selectProfileId.accountId,
+                selectProfileId.selectedProfileId,
+              )) {
+                if (await matchesStatusResult(selectProfileId)) {
+                  setStatusAction(!afterAction);
+                }
+              }
+            }}>
+            <Text style={[styles.buttonText]}>
+              {'WithDraw your request'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    )
+  }
+  function AcceptorReject() {
+    <View style={[styles.divDivision]}>
+      <View style={{ flex: 1 }}>
+        <TouchableOpacity
+          style={[
+            styles.submitButton,
+            { marginRight: 10 },
+          ]}
+          onPress={async () => {
+            if (await acceptButton(
+              selectProfileId.accountId,
+              selectProfileId.selectedProfileId,
+            )) {
+              if (await matchesStatusResult(selectProfileId)) {
+                setStatusAction(!afterAction);
+              }
+            }
+
+          }}>
+          <Text style={[styles.buttonText]}>{'Accept'}</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={{ flex: 1 }}>
+        <TouchableOpacity
+          style={[
+            styles.submitButton,
+            {
+
+              marginRight: 10,
+
+            },
+          ]}
+          onPress={async () => {
+            if (await rejectButton(
+              selectProfileId.accountId,
+              selectProfileId.selectedProfileId,
+            )) {
+              if (await matchesStatusResult(selectProfileId)) {
+                setStatusAction(!afterAction);
+              }
+            }
+          }}>
+          <Text style={[styles.buttonText]}>{'Reject'}</Text>
+        </TouchableOpacity>
+      </View>
+
+    </View>
+  }
+
   const actionDisplay = () => {
     return (
       <View
@@ -88,111 +218,15 @@ export const ProfileDetailScreen = ({navigation}: WizardProps) => {
           borderBottomWidth: 1,
           borderBottomColor: Colors.Grey,
         }}>
-        {matchingstatus.statusReason.requestSentByProfileId !=
-        matchingstatus.profile1Id ? (
-          matchingstatus.status === 'NONE' ||
-          matchingstatus.status === 'WITHDRAWN' ? (
-            <View style={[{flexDirection: 'row'}]}>
-              <TouchableOpacity
-                style={[
-                  styles.submitButton,
-                  {marginTop: 10, width: '42%', alignItems: 'center'},
-                ]}
-                onPress={() => {
-                  sendButton(
-                    selectProfileId.accountId,
-                    selectProfileId.selectedProfileId,
-                  );
-                }}>
-                <Text style={[styles.buttonText]}>{'Send'}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.submitButton,
-                  {
-                    marginTop: 10,
-                    marginLeft: 0,
-                    width: '42%',
-                    marginRight: 20,
-                    alignItems: 'center',
-                  },
-                ]}
-                onPress={() => {
-                  rejectButton(
-                    selectProfileId.accountId,
-                    selectProfileId.selectedProfileId,
-                  );
-                }}>
-                <Text style={[styles.buttonText]}>{'Not Intrested'}</Text>
-              </TouchableOpacity>
-            </View>
-          ) : matchingstatus.status === 'REQUEST_SENT' ? (
-            <View style={[{flexDirection: 'row'}]}>
-              <TouchableOpacity
-                style={[
-                  styles.submitButton,
-                  {marginTop: 10, alignItems: 'center'},
-                ]}
-                onPress={() => {
-                  withdrawalButton(
-                    selectProfileId.accountId,
-                    selectProfileId.selectedProfileId,
-                  );
-                }}>
-                <Text style={[styles.buttonText]}>
-                  {'WithDraw your request'}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <></>
-          )
-        ) : (
-          <></>
-        )}
-        {matchingstatus.statusReason.requestSentByProfileId ===
-        matchingstatus.profile1Id ? (
-          matchingstatus.status === 'REQUEST_SENT' ? (
-            <View style={[{flexDirection: 'row'}]}>
-              <TouchableOpacity
-                style={[
-                  styles.submitButton,
-                  {marginTop: 10, width: '42%', alignItems: 'center'},
-                ]}
-                onPress={() => {
-                  acceptButton(
-                    selectProfileId.accountId,
-                    selectProfileId.selectedProfileId,
-                  );
-                }}>
-                <Text style={[styles.buttonText]}>{'Accept'}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.submitButton,
-                  {
-                    marginTop: 10,
-                    marginLeft: 0,
-                    width: '42%',
-                    marginRight: 20,
-                    alignItems: 'center',
-                  },
-                ]}
-                onPress={() => {
-                  rejectButton(
-                    selectProfileId.accountId,
-                    selectProfileId.selectedProfileId,
-                  );
-                }}>
-                <Text style={[styles.buttonText]}>{'Reject'}</Text>
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <></>
-          )
-        ) : (
-          <></>
-        )}
+        {
+          matchingstatus.statusReason.requestSentByProfileId === matchingstatus.profile1Id ?
+            (matchingstatus.status === 'NONE' ||
+              matchingstatus.status === 'WITHDRAWN') ? NoneorWithDraw() : matchingstatus.status === 'REQUEST_SENT' ? RequestSent() : <></> : <></>
+        }
+        {
+          matchingstatus.statusReason.requestSentByProfileId !== matchingstatus.profile1Id ?
+            matchingstatus.status === 'REQUEST_SENT' ? AcceptorReject() : <></>:<></>
+        }
       </View>
     );
   };
@@ -200,9 +234,10 @@ export const ProfileDetailScreen = ({navigation}: WizardProps) => {
     // setEnableNext(true);
   };
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <View style={{flex: 1, backgroundColor: 'white'}}>
-        {actionDisplay()}
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: 'white' }}>
+
+        {editBackPage === false ? actionDisplay() : <></>}
         {MyTabs()}
       </View>
       <ProfileEdit
@@ -213,7 +248,7 @@ export const ProfileDetailScreen = ({navigation}: WizardProps) => {
     </SafeAreaView>
   );
 };
-const PersonalInfoRoute = ({navigation}) => {
+const PersonalInfoRoute = ({ navigation }) => {
   let selectedprofileDetail = useAppSelector(
     state => state.matches.profileDetail,
   );
@@ -232,9 +267,7 @@ const PersonalInfoRoute = ({navigation}) => {
   useEffect(() => {
     if (editBackPage) {
       setprofileDetail(loginprofileDetail);
-      console.log('selected profile2', loginprofileDetail);
     } else {
-      console.log('selected profile', selectedprofileDetail);
       setprofileDetail(selectedprofileDetail);
     }
   }, [editBackPage, profileDetail, isFocused, profileEditVisiable]);
@@ -244,8 +277,8 @@ const PersonalInfoRoute = ({navigation}) => {
   // },[profileDetail])
 
   return (
-    <View style={{flex: 1, backgroundColor: 'white', paddingLeft: 20}}>
-      <Text style={[styles.mediumHeaderText, {paddingTop: 20, fontSize: 20}]}>
+    <View style={{ flex: 1, backgroundColor: 'white', paddingLeft: 20 }}>
+      <Text style={[styles.mediumHeaderText, { paddingTop: 20, fontSize: 20 }]}>
         {'Personal Information'}
       </Text>
       <View
@@ -257,8 +290,8 @@ const PersonalInfoRoute = ({navigation}) => {
           borderRadius: 10,
           paddingLeft: 20,
         }}>
-        <View style={{flexDirection: 'row', marginTop: 20}}>
-          <Text style={[styles.mediumHeaderText, {fontSize: 20}]}>
+        <View style={{ flexDirection: 'row', marginTop: 20 }}>
+          <Text style={[styles.mediumHeaderText, { fontSize: 20 }]}>
             {'Basic Detail'}
           </Text>
           {editBackPage ? (
@@ -284,45 +317,45 @@ const PersonalInfoRoute = ({navigation}) => {
           )}
         </View>
 
-        <View style={{flexDirection: 'row'}}>
-          <Text style={[styles.mediumText, {width: '50%'}]}>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={[styles.mediumText, { width: '50%' }]}>
             {'First Name'}
           </Text>
-          <Text style={[styles.mediumText, {width: '10%'}]}>{'-'}</Text>
+          <Text style={[styles.mediumText, { width: '10%' }]}>{'-'}</Text>
           <Text style={[styles.mediumText]}>
             {profileDetail?.personalDetails?.firstName != null
               ? profileDetail?.personalDetails?.firstName
               : 'No Information'}
           </Text>
         </View>
-        <View style={{flexDirection: 'row'}}>
-          <Text style={[styles.mediumText, {width: '50%'}]}>{'Last Name'}</Text>
-          <Text style={[styles.mediumText, {width: '10%'}]}>{'-'}</Text>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={[styles.mediumText, { width: '50%' }]}>{'Last Name'}</Text>
+          <Text style={[styles.mediumText, { width: '10%' }]}>{'-'}</Text>
           <Text style={[styles.mediumText]}>
             {profileDetail?.personalDetails?.lastName != null
               ? profileDetail?.personalDetails?.lastName
               : 'No Information'}
           </Text>
         </View>
-        <View style={{flexDirection: 'row'}}>
-          <Text style={[styles.mediumText, {width: '50%'}]}>{'Gender'}</Text>
-          <Text style={[styles.mediumText, {width: '10%'}]}>{'-'}</Text>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={[styles.mediumText, { width: '50%' }]}>{'Gender'}</Text>
+          <Text style={[styles.mediumText, { width: '10%' }]}>{'-'}</Text>
           <Text style={[styles.mediumText]}>
             {profileDetail?.personalDetails?.gender != null
               ? profileDetail?.personalDetails?.gender
               : 'No Information'}
           </Text>
         </View>
-        <View style={{flexDirection: 'row'}}>
-          <Text style={[styles.mediumText, {width: '50%'}]}>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={[styles.mediumText, { width: '50%' }]}>
             {'Phone number'}
           </Text>
-          <Text style={[styles.mediumText, {width: '10%'}]}>{'-'}</Text>
+          <Text style={[styles.mediumText, { width: '10%' }]}>{'-'}</Text>
           <Text style={[styles.mediumText]}>
             {profileDetail?.personalDetails?.mobileNumber != null
               ? '+' +
-                profileDetail?.personalDetails?.countryCode +
-                profileDetail?.personalDetails?.mobileNumber
+              profileDetail?.personalDetails?.countryCode +
+              profileDetail?.personalDetails?.mobileNumber
               : 'No Information'}
           </Text>
         </View>
@@ -336,8 +369,8 @@ const PersonalInfoRoute = ({navigation}) => {
           borderRadius: 10,
           paddingLeft: 20,
         }}>
-        <View style={{flexDirection: 'row', marginTop: 20}}>
-          <Text style={[styles.mediumHeaderText, {fontSize: 20}]}>
+        <View style={{ flexDirection: 'row', marginTop: 20 }}>
+          <Text style={[styles.mediumHeaderText, { fontSize: 20 }]}>
             {'Family Details'}
           </Text>
           {editBackPage ? (
@@ -362,40 +395,40 @@ const PersonalInfoRoute = ({navigation}) => {
             <></>
           )}
         </View>
-        <View style={{flexDirection: 'row'}}>
-          <Text style={[styles.mediumText, {width: '50%'}]}>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={[styles.mediumText, { width: '50%' }]}>
             {'Father Name'}
           </Text>
-          <Text style={[styles.mediumText, {width: '10%'}]}>{'-'}</Text>
+          <Text style={[styles.mediumText, { width: '10%' }]}>{'-'}</Text>
           <Text style={[styles.mediumText]}>
             {profileDetail?.familyDetails?.fatherName != null
               ? profileDetail?.familyDetails.fatherName
               : 'No Information'}
           </Text>
         </View>
-        <View style={{flexDirection: 'row'}}>
-          <Text style={[styles.mediumText, {width: '50%'}]}>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={[styles.mediumText, { width: '50%' }]}>
             {'Mother Name'}
           </Text>
-          <Text style={[styles.mediumText, {width: '10%'}]}>{'-'}</Text>
+          <Text style={[styles.mediumText, { width: '10%' }]}>{'-'}</Text>
           <Text style={[styles.mediumText]}>
             {profileDetail?.familyDetails?.motherName != null
               ? profileDetail?.familyDetails?.motherName
               : 'No Information'}
           </Text>
         </View>
-        <View style={{flexDirection: 'row'}}>
-          <Text style={[styles.mediumText, {width: '50%'}]}>{'Brother'}</Text>
-          <Text style={[styles.mediumText, {width: '10%'}]}>{'-'}</Text>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={[styles.mediumText, { width: '50%' }]}>{'Brother'}</Text>
+          <Text style={[styles.mediumText, { width: '10%' }]}>{'-'}</Text>
           <Text style={[styles.mediumText]}>
             {profileDetail?.familyDetails?.brothers != null
               ? profileDetail?.familyDetails?.brothers
               : 'No Information'}
           </Text>
         </View>
-        <View style={{flexDirection: 'row'}}>
-          <Text style={[styles.mediumText, {width: '50%'}]}>{'Sister'}</Text>
-          <Text style={[styles.mediumText, {width: '10%'}]}>{'-'}</Text>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={[styles.mediumText, { width: '50%' }]}>{'Sister'}</Text>
+          <Text style={[styles.mediumText, { width: '10%' }]}>{'-'}</Text>
           <Text style={[styles.mediumText]}>
             {profileDetail?.familyDetails?.sisters != null
               ? profileDetail?.familyDetails?.sisters
@@ -423,16 +456,14 @@ const ReligiousInfoRoute = () => {
   useEffect(() => {
     if (editBackPage) {
       setprofileDetail(loginprofileDetail);
-      console.log('selected profile2', loginprofileDetail);
     } else {
-      console.log('selected profile', selectedprofileDetail);
       setprofileDetail(selectedprofileDetail);
     }
   }, [editBackPage, profileDetail, isFocused, profileEditVisiable]);
   // useEffect(() => {
   return (
-    <ScrollView style={{flex: 1, backgroundColor: 'white', paddingLeft: 20}}>
-      <Text style={[styles.mediumHeaderText, {paddingTop: 20, fontSize: 20}]}>
+    <ScrollView style={{ flex: 1, backgroundColor: 'white', paddingLeft: 20 }}>
+      <Text style={[styles.mediumHeaderText, { paddingTop: 20, fontSize: 20 }]}>
         {'Religious/Location Information'}
       </Text>
       <View
@@ -444,9 +475,9 @@ const ReligiousInfoRoute = () => {
           borderRadius: 10,
           paddingLeft: 20,
         }}>
-        <View style={{flexDirection: 'row', marginTop: 20}}>
+        <View style={{ flexDirection: 'row', marginTop: 20 }}>
           <Text
-            style={[styles.mediumHeaderText, {paddingTop: 20, fontSize: 20}]}>
+            style={[styles.mediumHeaderText, { paddingTop: 20, fontSize: 20 }]}>
             {'Caste Detail'}
           </Text>
           {editBackPage ? (
@@ -471,27 +502,27 @@ const ReligiousInfoRoute = () => {
             <></>
           )}
         </View>
-        <View style={{flexDirection: 'row'}}>
-          <Text style={[styles.mediumText, {width: '50%'}]}>{'religion'}</Text>
-          <Text style={[styles.mediumText, {width: '10%'}]}>{'-'}</Text>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={[styles.mediumText, { width: '50%' }]}>{'religion'}</Text>
+          <Text style={[styles.mediumText, { width: '10%' }]}>{'-'}</Text>
           <Text style={[styles.mediumText]}>
             {profileDetail?.regionDetails?.religion != null
               ? profileDetail?.regionDetails?.religion
               : 'No Information'}
           </Text>
         </View>
-        <View style={{flexDirection: 'row'}}>
-          <Text style={[styles.mediumText, {width: '50%'}]}>{'Caste'}</Text>
-          <Text style={[styles.mediumText, {width: '10%'}]}>{'-'}</Text>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={[styles.mediumText, { width: '50%' }]}>{'Caste'}</Text>
+          <Text style={[styles.mediumText, { width: '10%' }]}>{'-'}</Text>
           <Text style={[styles.mediumText]}>
             {profileDetail?.regionDetails?.caste != null
               ? profileDetail?.regionDetails?.caste
               : 'No Information'}
           </Text>
         </View>
-        <View style={{flexDirection: 'row'}}>
-          <Text style={[styles.mediumText, {width: '50%'}]}>{'Sub Caste'}</Text>
-          <Text style={[styles.mediumText, {width: '10%'}]}>{'-'}</Text>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={[styles.mediumText, { width: '50%' }]}>{'Sub Caste'}</Text>
+          <Text style={[styles.mediumText, { width: '10%' }]}>{'-'}</Text>
           <Text style={[styles.mediumText]}>
             {profileDetail?.regionDetails?.subCaste != null
               ? profileDetail?.regionDetails?.subCaste
@@ -508,9 +539,9 @@ const ReligiousInfoRoute = () => {
           borderRadius: 10,
           paddingLeft: 20,
         }}>
-        <View style={{flexDirection: 'row', marginTop: 20}}>
+        <View style={{ flexDirection: 'row', marginTop: 20 }}>
           <Text
-            style={[styles.mediumHeaderText, {paddingTop: 20, fontSize: 20}]}>
+            style={[styles.mediumHeaderText, { paddingTop: 20, fontSize: 20 }]}>
             {'Location Details'}
           </Text>
           {editBackPage ? (
@@ -535,38 +566,38 @@ const ReligiousInfoRoute = () => {
             <></>
           )}
         </View>
-        <View style={{flexDirection: 'row'}}>
-          <Text style={[styles.mediumText, {width: '50%'}]}>{'Country'}</Text>
-          <Text style={[styles.mediumText, {width: '10%'}]}>{'-'}</Text>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={[styles.mediumText, { width: '50%' }]}>{'Country'}</Text>
+          <Text style={[styles.mediumText, { width: '10%' }]}>{'-'}</Text>
           <Text style={[styles.mediumText]}>
             {profileDetail?.locationDetails?.country != null
               ? profileDetail?.locationDetails.country
               : 'No Information'}
           </Text>
         </View>
-        <View style={{flexDirection: 'row'}}>
-          <Text style={[styles.mediumText, {width: '50%'}]}>{'State'}</Text>
-          <Text style={[styles.mediumText, {width: '10%'}]}>{'-'}</Text>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={[styles.mediumText, { width: '50%' }]}>{'State'}</Text>
+          <Text style={[styles.mediumText, { width: '10%' }]}>{'-'}</Text>
           <Text style={[styles.mediumText]}>
             {profileDetail?.locationDetails?.state != null
               ? profileDetail?.locationDetails?.state
               : 'No Information'}
           </Text>
         </View>
-        <View style={{flexDirection: 'row'}}>
-          <Text style={[styles.mediumText, {width: '50%'}]}>{'City'}</Text>
-          <Text style={[styles.mediumText, {width: '10%'}]}>{'-'}</Text>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={[styles.mediumText, { width: '50%' }]}>{'City'}</Text>
+          <Text style={[styles.mediumText, { width: '10%' }]}>{'-'}</Text>
           <Text style={[styles.mediumText]}>
             {profileDetail?.locationDetails?.city != null
               ? profileDetail?.locationDetails?.city
               : 'No Information'}
           </Text>
         </View>
-        <View style={{flexDirection: 'row'}}>
-          <Text style={[styles.mediumText, {width: '50%'}]}>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={[styles.mediumText, { width: '50%' }]}>
             {'Citizenship'}
           </Text>
-          <Text style={[styles.mediumText, {width: '10%'}]}>{'-'}</Text>
+          <Text style={[styles.mediumText, { width: '10%' }]}>{'-'}</Text>
           <Text style={[styles.mediumText]}>
             {profileDetail?.locationDetails?.citizenship != null
               ? profileDetail?.locationDetails?.citizenship
@@ -584,31 +615,31 @@ const ReligiousInfoRoute = () => {
           borderRadius: 10,
           paddingLeft: 20,
         }}>
-        <Text style={[styles.mediumHeaderText, {paddingTop: 20, fontSize: 20}]}>
+        <Text style={[styles.mediumHeaderText, { paddingTop: 20, fontSize: 20 }]}>
           {'Visa Information'}
         </Text>
-        <View style={{flexDirection: 'row'}}>
-          <Text style={[styles.mediumText, {width: '50%'}]}>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={[styles.mediumText, { width: '50%' }]}>
             {'Visa Status'}
           </Text>
-          <Text style={[styles.mediumText, {width: '10%'}]}>{'-'}</Text>
+          <Text style={[styles.mediumText, { width: '10%' }]}>{'-'}</Text>
           <Text style={[styles.mediumText]}>
             {profileDetail?.locationDetails?.visaStatus != null
               ? profileDetail?.locationDetails.visaStatus
               : 'No Information'}
           </Text>
         </View>
-        <View style={{flexDirection: 'row'}}>
-          <Text style={[styles.mediumText, {width: '50%'}]}>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={[styles.mediumText, { width: '50%' }]}>
             {'Visa Expiry'}
           </Text>
-          <Text style={[styles.mediumText, {width: '10%'}]}>{'-'}</Text>
+          <Text style={[styles.mediumText, { width: '10%' }]}>{'-'}</Text>
           <Text style={[styles.mediumText]}>
             {profileDetail?.locationDetails?.visaExpiryYear != null &&
-            profileDetail?.locationDetails?.visaExpiryMonth
+              profileDetail?.locationDetails?.visaExpiryMonth
               ? profileDetail?.locationDetails?.visaExpiryMonth +
-                '/' +
-                profileDetail?.locationDetails?.visaExpiryYear
+              '/' +
+              profileDetail?.locationDetails?.visaExpiryYear
               : 'No Information'}
           </Text>
         </View>
@@ -642,9 +673,9 @@ const ProfessionalInfoRoute = () => {
   }, [editBackPage, profileDetail, isFocused, profileEditVisiable]);
 
   return (
-    <View style={{flex: 1, backgroundColor: 'white', paddingLeft: 20}}>
-      <View style={{flexDirection: 'row', marginTop: 20}}>
-        <Text style={[styles.mediumHeaderText, {paddingTop: 20, fontSize: 20}]}>
+    <View style={{ flex: 1, backgroundColor: 'white', paddingLeft: 20 }}>
+      <View style={{ flexDirection: 'row', marginTop: 20 }}>
+        <Text style={[styles.mediumHeaderText, { paddingTop: 20, fontSize: 20 }]}>
           {'Professional Information'}
         </Text>
         {editBackPage ? (
@@ -674,48 +705,48 @@ const ProfessionalInfoRoute = () => {
           borderRadius: 10,
           paddingLeft: 20,
         }}>
-        <Text style={[styles.mediumHeaderText, {paddingTop: 20, fontSize: 20}]}>
+        <Text style={[styles.mediumHeaderText, { paddingTop: 20, fontSize: 20 }]}>
           {'Basic Detail'}
         </Text>
-        <View style={{flexDirection: 'row'}}>
-          <Text style={[styles.mediumText, {width: '50%'}]}>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={[styles.mediumText, { width: '50%' }]}>
             {'Employment'}
           </Text>
-          <Text style={[styles.mediumText, {width: '10%'}]}>{'-'}</Text>
+          <Text style={[styles.mediumText, { width: '10%' }]}>{'-'}</Text>
           <Text style={[styles.mediumText]}>
             {profileDetail?.professionDetails?.employment != null
               ? profileDetail?.professionDetails?.employment
               : 'No Information'}
           </Text>
         </View>
-        <View style={{flexDirection: 'row'}}>
-          <Text style={[styles.mediumText, {width: '50%'}]}>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={[styles.mediumText, { width: '50%' }]}>
             {'Profession'}
           </Text>
-          <Text style={[styles.mediumText, {width: '10%'}]}>{'-'}</Text>
+          <Text style={[styles.mediumText, { width: '10%' }]}>{'-'}</Text>
           <Text style={[styles.mediumText]}>
             {profileDetail?.professionDetails?.profession != null
               ? profileDetail?.professionDetails?.profession
               : 'No Information'}
           </Text>
         </View>
-        <View style={{flexDirection: 'row'}}>
-          <Text style={[styles.mediumText, {width: '50%'}]}>{'Company'}</Text>
-          <Text style={[styles.mediumText, {width: '10%'}]}>{'-'}</Text>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={[styles.mediumText, { width: '50%' }]}>{'Company'}</Text>
+          <Text style={[styles.mediumText, { width: '10%' }]}>{'-'}</Text>
           <Text style={[styles.mediumText]}>
             {profileDetail?.professionDetails?.company != null
               ? profileDetail?.professionDetails?.company
               : 'No Information'}
           </Text>
         </View>
-        <View style={{flexDirection: 'row'}}>
-          <Text style={[styles.mediumText, {width: '50%'}]}>{'salary'}</Text>
-          <Text style={[styles.mediumText, {width: '10%'}]}>{'-'}</Text>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={[styles.mediumText, { width: '50%' }]}>{'salary'}</Text>
+          <Text style={[styles.mediumText, { width: '10%' }]}>{'-'}</Text>
           <Text style={[styles.mediumText]}>
             {profileDetail?.professionDetails?.salary != null
               ? profileDetail?.professionDetails?.currency +
-                ' ' +
-                profileDetail?.professionDetails?.salary
+              ' ' +
+              profileDetail?.professionDetails?.salary
               : 'No Information'}
           </Text>
         </View>
@@ -729,32 +760,32 @@ const ProfessionalInfoRoute = () => {
           borderRadius: 10,
           paddingLeft: 20,
         }}>
-        <Text style={[styles.mediumHeaderText, {paddingTop: 20, fontSize: 20}]}>
+        <Text style={[styles.mediumHeaderText, { paddingTop: 20, fontSize: 20 }]}>
           {'Education Details'}
         </Text>
-        <View style={{flexDirection: 'row'}}>
-          <Text style={[styles.mediumText, {width: '50%'}]}>{'Degree'}</Text>
-          <Text style={[styles.mediumText, {width: '10%'}]}>{'-'}</Text>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={[styles.mediumText, { width: '50%' }]}>{'Degree'}</Text>
+          <Text style={[styles.mediumText, { width: '10%' }]}>{'-'}</Text>
           <Text style={[styles.mediumText]}>
             {profileDetail?.educationDetails?.degree != null
               ? profileDetail?.educationDetails.degree
               : 'No Information'}
           </Text>
         </View>
-        <View style={{flexDirection: 'row'}}>
-          <Text style={[styles.mediumText, {width: '50%'}]}>{'Course'}</Text>
-          <Text style={[styles.mediumText, {width: '10%'}]}>{'-'}</Text>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={[styles.mediumText, { width: '50%' }]}>{'Course'}</Text>
+          <Text style={[styles.mediumText, { width: '10%' }]}>{'-'}</Text>
           <Text style={[styles.mediumText]}>
             {profileDetail?.educationDetails?.course != null
               ? profileDetail?.educationDetails?.course
               : 'No Information'}
           </Text>
         </View>
-        <View style={{flexDirection: 'row'}}>
-          <Text style={[styles.mediumText, {width: '50%'}]}>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={[styles.mediumText, { width: '50%' }]}>
             {'Pass out year'}
           </Text>
-          <Text style={[styles.mediumText, {width: '10%'}]}>{'-'}</Text>
+          <Text style={[styles.mediumText, { width: '10%' }]}>{'-'}</Text>
           <Text style={[styles.mediumText]}>
             {profileDetail?.educationDetails?.passoutYear != null
               ? profileDetail?.educationDetails?.passoutYear

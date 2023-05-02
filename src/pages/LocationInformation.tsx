@@ -14,6 +14,7 @@ import {
 } from '../redux/slices/location';
 import {GetStyle} from '../styles/style-sheet';
 import AppDropDown from '../components/AppDropDown';
+import AppButton from '../components/AppButton';
 
 const styles: any = GetStyle();
 type WizardProps = {
@@ -224,7 +225,12 @@ const LocationInformation = ({navigation, updateEnableNext}: WizardProps) => {
         onSelection={setWorkdata}
         label={'Visa Status'}
       />
-      <View
+
+<View style={{width:'95%', marginTop:10}}>
+<AppButton onPress={onSubmit} title={'Continue'} disabled={false} />
+</View>
+
+      {/* <View
         style={{
           //borderRadius: 1,
           height: '10%',
@@ -240,7 +246,7 @@ const LocationInformation = ({navigation, updateEnableNext}: WizardProps) => {
             {'Save'}
           </Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
       <AppModalList
         modaldatalist={countryList}
         showReligious={showCountry}

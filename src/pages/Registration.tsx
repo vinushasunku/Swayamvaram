@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {View, Text, TouchableOpacity, Dimensions,SafeAreaView} from 'react-native';
+import {View, Text, TouchableOpacity, Dimensions,SafeAreaView, Appearance} from 'react-native';
 import {GetStyle} from '../styles/style-sheet';
 import {ScrollView} from 'react-native-gesture-handler';
 import PersonalInfo from './PersonalInfo';
@@ -13,17 +13,17 @@ const styles: any = GetStyle();
 type WizardProps = {
   navigation: any;
 };
+const isLightMode = Appearance.getColorScheme() === 'light' ? true : false;
 const Registration = ({navigation}: WizardProps) => {
   const [currentPostion, setCurrentPage] = React.useState<number>(0);
   const {width, height} = Dimensions.get('window');
-  const [enableNext, setEnableNext] = React.useState<boolean>(true);
+  const [enableNext, setEnableNext] = React.useState<boolean>(false);
   const profileData=useAppSelector(state=>state.loginId.profileData);
   const updateEnableNext = (enable: boolean): void => {
     setEnableNext(true);
   };
   useEffect(() => {
-    setEnableNext(true)
-    console.log('profiledata',profileData)
+    //setEnableNext(false)
     if(profileData.personalDetails === null){
       setCurrentPage(0)
     }
@@ -48,17 +48,17 @@ const Registration = ({navigation}: WizardProps) => {
       headerRight: () => (
         <View style={{flexDirection: 'row'}}>
           <TouchableOpacity onPress={setpagination}>
-            <Text style={[styles.mediumHeaderText]}>
-              {'Already member?Login'}
+            <Text style={[styles.mediumHeaderText, {color:Colors.FrenchRose}]}>
+              {'Already member? Login'}
             </Text>
           </TouchableOpacity>
         </View>
       ),
     });
-  }, [navigation]);
-  useEffect(() => {
+  }, [navigation, currentPostion]);
+  // useEffect(() => {
 
-  }, [currentPostion]);
+  // }, [currentPostion]);
   function setpagination() {
     navigation.navigate('LoginPage');
   }
@@ -67,7 +67,7 @@ const Registration = ({navigation}: WizardProps) => {
     'Info',
     'Religion',
     'Location',
-    'Education',
+    'Edu',
     'Family',
     'photo',
   ];
@@ -91,7 +91,7 @@ const Registration = ({navigation}: WizardProps) => {
         />
       );
     }
-    if(data === 'Education'){
+    if(data === 'Edu'){
       return (
         <Education
           navigation={navigation}
@@ -123,7 +123,7 @@ const Registration = ({navigation}: WizardProps) => {
                   height: 35,
                   borderRadius: 20,
                   backgroundColor:
-                    currentPostion > index - 1 ? Colors.FrenchRose : '#aaaaaa',
+                  currentPostion > index - 1 ? Colors.FrenchRose : '#aaaaaa',
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
@@ -168,8 +168,9 @@ const Registration = ({navigation}: WizardProps) => {
         </View>
       </View>
      
-        <View style={{height: 50, borderTopWidth: 1, borderColor: 'grey'}}>
+        <View style={{height: 50, borderTopWidth: 1, borderColor: Colors.Grey}}>
           <TouchableOpacity
+          disabled={!enableNext}
             activeOpacity={0.9}
             onPress={() => {
               setCurrentPage(currentPostion + 1);
@@ -178,8 +179,8 @@ const Registration = ({navigation}: WizardProps) => {
             <Text
               style={[
                 styles.mediumHeaderText,
-                styles.buttonText,
-                {color: '#627D32'},
+                //styles.buttonText,
+                {color: enableNext? Colors.FrenchRose :Colors.Grey},
               ]}>
               {'Next'}
             </Text>

@@ -17,14 +17,15 @@ export const TextInputWithIcon = ({lable, onPress,dataBind,value,icon}: Textinpu
   const styles = GetStyle();
   return (
     <View style={{marginTop:10}}>
-    <Text style={{ ...styles.mediumHeaderText,paddingBottom:10, textTransform:'uppercase'}}>{lable}</Text>
+    <Text style={{ ...styles.mediumHeaderText}}>{lable}</Text>
    
 
     {/* <TouchableOpacity onPress={() => onPress(true)}> */}
     <View
       style={styles.textInputIconContainer}>
     <TextInput
-        style={[{flex: 1},styles.mediumText]}
+       style={[{flex: 1},styles.mediumText]}
+       //style={[styles.mediumText,styles.textInput]}
         value={value}
         pointerEvents="none"
         onTouchStart={()=> onPress(true)}

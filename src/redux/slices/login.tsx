@@ -24,7 +24,7 @@ export function createProfile(): profileDto{
      password:'',
      personalDetails:createPersonal(),
      familyDetails:createFamily(),
-     regionDetails:createCaste(),
+     religionDetails:createCaste(),
      locationDetails:createLocation(),
      professionDetails:createProfessional(),
      educationDetails:createEducation(),

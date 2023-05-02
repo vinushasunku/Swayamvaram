@@ -54,7 +54,7 @@ export function createDetailProfile(): profileDto{
      password:'',
      personalDetails:createPersonal(),
      familyDetails:createFamily(),
-     regionDetails:createCaste(),
+     religionDetails:createCaste(),
      locationDetails:createLocation(),
      professionDetails:createProfessional(),
      educationDetails:createEducation(),
@@ -89,6 +89,7 @@ export const fetchProfiledetail=createAsyncThunk(
   '/matrimony/profilDetail/',
   async (info:ProfileSelectedDto) =>{
     const res= await MatchesService.getProfileDetail(info.accountId, info.selectedProfileId);
+    console.log('test select profile', res?.data)
     return res? res?.data :undefined
   }
 );

@@ -14,7 +14,7 @@ export interface profileDto{
   id:string;
   personalDetails:PersonalDto;
   familyDetails:FamilyInfoDto;
-  regionDetails:CasteInfoDto;
+  religionDetails:CasteInfoDto;
   locationDetails:LocationInfoDto;
   professionDetails:ProfessionalDataDto;
   educationDetails:EducationInfoDto;
