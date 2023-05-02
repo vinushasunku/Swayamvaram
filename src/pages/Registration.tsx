@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {View, Text, TouchableOpacity, Dimensions} from 'react-native';
+import {View, Text, TouchableOpacity, Dimensions,SafeAreaView} from 'react-native';
 import {GetStyle} from '../styles/style-sheet';
 import {ScrollView} from 'react-native-gesture-handler';
 import PersonalInfo from './PersonalInfo';
@@ -8,6 +8,7 @@ import LocationInformation from './LocationInformation';
 import Education from './Education';
 import Family from './FamilyScreen';
 import { useAppSelector } from '../redux/hooks';
+import Colors from '../styles/colors';
 const styles: any = GetStyle();
 type WizardProps = {
   navigation: any;
@@ -109,8 +110,8 @@ const Registration = ({navigation}: WizardProps) => {
   };
 
   return (
-    <View style={[styles.container, {marginTop: 10}]}>
-      <View style={{marginLeft: 10, marginRight: 10}}>
+    <ScrollView>
+      <View style={{marginLeft: 10, marginRight: 10, marginTop:15}}>
         <View
           style={{width: '100%', alignItems: 'center', flexDirection: 'row'}}>
           {labels.map((item: any, index) => (
@@ -122,7 +123,7 @@ const Registration = ({navigation}: WizardProps) => {
                   height: 35,
                   borderRadius: 20,
                   backgroundColor:
-                    currentPostion > index - 1 ? '#fe7013' : '#aaaaaa',
+                    currentPostion > index - 1 ? Colors.FrenchRose : '#aaaaaa',
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
@@ -136,7 +137,7 @@ const Registration = ({navigation}: WizardProps) => {
                     width: width / 12,
                     height: 4,
                     backgroundColor:
-                      currentPostion > index ? '#fe7013' : '#aaaaaa',
+                      currentPostion > index ? Colors.FrenchRose : '#aaaaaa',
                   }}></View>
               ) : (
                 <></>
@@ -154,16 +155,20 @@ const Registration = ({navigation}: WizardProps) => {
                 fontWeight: '500',
                 width: width / 6,
                 paddingRight: 5,
-                color: currentPostion > index ? '#fe7013' : '#aaaaaa',
+                color: currentPostion >= index ? Colors.FrenchRose : '#aaaaaa',
               }}>
               {item}
             </Text>
           ))}
         </View>
-        <ScrollView style={{height:'80%'}}>{renderViewPagerPage(labels[currentPostion])}</ScrollView>
+        <View style={{marginTop:20,marginBottom:20}}>
+        {/* <ScrollView> */}
+          {renderViewPagerPage(labels[currentPostion])}
+        {/* </ScrollView> */}
+        </View>
       </View>
      
-        <View style={{height: '10%', borderTopWidth: 1, borderColor: 'grey'}}>
+        <View style={{height: 50, borderTopWidth: 1, borderColor: 'grey'}}>
           <TouchableOpacity
             activeOpacity={0.9}
             onPress={() => {
@@ -182,7 +187,7 @@ const Registration = ({navigation}: WizardProps) => {
         </View>
 
      
-    </View>
+    </ScrollView>
   );
 };
 

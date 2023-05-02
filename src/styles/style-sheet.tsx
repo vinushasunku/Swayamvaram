@@ -1,6 +1,6 @@
 import {StyleSheet,Appearance} from 'react-native';
-import { color } from 'react-native-elements/dist/helpers';
 import Colors from './colors';
+import Fonts from './fonts';
 const GetStyle=()=>{
     const colorSchemeName=Appearance.getColorScheme();
     let styles=colorSchemeName === 'light' ? LightStyle:DarkStyle
@@ -10,21 +10,54 @@ const LightStyle=StyleSheet.create({
     horizotalDiv:{
         flexDirection:'row', flex:1, marginLeft:10, justifyContent:'center'
     },
-    
+    mediumHeaderText:{
+        fontSize:Fonts.mediumHeaderTextSize,
+        fontWeight:Fonts.fontWeightmediumHeaderText,
+        color:Colors.Black,
+        lineHeight:20,
+        marginBottom:8,
+
+        
+    },
+    mediumText:{
+        fontSize:Fonts.mediumTextSize,
+        color:Colors.Black
+    },
+    loginTitle:{
+        fontSize:Fonts.titleSize, fontWeight:Fonts.fontWeightloginTitle, color:Colors.FrenchRose
+    },
+    textInput:{
+        height:50,  
+        backgroundColor:'white',
+        borderWidth:0.25,
+        marginBottom:10,
+        // borderBottomEndRadius:4,
+        // borderTopEndRadius:4,
+        //borderRadius:4, 
+        //position: 'absolute',
+        padding:10,
+        borderColor:Colors.Grey
+    },
     submitButton:{
-        width:'90%',
-        //paddingTop:10,
-        //paddingBottom:10,
-        marginLeft:20,
-        marginRight:20,
        backgroundColor:Colors.FrenchRose,
-        borderRadius:8,
-        height:40,
-        marginTop:15, marginBottom:15,
+        height:50,
         alignItems:'center',
         justifyContent:'center'
        
     },
+    welcomeTitle:{
+        alignItems:'center', 
+        justifyContent:'center',
+        height:'25%',
+        marginLeft:10,
+         marginRight:10
+    },
+    contentAlign:{
+        marginLeft:10,
+        marginRight:10
+    },
+
+
     buttonText:{
         fontSize:16,
         color:Colors.White,
@@ -43,20 +76,6 @@ const LightStyle=StyleSheet.create({
     buttonLinkText:{
         backgroundColor:Colors.Black,
     },
-    textInput:{
-        width:'90%',
-         marginBottom:5,
-         color:Colors.Black,
-         backgroundColor:Colors.White,
-         borderRadius:0.3,
-         borderColor:Colors.Grey,
-        minHeight:30,
-        height:50,
-        textAlignVertical:'top',
-        borderWidth:1,
-        flex: 1,
-
-    },
     modelSideContainer:{
         flex:1,
         //justifyContent:'center',
@@ -69,15 +88,6 @@ const LightStyle=StyleSheet.create({
         minHeight:'100%',
         maxHeight:'100%',
         //borderRadius:10
-    },
-    mediumHeaderText:{
-        fontSize:16,
-        fontWeight:'bold',
-        color:Colors.Black
-    },
-    mediumText:{
-        fontSize:14,
-        color:Colors.Black
     },
     backgroundContainer:{
         flex:1,
@@ -268,6 +278,48 @@ const DarkStyle=StyleSheet.create({
     horizotalDiv:{
         flexDirection:'row', flex:1, marginLeft:10, justifyContent:'center'
     },
+    mediumHeaderText:{
+        fontSize:Fonts.mediumHeaderTextSize,
+        fontWeight:'bold',
+        color:Colors.White,
+        lineHeight:20,
+        marginBottom:8,
+
+        
+    },
+    mediumText:{
+        fontSize:Fonts.mediumTextSize,
+        color:Colors.White
+    },
+    loginTitle:{
+        fontSize:Fonts.titleSize, fontWeight:Fonts.fontWeightloginTitle, color:Colors.FrenchRose
+    },
+    textInput:{
+        height:50,  
+        backgroundColor:'white',
+        borderWidth:0.25,
+        borderRadius:4 ,
+        borderColor:Colors.Grey,
+    },
+    submitButton:{
+        backgroundColor:Colors.FrenchRose,
+         height:50,
+         alignItems:'center',
+         justifyContent:'center'
+        
+     },
+     
+    welcomeTitle:{
+        alignItems:'center', 
+        justifyContent:'center',
+        height:'25%',
+        marginLeft:10,
+         marginRight:10,
+    },
+    contentAlign:{
+        marginLeft:10,
+        marginRight:10
+    },
 
 
 
@@ -299,18 +351,7 @@ const DarkStyle=StyleSheet.create({
         textAlign:'center',
         fontWeight:'bold'
     },
-    textInput:{
-        width:'85%',
-        marginBottom:5,
-        color:Colors.White,
-        backgroundColor:Colors.White,
-        borderRadius:0.3,
-        borderColor:Colors.Grey,
-        minHeight:60,
-        height:80,
-        textAlignVertical:'top'
 
-    },
     modelSideContainer:{
         flex:1,
         justifyContent:'center',
@@ -323,15 +364,6 @@ const DarkStyle=StyleSheet.create({
         minHeight:'50%',
         maxHeight:'90%',
         borderRadius:10
-    },
-    mediumHeaderText:{
-        fontSize:16,
-        fontWeight:'bold',
-        color:Colors.White
-    },
-    mediumText:{
-        fontSize:14,
-        color:Colors.Black
     },
     backgroundContainer:{
         flex:1,

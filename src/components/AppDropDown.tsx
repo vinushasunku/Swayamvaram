@@ -16,8 +16,8 @@ type ButtonProps={
 export const AppDropDown=({gender,value,onSelection,label}:ButtonProps)=>{
  const styles=GetStyle();
  return(
-    <View style={{ flexDirection: 'row', alignItems: 'center',width:'95%' }}>
-    <Text style={{ ...styles.mediumHeaderText,paddingBottom:10,width:'20%', textTransform:'uppercase'}}>
+    <View style={{ flexDirection: 'row', alignItems: 'center',marginLeft:10}}>
+    <Text style={{ ...styles.mediumHeaderText,paddingBottom:10, paddingRight:20}}>
     {label}
     </Text>
     <Dropdown

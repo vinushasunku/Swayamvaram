@@ -21,26 +21,22 @@ export const AppTextInput = ({
 }: ButtonProps) => {
   const styles = GetStyle();
   return (
-    <View style={{marginTop:10}}>
+    <View style={{width:'95%',marginLeft:10}}>
       <Text
         style={{
           ...styles.mediumHeaderText,
-          paddingBottom: 10,
-          //textTransform: 'uppercase',
         }}>
         {lable}
       </Text>
-      <View style={styles.textInputIconContainer}>
       <TextInput
         placeholderTextColor="#2F4F4F"
-         style={[styles.mediumText]}
+         style={[styles.mediumText,styles.textInput]}
         editable={true}
         value={value}
         onChangeText={(value) => onChangeText(databind,value)}
       />
-      </View>
-
     </View>
+
   );
 };
 

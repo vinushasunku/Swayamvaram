@@ -10,6 +10,8 @@ import { Appearance, SafeAreaView, StatusBar, StyleSheet, View } from "react-nat
 
 import Colors from './src/styles/colors';
 import { GetStyle } from "./src/styles/style-sheet";
+import Icon from 'react-native-vector-icons/Ionicons';
+Icon.loadFont();
 
 
 export default () => {
@@ -32,8 +34,7 @@ export default () => {
          <SafeAreaView style={[styles.topSafeArea]} />
             <SafeAreaView style={styles.bottomSafeArea}>
                 <StatusBar barStyle="dark-content"  backgroundColor={isLightMode?Colors.White:Colors.Black}  />
-
-                <MainNav  /> 
+                 <MainNav  />                
             </SafeAreaView>              
          </PersistGate>
     </Provider>

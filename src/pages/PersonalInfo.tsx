@@ -21,6 +21,8 @@ import RegistrationService from '../services/RegistrationService';
 import { setModalData} from '../redux/slices/appData';
 import { PersonalDto } from '../services/PersonalService';
 import { createPersonal } from '../redux/slices/personal';
+import Colors from '../styles/colors';
+import AppButton from '../components/AppButton';
 const styles: any = GetStyle();
 type WizardProps = {
   navigation: any;
@@ -135,7 +137,7 @@ const PersonalInfo = ({navigation,updateEnableNext}: WizardProps) => {
     // setValue('creator', label);
   }
   return (
-    <View>
+    <View >
       <AppTextInput
         onChangeText={onChangeValue}
         onFocus={true}
@@ -169,7 +171,7 @@ const PersonalInfo = ({navigation,updateEnableNext}: WizardProps) => {
         onSelection={setCreatordata}
         label={'Creator'}
       />
-      <View style={[styles.textInputIconContainer, {height: 50}]}>
+      <View style={[styles.textInput, {height: 80, width:'95%', marginLeft:10, marginTop:10}]}>
         <IntlPhoneInput
           phoneInputStyle={{
             flex: 1,
@@ -184,14 +186,17 @@ const PersonalInfo = ({navigation,updateEnableNext}: WizardProps) => {
           placeholder="Enter Mobile Number"
         />
       </View>
-      <AppTextInput
+     <View style={{marginTop:10}}>
+     <AppTextInput
         onChangeText={onChangeValue}
         onFocus={true}
         lable={'Password'}
         databind={'password'}
         value={personaldata.password}
       />
-      <View
+     </View>
+     <AppButton onPress={onSubmit} title={'Continue'} disabled={false} />
+      {/* <View
         style={{
           height: '10%',
           width: '100%',
@@ -205,7 +210,7 @@ const PersonalInfo = ({navigation,updateEnableNext}: WizardProps) => {
             {'Save'}
           </Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
     </View>
   );
 };

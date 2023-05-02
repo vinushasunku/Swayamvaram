@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {View, Text, TouchableOpacity, TextInput} from 'react-native';
+import {View, Text, TouchableOpacity, TextInput, ImageBackground} from 'react-native';
 import {GetStyle} from '../styles/style-sheet';
 import AppButton from '../components/AppButton';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
@@ -8,6 +8,7 @@ import LoginService from '../services/LoginService';
 import { createSecureService } from '../services/APIServices';
 import { setAccountId } from '../redux/slices/registration';
 import AppTextInput from '../components/TextInput';
+
 const style: any = GetStyle();
 const LoginPage = ({navigation}: any) => {
   const dispatch = useAppDispatch();
@@ -72,19 +73,64 @@ const LoginPage = ({navigation}: any) => {
     if (name == 'email') {
       setEmailPassword(text)
     }
+    if(name == 'password'){
+      setPassword(text)
+    }
   }
   return (
-    <View >
-
-        {/* <View
-          style={styles.loginTestbox}> */}
-           <AppTextInput
+    <View style={{ justifyContent:'center'}}>
+      <View style={style.welcomeTitle}>
+      <Text
+        style={style.loginTitle}>
+        {"Welcome to Swayamvaram"}
+      </Text>
+      </View>
+      {/* <ImageBackground 
+                 style={{ width: '100%',
+                 height: '100%',
+                 flex: 1}}
+                 resizeMode='cover' 
+                 source={require('../assertsImg/loginBackGroundImg.png')}> */}
+      <View style={{backgroundColor:'#fddfeb', height:'80%'}}>
+      <View style={{backgroundColor:'white', marginLeft:15, marginRight:15, marginTop:50, marginBottom:30, borderRadius:5, borderWidth:0.25, borderColor:'grey', paddingBottom:50}}>
+      <View style={{  marginLeft:10, marginRight:10, marginTop:50}}>
+       <AppTextInput
         onChangeText={onChangeValue}
         onFocus={true}
         lable={'Email address'}
         databind={'email'}
         value={emailinput}
       />
+        <AppTextInput
+        onChangeText={onChangeValue}
+        onFocus={true}
+        lable={'Password'}
+        databind={'password'}
+        value={passwordinput}
+      />
+     <View style={{marginTop:20}}>
+     <AppButton onPress={signupButton} title={'Continue'} disabled={false} />
+     </View> 
+      {/* <TextInput
+            placeholderTextColor="#2F4F4F"
+            //style={[styles.mediumText]}
+            placeholder={'Enter Email'}
+            //SonFocus={true}
+            editable={true}
+            //value={value}
+            onChangeText={(data)=>setEmailPassword(data)}
+          /> */}
+      </View>
+    
+      </View>
+
+      </View>
+
+
+{/* </ImageBackground> */}
+        {/* <View
+          style={styles.loginTestbox}> */}
+
           {/* <TextInput
             placeholderTextColor="#2F4F4F"
             style={[styles.mediumText]}
@@ -120,7 +166,7 @@ const LoginPage = ({navigation}: any) => {
             onChangeText={(data)=>setPassword(data)}
           />
         </View> */}
-          <AppButton onPress={signupButton} title={'Login'} disabled={false} />
+          {/* <AppButton onPress={signupButton} title={'Login'} disabled={false} /> */}
         </View>
   
   );
