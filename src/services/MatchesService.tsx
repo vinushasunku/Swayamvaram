@@ -1,4 +1,4 @@
-import { secureGet, securePut } from "./APIServices";
+import { secureGet, securePost, securePut } from "./APIServices";
 
 export interface MatchesInfoDto{
     accountId:string,
@@ -51,16 +51,16 @@ export interface PrefrenceDataDto {
   }
   
   export interface Age {
-    min: number
-    max: number
+    min?: number
+    max?: number
   }
   
   export interface Salary {
-    min: number
-    max: number
+    min?: number
+    max?: number
   }
 class MatchesService{
-    getMatchesList=(accountId:string, pageToke:number)=>secureGet('/matrimony/'+accountId+'/matching?pageSize=3&pageToke='+pageToke);
+    getMatchesList=(accountId:string, pageToke:number)=>secureGet('/matrimony/'+accountId+'/matching?pageSize=4&pageToke='+pageToke);
     getProfileDetail=(accountId:string, ProfileId:string)=>secureGet('/matrimony/'+accountId+'/matching/'+ProfileId+'/details');
     getMatchingStatus=(accountId:string, ProfileId:string)=>secureGet('/matrimony/'+accountId+'/matching/'+ProfileId+'/status');
     sendProposal = (accountId:string, ProfileId:string) =>     
@@ -71,6 +71,8 @@ class MatchesService{
     securePut('/matrimony/'+accountId+'/matching/'+ProfileId+'/accept');  
     withDrawalProposal = (accountId:string, ProfileId:string) =>     
     securePut('/matrimony/'+accountId+'/matching/'+ProfileId+'/withdraw');  
+    savePreference = (preference: PrefrenceDataDto, accountId:string) =>     
+    securePost('/matrimony/account/'+accountId+'/preference', preference, 'Unable to save preference info. Please try again later.'); 
 }
 
 export default new MatchesService();

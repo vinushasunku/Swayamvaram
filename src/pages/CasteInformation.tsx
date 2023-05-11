@@ -44,12 +44,12 @@ const CasteInformation = ({navigation,updateEnableNext}: WizardProps) => {
       console.log('acccountid',accountId)
       if(intialpageLoad)
       {
-      setCastedata(profile.regionDetails)
-      if(profile.regionDetails.religion != null){
+      setCastedata(profile.religionDetails)
+      if(profile.religionDetails.religion != null){
         console.log('loadcaste')
         setloadCasteList(true)
       }
-      if(profile.regionDetails.caste != null){
+      if(profile.religionDetails.caste != null){
         console.log('loadcaste')
         setloadSubCasteList(true)
       }

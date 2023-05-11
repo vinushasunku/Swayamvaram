@@ -14,27 +14,21 @@ import { GetStyle } from '../styles/style-sheet';
 import SafeAreaView from 'react-native-safe-area-view';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import {
-  getMatchList,
   getsortList,
-  getMatchesList,
   getMoreMatchesList,
   fetchMatcheslists,
   setselectedProfileId,
   fetchProfiledetail,
   setPreferenceVisiable,
-  fetchMatchingStatus,
 } from '../redux/slices/matches';
-import { Avatar, Icon, SearchBar, Tooltip } from 'react-native-elements';
+import { SearchBar} from 'react-native-elements';
 import Icons from 'react-native-vector-icons/Ionicons';
-import LinearGradient from 'react-native-linear-gradient';
-import MatchesService, { MatchesInfoDto } from '../services/MatchesService';
-import { createSecureService } from '../services/APIServices';
-import AppButton from '../components/AppButton';
+import MatchesService from '../services/MatchesService';
 import Colors from '../styles/colors';
-import { profileDto } from '../services/LoginService';
-import { setEditProfileDetail } from '../redux/slices/login';
+import { setEditProfileDetail, setEditProfileDetailInfo } from '../redux/slices/login';
 import SavePreference from './SavePreference';
 import { matchesStatusResult } from '../utils/actionfunctions';
+import {useIsFocused} from '@react-navigation/native'
 const styles: any = GetStyle();
 type WizardProps = {
   navigation: any;
@@ -61,6 +55,7 @@ const MatchesScreen = ({ navigation }: WizardProps) => {
   //const [selectProfileDetail, setselectProfileDetail] = React.useState<profileDto|null>(null);
   const [pageLoading, setPageLoading] = React.useState(true);
   const dispatch: any = useAppDispatch();
+  const isFocused =useIsFocused();
 
   let stopFetchMore = true;
   const searchFilterFunction = (text: any) => {

@@ -24,7 +24,7 @@ export const TextInputWithIcon = ({lable, onPress,dataBind,value,icon}: Textinpu
     <View
       style={styles.textInputIconContainer}>
     <TextInput
-       style={[{flex: 1},styles.mediumText]}
+       style={[{flex: 1,paddingLeft:10},styles.mediumText]}
        //style={[styles.mediumText,styles.textInput]}
         value={value}
         pointerEvents="none"

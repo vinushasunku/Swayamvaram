@@ -1,7 +1,7 @@
 import {InitialState} from '@react-navigation/native'
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { profileDto } from '../../services/LoginService';
-import MatchesService,{ MatchesInfoDto, MatchesPageInfoDto, MatchesStatusInfoDto, ProfileSelectedDto } from '../../services/MatchesService';
+import MatchesService,{ MatchesInfoDto, MatchesPageInfoDto, MatchesStatusInfoDto, PrefrenceDataDto, ProfileSelectedDto } from '../../services/MatchesService';
 import { createCaste } from './caste';
 import { createEducation, createProfessional } from './education';
 import { createFamily } from './family';
@@ -98,6 +98,13 @@ export const fetchMatchingStatus=createAsyncThunk(
   async (info:ProfileSelectedDto) =>{
     const res= await MatchesService.getMatchingStatus(info.accountId, info.selectedProfileId);
     return res? res?.data :undefined
+  }
+);
+export const fetchSavePreference=createAsyncThunk(
+  '/matrimony/matching/',
+  async (info:PrefrenceDataDto, acccountid:any) =>{
+    const res= await MatchesService.savePreference(info, acccountid);
+    return res? res?.data?.matchingProfiles :undefined
   }
 );
 export const matcheSlice = createSlice({

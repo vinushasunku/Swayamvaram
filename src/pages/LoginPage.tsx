@@ -72,9 +72,9 @@ const LoginPage = ({navigation}: any) => {
   function validation(type: any, value: any) {
     console.log();
   }
-  function onChangeValue(name: any, text: any) {
+  function onChangeValue(name: any, text: string) {
     if (name == 'email') {
-      setEmailPassword(text)
+      setEmailPassword(text.toLowerCase())
     }
     if(name == 'password'){
       setPassword(text)
