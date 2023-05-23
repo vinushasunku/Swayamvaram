@@ -6,6 +6,8 @@ import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Colors from '../styles/colors';
 import { setEditProfileDetail } from '../redux/slices/login';
+import SavePreference from './SavePreference';
+import { setPreferenceVisiable } from '../redux/slices/matches';
 const styles: any = GetStyle();
 type WizardProps = {
   navigation: any;
@@ -15,6 +17,7 @@ const AccountProfile = ({navigation}: WizardProps) => {
   const accountProfiledetail = useAppSelector(
     state => state.loginId.profileData,
   );
+  const showPreference = useAppSelector(state => state.matches.preferenceShow);
   console.log('accountprofile',accountProfiledetail)
   const dispatch: any = useAppDispatch();
   const profilePicture = () => {
@@ -44,7 +47,7 @@ const AccountProfile = ({navigation}: WizardProps) => {
             borderRadius: 10,
             flexDirection: 'row',
           }}>
-          <View style={{width: '50%', marginTop: 10, marginLeft: 10}}>
+          <View style={{width: '40%', margin:10}}>
             <Image
               source={{
                 uri: accountProfiledetail.photoDetails.profilePicture,
@@ -52,13 +55,13 @@ const AccountProfile = ({navigation}: WizardProps) => {
               style={{height: 130}}
             />
           </View>
-          <View style={{alignItems: 'center', paddingTop: 10}}>
-            <Text style={[styles.mediumText, {paddingLeft: 10}]}>
+          <View style={{alignItems: 'center', padding:10}}>
+            <Text style={[styles.mediumHeaderText]}>
               {accountProfiledetail.personalDetails.firstName +
                 ' ' +
                 accountProfiledetail.personalDetails.lastName}
             </Text>
-            <Text style={[styles.mediumText, {paddingLeft: 10, marginTop:10}]}>
+            <Text style={[styles.mediumHeaderText]}>
               {accountProfiledetail.personalDetails.gender}
             </Text>
           </View>
@@ -80,7 +83,7 @@ const AccountProfile = ({navigation}: WizardProps) => {
                   {marginTop: 10,  alignItems: 'center'},
                 ]}
                 onPress={() => {
-                   
+                   navigation.navigate('Shortlisted')
                 }}>
                 <View style={{alignItems:'center'}}>
                  <View style={[styles.circleicon]}>
@@ -121,7 +124,7 @@ const AccountProfile = ({navigation}: WizardProps) => {
                   {marginTop: 10,  alignItems: 'center'},
                 ]}
                 onPress={() => {
-                   
+                  dispatch(setPreferenceVisiable(true));
                 }}>
                 <View style={{alignItems:'center'}}>
                  <View style={[styles.circleicon]}>
@@ -158,12 +161,14 @@ const AccountProfile = ({navigation}: WizardProps) => {
     )
   }
   return (
-    <SafeAreaView style={{flex: 1}}>
       <View style={{flex: 1, backgroundColor: 'white'}}>
         {profilePicture()}
         {iconAction()}
+        <SavePreference
+        savePreferenceVisiable={showPreference}
+        navigation={navigation}
+      />
       </View>
-    </SafeAreaView>
   );
 };
 

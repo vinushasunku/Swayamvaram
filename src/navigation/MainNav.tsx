@@ -21,26 +21,28 @@ import LoginPage from '../pages/LoginPage';
 import {GetStyle} from '../styles/style-sheet';
 import Registration from '../pages/Registration';
 import GlobalModal from '../components/GlobalModal';
-import HomeScreen from '../pages/HomeScreen';
+import MailBoxScreen from '../pages/MailBoxScreen';
 import MatchesScreen from '../pages/MatchesScreen';
 import ProfileDetailScreen from '../pages/ProfileDetailScreen';
 import {BackgroundImage} from 'react-native-elements/dist/config';
 import {Dimensions} from 'react-native';
 import AccountProfile from '../pages/AccountProfile';
 import { createProfile } from '../redux/slices/login';
+import ShortListScreen from '../pages/ShortListScreen';
 const styles: any = GetStyle();
 Icon.loadFont();
 const HomeStack = createNativeStackNavigator();
 const MainStack = createNativeStackNavigator();
 const MatchStack = createNativeStackNavigator();
+const AccountStack = createNativeStackNavigator();
 const {width, height} = Dimensions.get('screen');
 const isLightMode = Appearance.getColorScheme() === 'light' ? true : false;
 function HomeStackNav() {
   return (
     <HomeStack.Navigator>
       <HomeStack.Screen
-        name="Home"
-        component={HomeScreen}
+        name="Mail"
+        component={MailBoxScreen}
         options={{
           headerShown: true,
           headerBackVisible: true,
@@ -55,6 +57,47 @@ function HomeStackNav() {
         }}
       />
     </HomeStack.Navigator>
+  );
+}
+function AccountStackNav() {
+  return (
+    <AccountStack.Navigator>
+      <AccountStack.Screen
+        name="Profile"
+        component={AccountProfile}
+        options={{
+          headerShown: true,
+          headerBackVisible: true,
+          headerRight: () => null,
+          headerTitleAlign: 'left',
+          headerStyle: {
+            backgroundColor: Colors.White,
+          },
+          headerTitleStyle: {
+            color: Colors.FrenchRose,
+          },
+        }}
+      />
+       <AccountStack.Screen
+        name="Shortlisted"
+        component={ShortListScreen}
+        options={{
+          headerTitle:'Shortlisted Profiles',
+          headerShown: true,
+          headerBackVisible: true,
+          headerRight: () => null,
+          headerTitleAlign: 'left',
+          headerTintColor:Colors.FrenchRose,
+          headerStyle: {
+            backgroundColor: Colors.White,
+          },
+          
+          headerTitleStyle: {
+            color: Colors.FrenchRose,
+          },
+        }}
+      />
+    </AccountStack.Navigator>
   );
 }
 function MatchStackNav() {
@@ -214,7 +257,7 @@ function MainTab() {
       />
       <Tab.Screen
         name="Account"
-        component={AccountProfile}
+        component={AccountStackNav}
         options={{
           headerShown: false,
           title: 'Account',

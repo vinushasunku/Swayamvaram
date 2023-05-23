@@ -61,6 +61,9 @@ const LightStyle=StyleSheet.create({
             alignItems: 'center',
             justifyContent: 'center',marginLeft:10, marginTop:10, marginBottom:10
     },
+    backgroundColor:{
+        backgroundColor:Colors.White
+    },
 
 
     buttonText:{
@@ -325,7 +328,9 @@ const DarkStyle=StyleSheet.create({
         marginLeft:10,
         marginRight:10
     },
-
+    backgroundColor:{
+        backgroundColor:Colors.Black
+    },
 
 
     sectionContainer:{

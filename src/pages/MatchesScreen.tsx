@@ -21,14 +21,15 @@ import {
   fetchProfiledetail,
   setPreferenceVisiable,
 } from '../redux/slices/matches';
-import { SearchBar} from 'react-native-elements';
+import { SearchBar } from 'react-native-elements';
 import Icons from 'react-native-vector-icons/Ionicons';
 import MatchesService from '../services/MatchesService';
 import Colors from '../styles/colors';
-import { setEditProfileDetail, setEditProfileDetailInfo } from '../redux/slices/login';
+import { setEditProfileDetail } from '../redux/slices/login';
 import SavePreference from './SavePreference';
-import { matchesStatusResult } from '../utils/actionfunctions';
-import {useIsFocused} from '@react-navigation/native'
+import { matchesStatusResult, shortListButton } from '../utils/actionfunctions';
+import { useIsFocused } from '@react-navigation/native'
+import Icon from 'react-native-vector-icons/Ionicons';
 const styles: any = GetStyle();
 type WizardProps = {
   navigation: any;
@@ -55,7 +56,9 @@ const MatchesScreen = ({ navigation }: WizardProps) => {
   //const [selectProfileDetail, setselectProfileDetail] = React.useState<profileDto|null>(null);
   const [pageLoading, setPageLoading] = React.useState(true);
   const dispatch: any = useAppDispatch();
-  const isFocused =useIsFocused();
+  const isFocused = useIsFocused();
+  const [shortlistedProfileId, setShortlistedProfile] = React.useState([]);
+
 
   let stopFetchMore = true;
   const searchFilterFunction = (text: any) => {
@@ -134,10 +137,10 @@ const MatchesScreen = ({ navigation }: WizardProps) => {
     dispatch(fetchProfiledetail(selectProfileId))
       .unwrap()
       .then(async (response: any) => {
-        if(await matchesStatusResult(selectProfileId)){
+        if (await matchesStatusResult(selectProfileId)) {
           navigation.navigate('ProfileDetail');
         }
-   
+
       })
       .catch((error: any) => {
         console.log('get matches list', error);
@@ -162,6 +165,9 @@ const MatchesScreen = ({ navigation }: WizardProps) => {
       .catch((error: any) => {
         console.log('error:', error);
       });
+  }
+  async function shortListProfile(id: any) {
+    await shortListButton(loginprofileDetail.id, id)
   }
   function matcheProfile() {
     const renderItem = ({ item }) => {
@@ -197,18 +203,35 @@ const MatchesScreen = ({ navigation }: WizardProps) => {
                   paddingLeft: 20,
                   paddingTop: 20
                 }}>
-                <Text
-                  style={[
-                    styles.mediumHeaderText
-                  ]}>
-                  {item.firstName + ' ' + item.lastName}
-                </Text>
-                <Text
-                  style={[
-                    styles.mediumHeaderText
-                  ]}>
-                  {item.age + ' ' + 'Yrs'}
-                </Text>
+                <View style={{ flexDirection: 'row', marginRight:10 }}>
+                  <View style={{ width: '80%' }}>
+                    <Text
+                      style={[
+                        styles.mediumHeaderText
+                      ]}>
+                      {item.firstName + ' ' + item.lastName}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.mediumHeaderText
+                      ]}>
+                      {item.age + ' ' + 'Yrs'}
+                    </Text>
+                  </View>
+                  <View style={{ flex: 1 , flexDirection:'row-reverse'}}>
+                    <TouchableOpacity onPress={()=>{shortListProfile(item.accountId)}}>
+                      <Icon
+                        testID='iconBack'
+                        name="star-outline"
+                        color={Colors.FrenchRose}
+                        size={24}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+
+
                 <View style={[{
                   flexDirection: 'row', flex: 1,
                   alignItems: 'center',

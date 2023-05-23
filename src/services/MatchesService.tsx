@@ -36,6 +36,10 @@ export interface ProfileSelectedDto{
     accountId:string,
     selectedProfileId:string
 }
+export interface SelectedStatus{
+    accountId:string,
+    status:string
+}
 
 export interface PrefrenceDataDto {
     age: Age
@@ -73,6 +77,12 @@ class MatchesService{
     securePut('/matrimony/'+accountId+'/matching/'+ProfileId+'/withdraw');  
     savePreference = (preference: PrefrenceDataDto, accountId:string) =>     
     securePost('/matrimony/account/'+accountId+'/preference', preference, 'Unable to save preference info. Please try again later.'); 
+    shortlistProfile = (accountId:string, ProfileId:string) =>     
+    securePut('/matrimony/'+accountId+'/matching/'+ProfileId+'/shortlist'); 
+    
+    getMatchingProfileByStatus=(accountId:string, status:string)=>secureGet('/matrimony/'+accountId+'/matching?status='+status);
+        
+    getShortlistedProfile=(accountId:string)=>secureGet('/matrimony/'+accountId+'/matching/shortlist');
 }
 
 export default new MatchesService();

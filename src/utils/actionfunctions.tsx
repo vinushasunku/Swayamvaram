@@ -28,7 +28,14 @@ export async function acceptButton(accountId: any, id: any) {
     console.log('error:', error)
   })
 }
-
+export async function shortListButton(accountId: any, id: any) {
+  return MatchesService.shortlistProfile(accountId, id).then((response: any) => {
+    return true
+  }).catch((error: any) => {
+    return false
+    console.log('error:', error)
+  })
+}
 export async function withdrawalButton(accountId: any, id: any) {
   console.log('Send');
   return MatchesService.withDrawalProposal(accountId, id).then((response: any) => {

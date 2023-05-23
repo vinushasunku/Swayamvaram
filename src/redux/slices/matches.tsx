@@ -1,7 +1,7 @@
 import {InitialState} from '@react-navigation/native'
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { profileDto } from '../../services/LoginService';
-import MatchesService,{ MatchesInfoDto, MatchesPageInfoDto, MatchesStatusInfoDto, PrefrenceDataDto, ProfileSelectedDto } from '../../services/MatchesService';
+import MatchesService,{ MatchesInfoDto, MatchesPageInfoDto, MatchesStatusInfoDto, PrefrenceDataDto, ProfileSelectedDto, SelectedStatus } from '../../services/MatchesService';
 import { createCaste } from './caste';
 import { createEducation, createProfessional } from './education';
 import { createFamily } from './family';
@@ -11,6 +11,12 @@ import { createProfilePhotoDetail } from './photoDetailLink';
 
 export const initialState={
     matchesData:createMatches(),
+    matchesProfileListByStatus:createMatches(),
+    matchesShortlistedProfile:createMatches(),
+    matchingShortlistedLoading:'idle',
+    matchingShortlistedError:'',
+    matchingStatusListLoading:'idle',
+    matchingStatusListError:'',
     matchesStatus: 'idle',
     matchesError: '',
     matchingStatusLoading:'idle',
@@ -21,6 +27,7 @@ export const initialState={
     matchesPageInfo:matchesPageInfo(),
     profileDetail:createDetailProfile(),
     matchingStatus:createMatchingStatus(),
+    selectedStatus:selectedStatus(),
     preferenceShow:false
 }
 export function createMatches(): [MatchesInfoDto]{
@@ -45,6 +52,13 @@ export function selectedprofileInfo(): ProfileSelectedDto{
   return{
       accountId:'',
       selectedProfileId:''
+  };
+
+}
+export function selectedStatus(): SelectedStatus{
+  return{
+      accountId:'',
+      status:''
   };
 
 }
@@ -82,6 +96,20 @@ export const fetchMatcheslists=createAsyncThunk(
   '/matrimony/matching/',
   async (info:MatchesPageInfoDto) =>{
     const res= await MatchesService.getMatchesList(info.accountId, info.pageToke);
+    return res? res?.data?.matchingProfiles :undefined
+  }
+);
+export const fetchMatchesProfilelistsByStatus=createAsyncThunk(
+  '/matrimony/matchingProfileByStatus/',
+  async (info:SelectedStatus) =>{
+    const res= await MatchesService.getMatchingProfileByStatus(info.accountId, info.status);
+    return res? res?.data?.matchingProfiles :undefined
+  }
+);
+export const fetchShortlistedProfile=createAsyncThunk(
+  '/matrimony/matchingShorlistedProfile/',
+  async (accountId:any) =>{
+    const res= await MatchesService.getShortlistedProfile(accountId);
     return res? res?.data?.matchingProfiles :undefined
   }
 );
@@ -143,6 +171,36 @@ export const matcheSlice = createSlice({
       builder.addCase(fetchMatcheslists.rejected, (state, action) => {
         state.matchesStatus='failed',
         state.matchesError='Unable to get list';
+      }),
+      builder.addCase(fetchMatchesProfilelistsByStatus.fulfilled, (state, action) => {
+        state.matchingStatusListLoading='succeeded',
+        state.matchingStatusListError='';
+        if(action.payload){
+          state.matchesProfileListByStatus=action.payload
+        }
+      }),
+      builder.addCase(fetchMatchesProfilelistsByStatus.pending, (state, action) => {
+        state.matchingStatusListLoading='loading',
+        state.matchingStatusListError='';
+      }),
+      builder.addCase(fetchMatchesProfilelistsByStatus.rejected, (state, action) => {
+        state.matchingStatusListLoading='failed',
+        state.matchingStatusListError='Unable to get list';
+      }),
+      builder.addCase(fetchShortlistedProfile.fulfilled, (state, action) => {
+        state.matchingStatusListLoading='succeeded',
+        state.matchingStatusListError='';
+        if(action.payload){
+          state.matchesShortlistedProfile=action.payload
+        }
+      }),
+      builder.addCase(fetchShortlistedProfile.pending, (state, action) => {
+        state.matchingShortlistedLoading='loading',
+        state.matchingShortlistedError='';
+      }),
+      builder.addCase(fetchShortlistedProfile.rejected, (state, action) => {
+        state.matchingShortlistedLoading='failed',
+        state.matchingShortlistedError='Unable to get list';
       }),
       builder.addCase(fetchProfiledetail.fulfilled, (state, action) => {
         state.profileDetailStatus='succeeded',
