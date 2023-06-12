@@ -41,7 +41,7 @@ function HomeStackNav() {
   return (
     <HomeStack.Navigator>
       <HomeStack.Screen
-        name="Mail"
+        name="MailBox"
         component={MailBoxScreen}
         options={{
           headerShown: true,
@@ -52,7 +52,7 @@ function HomeStackNav() {
             backgroundColor: Colors.White,
           },
           headerTitleStyle: {
-            color: Colors.Black,
+            color: Colors.FrenchRose,
           },
         }}
       />
@@ -119,7 +119,7 @@ function MatchStackNav() {
           headerRight: () => null,
           headerTitleAlign: 'center',
           headerStyle: {
-            backgroundColor: isLightMode ? Colors.White : Colors.Brand,
+            backgroundColor: Colors.White,
           },
           headerTitleStyle: {
             color: Colors.FrenchRose,
@@ -219,10 +219,10 @@ function MainTab() {
     <Tab.Navigator
       screenOptions={() => ({
         tabBarHideOnKeyboard: true,
-        tabBarActiveTintColor: isLightMode ? Colors.Brand : Colors.Brand,
+        tabBarActiveTintColor: Colors.FrenchRose,
         tabBarLabelStyle: {fontWeight: 'bold', fontSize: 12},
         tabBarStyle: {
-          backgroundColor: isLightMode ? Colors.White : Colors.Brand,
+          backgroundColor: Colors.White ,
         },
       })}>
       <Tab.Screen
@@ -291,12 +291,12 @@ export function MainNav() {
                 options={{
                   headerShown: true,
                   headerTitle: 'Swayamvaram  ',
-                  headerTitleAlign: 'center',
+                  headerTitleAlign: 'left',
                   headerStyle: {
                     backgroundColor: Colors.White,
                   },
                   headerTitleStyle: {
-                    color: Colors.Brand,
+                    color: Colors.FrenchRose,
                   },
                   //   headerRight: () => null,
                 }}
@@ -330,7 +330,7 @@ export function MainNav() {
                     backgroundColor: Colors.White,
                   },
                   headerTitleStyle: {
-                    color: Colors.Brand,
+                    color: Colors.FrenchRose,
                   },
                 }}
               />

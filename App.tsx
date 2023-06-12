@@ -31,9 +31,9 @@ export default () => {
     <Provider  store={store}>
          <PersistGate loading={null} persistor={persistor}>
          {/* <MainNav  />  */}
-         <SafeAreaView style={[styles.topSafeArea]} />
-            <SafeAreaView style={styles.bottomSafeArea}>
-                <StatusBar barStyle="dark-content"  backgroundColor={isLightMode?Colors.White:Colors.Black}  />
+         <SafeAreaView style={[styles.topSafeArea,{backgroundColor:Colors.White}]} />
+            <SafeAreaView style={[styles.bottomSafeArea,{backgroundColor:Colors.White}]}>
+                <StatusBar barStyle="dark-content"  backgroundColor={Colors.White}  />
                  <MainNav  />                
             </SafeAreaView>              
          </PersistGate>

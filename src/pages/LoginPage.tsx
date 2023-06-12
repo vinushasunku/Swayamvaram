@@ -8,6 +8,7 @@ import LoginService from '../services/LoginService';
 import { createSecureService } from '../services/APIServices';
 import { setAccountId } from '../redux/slices/registration';
 import AppTextInput from '../components/TextInput';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const style: any = GetStyle();
 const LoginPage = ({navigation}: any) => {
@@ -81,7 +82,7 @@ const LoginPage = ({navigation}: any) => {
     }
   }
   return (
-    <View style={{ justifyContent:'center'}}>
+    <View style={{ justifyContent:'center', backgroundColor:Colors.white}}>
       <View style={style.welcomeTitle}>
       <Text
         style={style.loginTitle}>

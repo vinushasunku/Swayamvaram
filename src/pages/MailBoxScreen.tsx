@@ -11,7 +11,7 @@ import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { fetchMatchesProfilelistsByStatus } from '../redux/slices/matches';
 import { MatchesInfoDto, SelectedStatus } from '../services/MatchesService';
 import store from '../redux/store';
-
+import Colors from '../styles/colors';
 const styles: any = GetStyle();
 type WizardProps = {
   navigation: any;
@@ -21,7 +21,17 @@ const MailBoxScreen = ({navigation}: WizardProps) => {
   const Tab = createMaterialTopTabNavigator();
   function MailBoxTabs() {
     return (
-      <Tab.Navigator>
+      <Tab.Navigator screenOptions={{
+        tabBarStyle: {
+          height: 55,
+          
+        },
+  
+        tabBarLabelStyle: {
+          fontSize: 14,
+          margin: 0,
+        },
+      }}>
         <Tab.Screen name="Pending" component={PendingListRoute}  initialParams={{currentStatus: "REQUEST_SENT"}} />
         <Tab.Screen name="Accept" component={AcceptListRoute} initialParams={{currentStatus: "ACCEPT"}}/>
         <Tab.Screen name="Reject" component={DeclineListRoute} initialParams={{currentStatus: "REJECT"}}/>
@@ -100,7 +110,7 @@ const PendingListRoute = ({ route }) => {
     //setData(getMatchList);
   };
   return(
-    <View >
+    <View style={{backgroundColor:Colors.White}}>
       {/* <Text>{getMatchPendingList[0].firstName}</Text> */}
       {
         CommonView(data,'Pending')

@@ -95,7 +95,7 @@ function GlobalModal() {
             <>
               <ActivityIndicator
                 size="small"
-                color={Colors.Brand}
+                color={Colors.FrenchRose}
                 style={{paddingTop: 10, paddingBottom: 10}}
               />
             </>
